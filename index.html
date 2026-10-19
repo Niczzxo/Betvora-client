@@ -3665,7 +3665,10 @@ html.no-motion .tr-rays{animation:none!important}
       $("#sidebar").classList.remove("open"); $("#scrim").classList.remove("on");
       if(route==="game") return;
       if(route.indexOf("section:")===0){ openSection(route.slice(8)); return; }
-      if(route.indexOf("game:")===0){ openGame(route.slice(5)); return; }
+      if(route.indexOf("game:")===0){
+        if(!state.user){ openOverlay("authOverlay"); setAuthMode("register"); toast("Members only","Log in or register to play — guests can browse the full game lobby.","gold"); return; }
+        openGame(route.slice(5)); return;
+      }
       if(MEMBER_ROUTES.indexOf(route)>=0 && !state.user){
         openOverlay("authOverlay"); setAuthMode("register");
         toast("Members only","Log in or register to open this section.","gold");
@@ -8994,9 +8997,8 @@ BUILDERS.wheel=function(mount){
       let html= guest? regBannerHtml() : "";
       LOBBY_ROWS.forEach(row=>{
         if(row==="BANNER"){ if(!guest) html+=cbBannerHtml(); return; }
-        if(guest && row.key!=="popular" && row.key!=="originals") return;
         const rc=ROW_CATS[row.key], sid="strip-"+row.key;
-        const tiles= guest? rc.tiles.slice(0,4) : rc.tiles;
+        const tiles= rc.tiles;
         html+='<div class="lobby-row">'
           +rowHeadHtml(row.icon,row.title,row.green,'<button class="view-all" data-viewall="'+row.key+'">View all</button>',sid)
           +'<div class="row-strip" id="'+sid+'">'+tiles.map(tileHtml).join("")+'</div></div>';
