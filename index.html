@@ -1093,7 +1093,10 @@
       <style data-prolook>
 /* FIX-A8: keep the stat label (e.g. "Paid Out (24h)") on one line at small phones */
 @media (max-width:480px){
-  .stat-card small{white-space:nowrap;font-size:10.5px;letter-spacing:.04em}
+  .stats-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-card{min-width:0;padding:12px}
+  .stat-card .ic{width:36px;height:36px}
+  .stat-card small{display:block;white-space:nowrap;font-size:10.5px;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis}
 }
 </style>
       <style data-prolook>
@@ -4593,7 +4596,7 @@ function drawQrToCanvas(text, canvas, target) {
       if(Math.random()<0.3){ const p=LB_PLAYERS[Math.floor(Math.random()*LB_PLAYERS.length)]; const bw=Math.round(4000+Math.random()*30000); if(bw>p.big) p.big=bw; p.won+=bw; p.wagered+=Math.round(bw*0.4); }
       if(state.view==="leaderboard") renderLeaderboard();
     }
-    setInterval(lbTick,3400);
+    setInterval(()=>{ if(!motionOff()) lbTick(); },3400);
 
     /* ==================== INFO MODAL ==================== */
     const INFO={
@@ -5248,6 +5251,7 @@ function drawQrToCanvas(text, canvas, target) {
       if(e.target && e.target.id==="gsSearch"){ gsQuery=e.target.value.trim().toLowerCase(); const b=$("#gsSearchBox"); if(b) b.classList.toggle("has-q",!!gsQuery); gsRenderGrid(); }
     });
     setInterval(()=>{
+      if(motionOff()) return;
       GS_TILES.forEach(t=>{ t.players=Math.max(4,t.players+Math.floor(Math.random()*13-6)); });
       if(Math.random()<0.75){ gsFeed.unshift(gsFakeBet()); if(gsFeed.length>40) gsFeed.pop(); }
       if(document.getElementById("gsGrid")){
@@ -5396,6 +5400,7 @@ function drawQrToCanvas(text, canvas, target) {
       if(e.target && e.target.id==="bgSearch"){ bgQuery=e.target.value.trim().toLowerCase(); bgShown=BG_PAGE; const b=$("#bgSearchBox"); if(b) b.classList.toggle("has-q",!!bgQuery); bgRenderGrid(); }
     });
     setInterval(()=>{
+      if(motionOff()) return;
       BG_TILES.forEach(t=>{ t.players=Math.max(1,t.players+Math.floor(Math.random()*7-3)); });
       if(Math.random()<0.75){ bgSeed(); bgFeed.unshift(bgFakeBet()); if(bgFeed.length>40) bgFeed.pop(); }
       if(document.getElementById("bgGrid")){
@@ -5552,21 +5557,25 @@ function drawQrToCanvas(text, canvas, target) {
     }
 
     /* ==================== HERO CAROUSEL ==================== */
+    /* Ambient motion respects the Animations toggle: when html.no-motion is set,
+       decorative JS updates are skipped so the page is fully still. */
+    function motionOff(){ return document.documentElement.classList.contains("no-motion"); }
     let heroIdx=0, heroTimer=null;
     function heroGo(i){
       const slides=$$(".hero-slide"); heroIdx=(i+slides.length)%slides.length;
       slides.forEach((s,k)=>s.classList.toggle("on",k===heroIdx));
       $$(".hero-dot").forEach((d,k)=>d.classList.toggle("on",k===heroIdx));
-      clearInterval(heroTimer); heroTimer=setInterval(()=>heroGo(heroIdx+1),6000);
+      clearInterval(heroTimer); heroTimer=setInterval(()=>{ if(!motionOff()) heroGo(heroIdx+1); },6000);
     }
     $("#heroNext").addEventListener("click",()=>{ heroGo(heroIdx+1); sfx.click(); });
     $("#heroPrev").addEventListener("click",()=>{ heroGo(heroIdx-1); sfx.click(); });
     $$(".hero-dot").forEach(d=>d.addEventListener("click",()=>heroGo(parseInt(d.dataset.slide,10))));
-    heroTimer=setInterval(()=>heroGo(heroIdx+1),6000);
+    heroTimer=setInterval(()=>{ if(!motionOff()) heroGo(heroIdx+1); },6000);
 
     /* ==================== TICKERS & LIVE FEED ==================== */
     let jackpot=1284392.18, online=48213, paid=8412905;
     setInterval(()=>{
+      if(motionOff()) return;
       jackpot+=Math.random()*38+4; paid+=Math.floor(Math.random()*900+80);
       online=Math.max(41000,online+Math.floor(Math.random()*161-78));
       tweenFromLast($("#jackpotVal"),jackpot,fmt$,2600);
@@ -5595,7 +5604,7 @@ function drawQrToCanvas(text, canvas, target) {
       $$("#feedTabs button").forEach(x=>x.classList.toggle("on",x===b));
       state.feedTab=b.dataset.feed; renderFeed(); sfx.click();
     }));
-    setInterval(()=>{ feedRows.unshift(fakeBet()); if(feedRows.length>40) feedRows.pop(); if(state.feedTab!=="mine") renderFeed(); },3400);
+    setInterval(()=>{ if(motionOff()) return; feedRows.unshift(fakeBet()); if(feedRows.length>40) feedRows.pop(); if(state.feedTab!=="mine") renderFeed(); },3400);
 
     /* ==================== GAME SHELL ==================== */
     const BUILDERS={};
