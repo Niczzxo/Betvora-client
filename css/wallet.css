@@ -1,0 +1,130 @@
+/* Betvora — wallet.css
+   Wallet panel, deposit flow (address, QR, timer), withdraw + turnover gate,
+   transaction history. Loaded FIFTH.
+   Split from the single-file build; original cascade order preserved. */
+
+.game-card{background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden;text-align:left;padding:0;width:100%;transition:transform .16s,border-color .16s,box-shadow .16s;display:block}
+
+.addr-box{display:flex;gap:8px;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 12px;align-items:center;margin-bottom:14px}
+
+.addr-box code{flex:1;font-family:"IBM Plex Mono";font-size:12px;word-break:break-all;color:var(--muted)}
+
+.addr-box button{flex:none;font-weight:800;font-size:12.5px;color:var(--green);padding:5px 8px}
+
+.dep-qr-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--gold);border-radius:14px;padding:20px 14px 16px;margin-bottom:14px;box-shadow:0 0 0 1px rgba(245,185,66,.15),0 12px 34px rgba(0,0,0,.28)}
+
+.dep-qr{background:#fff;padding:11px;border-radius:12px;line-height:0;min-width:190px;min-height:190px;display:flex;align-items:center;justify-content:center}
+
+.dep-qr img,.dep-qr canvas,.dep-qr table{display:block}
+
+.dep-net{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+
+.turnover-card{background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin-bottom:15px}
+
+.turnover-card b{font-size:13.5px;color:var(--gold)}
+
+.turnover-card p{margin:5px 0 10px;font-size:13px;font-weight:600;color:var(--muted);line-height:1.5}
+
+.turnover-note{display:block;margin-top:8px;font-size:11.5px;font-weight:600;color:var(--faint)}
+
+.dep-spin{width:17px;height:17px;border-radius:50%;border:3px solid rgba(0,0,0,.25);border-top-color:#06280f;display:inline-block;vertical-align:-3px;margin-right:9px;animation:depRot .8s linear infinite}
+
+html.no-motion .dep-spin{animation:none}
+
+.dep-steps{display:flex;gap:6px;margin-bottom:15px}
+
+.dep-step{flex:1;text-align:center;font-size:11.5px;font-weight:800;letter-spacing:.03em;color:var(--faint);background:var(--bg2);border:1px solid var(--line);border-radius:99px;padding:7px 2px}
+
+.dep-step.on{color:#3d2700;background:linear-gradient(135deg,#ffd97a,var(--gold));border-color:var(--gold)}
+
+.dep-step.done{color:var(--green);border-color:rgba(0,224,101,.45)}
+
+.dep-timer{display:flex;align-items:center;gap:8px;background:rgba(245,185,66,.12);border:1px solid rgba(245,185,66,.5);color:var(--gold);border-radius:99px;padding:6px 14px;font-size:12.5px;font-weight:800}
+
+.dep-timer b{font-size:15px}
+
+.dep-timer.low{background:rgba(255,92,92,.13);border-color:rgba(255,92,92,.55);color:#ff9c9c}
+
+.dep-qr.expired canvas{opacity:.25;filter:grayscale(1)}
+
+.dep-expired{width:100%;text-align:center;background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.45);border-radius:12px;padding:14px}
+
+.dep-expired b{color:#ff9c9c;font-size:14.5px}
+
+.dep-expired p{margin:5px 0 11px;font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.5}
+
+@media (prefers-reduced-motion:reduce){.dep-spin{animation:none}}
+
+.quick-amts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+
+.quick-amts button{flex:1;min-width:70px;padding:11px 4px;border-radius:11px;background:var(--panel3);font-family:"IBM Plex Mono";font-weight:700;font-size:14px}
+
+.quick-amts button:hover{background:var(--panel2)}
+
+.tx-row{display:flex;align-items:center;gap:12px;padding:11px 6px;border-bottom:1px solid var(--line)}
+
+.tx-row:last-child{border-bottom:none}
+
+.tx-row .tx-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none}
+
+.tx-row .tx-ic svg{width:17px;height:17px}
+
+.tx-row b{font-size:14px;display:block}
+
+.tx-row span{font-size:12px;color:var(--faint);font-weight:600}
+
+.tx-row .tx-amt{margin-left:auto;font-family:"IBM Plex Mono";font-weight:700}
+
+.toast{background:var(--panel);border:1px solid var(--line2);border-left:4px solid var(--green);border-radius:13px;padding:13px 16px;box-shadow:var(--shadow);display:flex;gap:11px;align-items:flex-start;animation:toastin .25s ease}
+
+/* ---- 2. Game tiles: logo marks, depth, pro hover ---- */
+      .game-card{border:1px solid rgba(245,185,66,.22)}
+
+/* FIX-A5b: header Wallet button -> gold-outline pill matching .rewards-btn */
+.wallet-pill{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:40px;padding:0 13px;border-radius:var(--r-md,10px);background:rgba(245,185,66,.13);border:1px solid rgba(245,185,66,.45);color:#ffd479;font-weight:800;font-size:13px;flex:none;white-space:nowrap}
+
+.wallet-pill:hover{border-color:var(--gold);background:rgba(245,185,66,.2)}
+
+.game-card,.toast,.turnover-card,.fd-banner,.gs-art,.skel-r13,.skel-strip .skel-tile,.skel-grid .skel-tile{border-radius:var(--r-lg)}
+
+/* FIX-C9: keep the 5 quick-amount chips on one row on small phones */
+@media (max-width:480px){
+  .quick-amts{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .quick-amts button{min-width:0;padding:9px 2px;font-size:12px}
+}
+
+/* ---------- Toast: spring-ish slide-in from bottom-right ---------- */
+/* Overrides the earlier .toast{animation:toastin .25s ease} rule. */
+.toast{animation:toastIn .32s cubic-bezier(.2,.9,.25,1.18)}
+
+/* ================= 2. Cards, tiles & nav items ========================= */
+/* Targets: .game-card (193), .side-item (119), .stat-card (173/621),
+   .promo-card (268), .offer-card (493), .offer-mini (251),
+   .tx-row (785), .av-opt (1061), .bottom-nav button (724) */
+
+/* game tiles: keep the existing -4px lift, tint the glow gold */
+.game-card{
+  transition:transform .18s var(--ease),border-color .18s var(--ease),
+             box-shadow .18s var(--ease);
+}
+
+/* wallet transaction rows: faint gold wash on hover */
+.tx-row{transition:background .15s var(--ease)}
+
+.tx-row:hover{background:rgba(245,185,66,.05)}
+
+.skel-r13{border-radius:13px}
+
+.skel-strip .skel-tile{flex:0 0 172px;aspect-ratio:172/168;border-radius:13px}
+
+@media(max-width:760px){
+  .skel-grid{grid-template-columns:repeat(2,1fr);gap:9px}
+  .skel-strip .skel-tile{flex-basis:146px}
+  .skel-game .skel-stage{border-radius:12px}
+}
+
+/* 3. Countdown timers: tabular numerals so ticking digits never shift the
+   box width. #depTimerTxt is already covered by .mono's tabular-nums;
+   the cashback boxes (#cbH/#cbM/#cbS) were not. Per-second text updates
+   themselves are left untouched — no jumpiness to fix. */
+#depTimerTxt,#cbH,#cbM,#cbS{font-variant-numeric:tabular-nums}

@@ -1,0 +1,576 @@
+/* Betvora — pages.css
+   Profile, promotions, VIP club, leaderboard, auth modal, settings, search,
+   support chat, footer section pages, empty states. Loaded LAST.
+   Split from the single-file build; original cascade order preserved. */
+
+.search{flex:1;max-width:620px;margin:0 auto;position:relative}
+
+.search .s-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:19px;height:19px;color:var(--faint);pointer-events:none;transition:color .15s}
+
+.search input{width:100%;height:46px;border-radius:14px;border:1px solid var(--line2);background:var(--chip);padding:0 78px 0 44px;font-size:14.5px;font-weight:600;outline:none;transition:border-color .15s,box-shadow .15s,background .15s}
+
+.search input::placeholder{color:var(--faint);font-weight:600}
+
+.search input:hover{border-color:var(--muted)}
+
+.search:focus-within .s-icon{color:var(--green)}
+
+.search:focus-within input{border-color:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 24%,transparent),0 10px 28px rgba(0,0,0,.3)}
+
+.search .kbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);min-width:27px;height:27px;padding:0 7px;border-radius:8px;border:1px solid var(--line2);border-bottom-width:2px;background:var(--panel2);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:13.5px;font-weight:700;display:flex;align-items:center;justify-content:center;pointer-events:none}
+
+.search.has-q .kbd{display:none}
+
+.search .clear{position:absolute;right:9px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:8px;display:none;align-items:center;justify-content:center;color:var(--muted);background:var(--panel3)}
+
+.search .clear:hover{color:var(--text)}
+
+.search.has-q .clear{display:flex}
+
+.rewards-btn{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 13px;border-radius:10px;background:rgba(245,185,66,.13);border:1px solid rgba(245,185,66,.45);color:#ffd479;font-family:"Sora";font-weight:800;font-size:13px;position:relative;flex:none}
+
+.rewards-btn:hover{border-color:var(--gold)}
+
+.rewards-btn svg{width:17px;height:17px}
+
+.rewards-badge{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:99px;background:var(--red);color:#fff;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid var(--bg2);font-family:"Manrope";z-index:2}
+
+.rewards-badge.on{display:inline-flex}
+
+.reward-redeem{height:32px;padding:0 12px;font-size:12.5px;margin-left:auto;flex:none;align-self:center;white-space:nowrap}
+
+@media (max-width:560px){ .rewards-btn{padding:0 10px} .rewards-btn .rw-label{display:none} }
+
+.avatar-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--green),#0a8f5c);color:#03170b;font-family:"Sora";font-weight:800;font-size:16px;display:none;align-items:center;justify-content:center;flex:none;border:2px solid var(--line2)}
+
+.auth-btns{display:flex;gap:9px}
+
+aside{width:232px;flex:none;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;padding:18px 12px 28px;border-right:1px solid var(--line)}
+
+.side-item{display:flex;align-items:center;gap:12px;width:100%;padding:10.5px 12px;border-radius:11px;font-weight:700;font-size:14.5px;color:var(--muted);text-align:left;transition:background .13s,color .13s}
+
+/* stats strip */
+      .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+
+.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:15px 17px;display:flex;gap:13px;align-items:center}
+
+.stat-card .ic{width:42px;height:42px;border-radius:11px;background:var(--panel3);display:flex;align-items:center;justify-content:center;flex:none}
+
+/* sections */
+      .sec-head{display:flex;align-items:center;gap:12px;margin:30px 0 15px}
+
+.sec-head h2{font-size:21px;font-weight:700;letter-spacing:-.01em}
+
+.sec-head .live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(0,224,101,.5);animation:pulse 1.8s infinite}
+
+.sec-head .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+.offer-mini{flex:0 0 254px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+
+@media (max-width:920px){
+        .row-strip .game-card{flex-basis:146px}
+        .offer-mini{flex-basis:228px}
+        .cb-in{padding:20px}
+        .cb-right{margin-left:0;text-align:left}
+        .cb-timer{justify-content:flex-start}
+      }
+
+/* promo split */
+      .promo-split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.promo-card{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);min-height:172px;display:flex}
+
+.promo-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+.promo-card .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,11,22,.9) 25%,rgba(4,11,22,.25))}
+
+.promo-card .pc-in{position:relative;z-index:2;padding:22px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;justify-content:center;max-width:330px}
+
+.promo-card h3{color:#fff;font-size:20px}
+
+.promo-card p{color:#c2d2e8;margin:0;font-size:13.5px}
+
+.promo-card .btn{height:36px;font-size:13px;padding:0 15px}
+
+/* tables */
+      .table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+
+.amount-in{flex:1;display:flex;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:0 12px;height:44px;gap:8px;min-width:0}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+
+.bet-board .bb{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:9px 2px;font-family:"IBM Plex Mono";font-weight:700;font-size:13px;text-align:center;transition:border-color .12s,background .12s}
+
+.bet-board .bb{transition:border-color .12s,background .12s,transform .08s}
+
+/* promos / vip */
+      .promo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+
+.promo-big{grid-column:1/-1;min-height:230px}
+
+.promo-big .pc-in{max-width:480px;padding:30px}
+
+.promo-big h3{font-size:27px}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+
+.card h3{font-size:17px;margin-bottom:6px}
+
+.card p{color:var(--muted);margin:0 0 14px;font-size:14px}
+
+.progress{height:10px;border-radius:99px;background:var(--bg2);border:1px solid var(--line);overflow:hidden}
+
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--green-d),var(--green));border-radius:99px;transition:width .6s ease}
+
+.progress.gold i{background:linear-gradient(90deg,#c78f12,var(--gold))}
+
+.vip-tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+
+/* my bets */
+      .my-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+
+.pay-logos{display:flex;align-items:center;gap:34px;flex-wrap:wrap}
+
+.stat-card{transition:transform .18s ease,border-color .18s ease}
+
+/* ---------- Section pages (footer destinations) ---------- */
+      .sec-hero{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--panel)}
+
+.sec-hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+.sec-hero .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,11,22,.93) 32%,rgba(4,11,22,.48) 68%,rgba(4,11,22,.14))}
+
+.sec-hero.noimg{background:linear-gradient(120deg,var(--panel2),var(--panel) 58%,color-mix(in srgb,var(--gold) 13%, var(--panel)))}
+
+.sec-hero.noimg .shade{display:none}
+
+.sec-hero-in{position:relative;z-index:2;padding:28px 30px;max-width:660px;display:flex;flex-direction:column;gap:11px;align-items:flex-start}
+
+.sec-hero h2{font-size:clamp(25px,3.2vw,36px);font-weight:800;letter-spacing:-.02em;color:#fff}
+
+.sec-hero.noimg h2{color:var(--text)}
+
+.sec-hero p{color:#c2d2e8;margin:0;font-size:15px;max-width:54ch}
+
+.sec-hero.noimg p{color:var(--muted)}
+
+.sec-hero-cta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:5px}
+
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+.auth-alt{text-align:center;color:var(--muted);font-size:13.5px;margin-top:15px}
+
+.auth-alt button{color:var(--green);font-weight:800}
+
+.set-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+
+.set-row:last-child{border-bottom:none}
+
+.set-row b{font-size:14.5px;display:block}
+
+.set-row span{font-size:12.5px;color:var(--muted);display:block}
+
+.switch{margin-left:auto;width:48px;height:27px;border-radius:99px;background:var(--panel3);position:relative;flex:none;transition:background .15s}
+
+.switch i{position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:left .15s}
+
+.switch.on{background:var(--green)}
+
+.switch.on i{left:24px}
+
+/* toasts */
+      #toasts{position:fixed;bottom:22px;right:18px;z-index:200;display:flex;flex-direction:column;gap:9px;max-width:min(360px,calc(100vw - 30px))}
+
+/* ---------- Guest / member visibility ---------- */
+      body[data-auth="guest"] [data-member]{display:none!important}
+
+body[data-auth="user"] [data-guest]{display:none!important}
+
+.rb-perks{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;max-width:640px}
+
+.rb-perk{display:inline-flex;align-items:center;gap:7px;background:rgba(245,185,66,.12);border:1px solid rgba(245,185,66,.35);color:#ffe1a1;font-size:12.5px;font-weight:700;padding:6px 11px;border-radius:99px}
+
+.rb-perk svg{width:14px;height:14px;flex:none;color:var(--gold)}
+
+/* ---------- Profile ---------- */
+      .prof-head{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+
+.prof-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--green),#0a8f5c);color:#03170b;font-family:"Sora";font-weight:800;font-size:32px;display:flex;align-items:center;justify-content:center;flex:none;border:3px solid var(--line2)}
+
+.prof-head h2{font-size:24px;font-weight:800;letter-spacing:-.01em}
+
+.prof-head .prof-sub{color:var(--muted);font-size:13.5px;font-weight:600}
+
+.prof-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,185,66,.14);border:1px solid rgba(245,185,66,.45);color:var(--gold);font-size:11.5px;font-weight:800;padding:4px 11px;border-radius:99px;letter-spacing:.04em}
+
+.prof-badge i{width:7px;height:7px;border-radius:50%;background:var(--green);display:block}
+
+.prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+
+.prof-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+
+@media (max-width:920px){ .prof-grid{grid-template-columns:1fr} .kv-row small{width:104px} }
+
+@media (max-width:1180px){
+        .games-grid{grid-template-columns:repeat(3,1fr)}
+        .feat-grid{grid-template-columns:repeat(2,1fr)}
+        .offer-grid{grid-template-columns:repeat(2,1fr)}
+        .vip-tiers{grid-template-columns:repeat(2,1fr)}
+        .stats-strip{grid-template-columns:repeat(2,1fr)}
+        .my-stats{grid-template-columns:repeat(2,1fr)}
+        .foot-in{grid-template-columns:repeat(3,1fr)}
+        .foot-brand{grid-column:1/-1}
+      }
+
+@media (max-width:920px){
+        aside{display:none;position:fixed;left:0;top:0;bottom:0;height:100dvh;width:262px;background:var(--bg2);z-index:90;border-right:1px solid var(--line2);padding-top:14px}
+        aside.open{display:block;box-shadow:var(--shadow);animation:drawer .25s ease}
+        @keyframes drawer{from{transform:translateX(-30px);opacity:0}to{transform:none;opacity:1}}
+        .burger{display:flex}
+        body[data-auth="user"] .header-in{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px}
+        body[data-auth="user"] .search{display:block;order:5;flex:1 1 100%;max-width:none;margin:2px 0 0}
+        .game-layout{grid-template-columns:1fr}
+        .promo-split,.promo-grid,.offer-grid{grid-template-columns:1fr}
+        .feat-grid{grid-template-columns:1fr}
+        .sec-hero-in{padding:22px 20px}
+        .fx-odds{margin-left:0}
+        .fx-meta{min-width:96px}
+        .bottom-nav{display:flex}
+        main{padding:16px 14px 96px}
+        .foot-rg-in{padding-bottom:112px}
+        .hero-content{padding:26px 22px 30px;min-height:300px}
+        .hero{min-height:300px}
+        .hero-nav{top:12px;bottom:auto;right:12px}
+        .hero-arrow{display:none}
+        .stat-card{padding:11px 13px}
+        .stat-card b{font-size:16.5px}
+        .sec-head{margin-top:22px}
+        .pills{flex-wrap:nowrap}
+        .pill{padding:7px 11px;font-size:12.5px}
+        .col-time,.col-mult{display:none}
+        #toasts{bottom:88px}
+        .auth-btns .btn-ghost{display:none}
+      }
+
+@media (max-width:560px){
+        .games-grid{grid-template-columns:repeat(2,1fr);gap:9px}
+        .vip-tiers{grid-template-columns:1fr}
+        header .logo-name{display:none}
+        #soundBtn{display:none}
+        #walletBtn{display:none}
+        .balance-pill .bal{padding:0 9px;font-size:13.5px}
+        .btn{padding:0 13px}
+        .dice-result .big{font-size:56px}
+        .crash-center .cm{font-size:42px}
+        #plinkoCanvas{height:360px}
+        .bet-board{grid-template-columns:24px repeat(12,1fr);gap:3.5px}
+        .bet-board .bb{font-size:10.5px;padding:7px 0}
+        .stats-strip{grid-template-columns:1fr 1fr}
+        th{padding:11px 9px}
+        td{padding:10px 9px;font-size:12.5px}
+        .sec-head{flex-wrap:wrap}
+        .foot-in{grid-template-columns:1fr 1fr;gap:24px 18px}
+        .foot-social{gap:20px}
+        .pay-logos{gap:20px}
+        .pay-name{font-size:17px}
+        .fx{margin-left:0}
+        .foot-rg-in{gap:18px}
+      }
+
+@media (min-width:921px){
+        aside{transition:width .32s cubic-bezier(.25,.8,.25,1),padding .32s cubic-bezier(.25,.8,.25,1)}
+        body.side-mini aside{width:66px;padding-left:8px;padding-right:8px}
+        body.side-mini .side-top{justify-content:center;padding-left:0;padding-right:0}
+        body.side-mini .side-top-label{display:none}
+        body.side-mini .side-item{justify-content:center;gap:0;font-size:0;padding:11px 0}
+        body.side-mini .side-item .tag{display:none}
+        body.side-mini .side-label{display:none}
+        body.side-mini .guest-cta,body.side-mini .side-promo{display:none}
+      }
+
+/* ---------- Leaderboard ---------- */
+      .lb-you{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px;border-color:rgba(0,224,101,.45);background:linear-gradient(90deg,rgba(0,224,101,.08),var(--panel) 58%)}
+
+.lb-you-rank{font-family:"Sora";font-size:30px;font-weight:800;color:var(--green);line-height:1}
+
+.lb-you-name{font-family:"Sora";font-size:16.5px;display:block}
+
+.lb-you-sub{display:block;color:var(--muted);font-size:12.5px;font-weight:600}
+
+.lb-you-stats{margin-left:auto;display:flex;gap:28px}
+
+.lb-you-stats small{display:block;color:var(--faint);font-weight:800;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase}
+
+.lb-you-stats b{font-size:16px}
+
+.lb-guest{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;border-color:rgba(245,185,66,.42)}
+
+.lb-guest b{font-family:"Sora";font-size:15.5px;display:block}
+
+.lb-guest span{display:block;color:var(--muted);font-size:13px;font-weight:600}
+
+.lb-podium{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+.pod-stat{display:block;font-size:19px;font-weight:700;color:var(--green);margin-top:5px}
+
+.pod-stat small{font-size:12px;color:var(--muted);font-family:"Manrope";font-weight:700}
+
+.pod-card.r1 .pod-stat{color:var(--gold)}
+
+.lb-move{font-size:11px;font-weight:800;min-width:24px}
+
+.lb-move.up{color:var(--green)}
+
+.lb-move.dn{color:var(--red)}
+
+.lb-move.eq{color:var(--faint)}
+
+tr.lb-you-row td{background:rgba(0,224,101,.07)}
+
+@media (max-width:640px){ .lb-podium{grid-template-columns:1fr} .lb-you-stats{margin-left:0} }
+
+/* ==================== BETVORA PRO VISUAL POLISH (2026-10-18) ==================== */
+      /* ---- 1. Sidebar: gold-on-dark pro icon set ---- */
+      .side-item{position:relative;overflow:hidden}
+
+body.side-mini .side-item{justify-content:center}
+
+.avatar-btn{overflow:hidden;padding:0}
+
+.prof-avatar{overflow:hidden;padding:0}
+
+.lb-you-av{display:flex}
+
+.av-picker-wrap{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+
+.av-picker-wrap h3{font-size:15px;margin-bottom:4px}
+
+.av-picker-sub{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+
+.av-picker{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+
+@media (max-width:560px){.av-picker{grid-template-columns:repeat(4,1fr)}}
+
+/* FIX-A8: keep the stat label (e.g. "Paid Out (24h)") on one line at small phones */
+@media (max-width:480px){
+  .stats-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-card{min-width:0;padding:12px}
+  .stat-card .ic{width:36px;height:36px}
+  .stat-card small{display:block;white-space:nowrap;font-size:10.5px;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis}
+}
+
+.search input,.drop,.side-promo,.dep-qr-wrap,.guest-cta,.av-opt,.gs-search input,.gh-wrap,.limbo-scene,.limbo-track,.bs-arena,.stat-card{border-radius:var(--r-lg)}
+
+.offer-mini{border-radius:var(--r-lg)}
+
+.cb-banner,.reg-banner,.sec-hero,.vp-cab,.mo-grid,.reels{border-radius:var(--r-xl)}
+
+.balance-pill,.btn,.side-item,.stat-card .ic,.cb-box,.tabs,.amount-in,.mini-btn,.seg,.stat-box,.offer-mini .o-ic,.foot-note,.addr-box,.quick-amts button,.fd-banner .fd-ic,.err-msg,.tx-row .tx-ic,.side-toggle{border-radius:var(--r-md)}
+
+.icon-btn,.rewards-btn,.drop-item,.back-btn,.burger{border-radius:var(--r-md)}
+
+.logo-img,.drop-item .di-ic,.row-head .r-ic,.modal-x,.bet-board .bb,.hero-arrow{border-radius:var(--r-md)}
+
+/* FIX-C2: leaderboard 5-col table scrolls inside its card on narrow screens */
+#view-leaderboard .table-wrap{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+
+#view-leaderboard .table-wrap table{min-width:560px}
+
+/* FIX-C8: uniform 3-column payment logo grid on small phones */
+@media (max-width:480px){
+  .pay-logos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+  .pay-logo{justify-content:center;gap:6px}
+  .pay-logo svg{height:22px}
+  .pay-name{font-size:13px}
+}
+
+/* FIX-C11a: per-notification dismiss */
+.notif-x{margin-left:auto;flex:none;width:26px;height:26px;border-radius:8px;color:var(--faint);font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center}
+
+.notif-x:hover{background:var(--panel3);color:var(--text)}
+
+/* FIX-C15: keep toasts narrow on small phones so they don't cover the tickers */
+@media (max-width:480px){
+  #toasts{max-width:270px}
+}
+
+@media (max-width:920px){
+  aside.open{animation:drawer .3s cubic-bezier(.2,.9,.3,1)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .view.active,
+  .overlay.open,
+  .overlay.open .modal,
+  .overlay.closing .modal,
+  .toast,
+  aside.open,
+  .scrim.on{animation:none!important}
+  .toast.out{transition:none!important}
+}
+
+/* ================= 1. Buttons ========================================== */
+/* Targets: .action-btn (318), .mini-btn (313), .btn + .btn-green/.btn-ghost
+   (78-83), .view-all (220), .chip-pick button (372), .tabs button (291),
+   .coin-opt (740), .rewards-btn (91), .side-toggle (937), .search .clear (71) */
+
+/* unify transitions on the single brand curve */
+.action-btn,.mini-btn,.btn,.view-all,.chip-pick button,.tabs button,
+.coin-opt,.rewards-btn,.side-toggle,.av-opt{
+  transition:transform .16s var(--ease),box-shadow .16s var(--ease),
+             background .16s var(--ease),background-color .16s var(--ease),
+             border-color .16s var(--ease),color .16s var(--ease),
+             filter .16s var(--ease);
+}
+
+.rewards-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(245,185,66,.22);
+}
+
+.search .clear:active{transform:translateY(-50%) scale(.92)}
+
+/* sidebar nav: smooth glow on hover, gold aura on the active item */
+.side-item{
+  transition:background .16s var(--ease),color .16s var(--ease),
+             box-shadow .16s var(--ease);
+}
+
+/* stat cards: gold-tinted hover to match the tiles */
+.stat-card{
+  transition:transform .18s var(--ease),border-color .18s var(--ease),
+             box-shadow .18s var(--ease);
+}
+
+/* promo / offer cards: they had no hover — give them lift + gold glow */
+.promo-card,.offer-card,.offer-mini{
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease),
+             border-color .2s var(--ease);
+}
+
+.promo-card:hover,.offer-card:hover,.offer-mini:hover{
+  transform:translateY(-3px);
+  border-color:rgba(245,185,66,.4);
+  box-shadow:0 16px 40px rgba(0,0,0,.45),var(--glow-gold);
+}
+
+/* ================= 3. Toggle switches ================================== */
+/* Targets: .switch markup (button.switch > i) at lines 796-799,
+   instances #soundSwitch / #animSwitch (2823-2824).
+   No JS needed: existing bindSwitch() (~line 4797) already toggles .on
+   and aria-checked. We only smooth the motion: knob slide + track color. */
+.switch{
+  transition:background .22s var(--ease),box-shadow .22s var(--ease);
+  cursor:pointer;
+}
+
+.switch i{
+  transition:left .24s var(--ease),transform .15s var(--ease),
+             box-shadow .2s var(--ease);
+  box-shadow:0 2px 5px rgba(0,0,0,.45);      /* knob elevation */
+}
+
+.switch.on{
+  background:var(--green);
+  box-shadow:0 0 0 3px rgba(0,224,101,.16),0 3px 12px rgba(0,224,101,.3);
+}
+
+.switch:active i{transform:scale(1.12)}
+
+/* press squish on the knob */
+
+/* ================= 4. Inputs =========================================== */
+/* Targets: .amount-in (310-311) bet inputs, .search input (62-68),
+   plus generic text-ish inputs for forms (auth, wallet, settings) */
+
+/* bet amount field: gold focus glow on the wrapper */
+.amount-in{
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease);
+}
+
+/* wrapper already rings */
+
+/* search box: gold focus treatment (per polish spec) */
+.search input{
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease),
+             background .18s var(--ease);
+}
+
+.search:focus-within .s-icon{color:var(--gold)}
+
+.search:focus-within input{
+  border-color:var(--gold);
+  box-shadow:var(--ring),0 10px 28px rgba(0,0,0,.3);
+}
+
+/* generic inputs / selects / textareas */
+input[type="text"],input[type="number"],input[type="email"],
+input[type="password"],input[type="tel"],input[type="search"],
+textarea,select{
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease);
+}
+
+/* ============================================================
+   Betvora — designed empty states (polish pass)
+   INSERT: paste this whole block right before line 1073's style close,
+   after the skeletons.css block.
+   Presentation only. Fully readable with animations off.
+   390px mobile safe.
+   ============================================================ */
+
+.empty-state{
+  text-align:center;
+  padding:34px 18px;
+  max-width:360px;
+  margin:0 auto;
+  color:var(--muted);
+}
+
+.empty-state h3{
+  margin:0 0 8px;
+  font-size:17px;font-weight:700;
+  color:var(--text);
+  letter-spacing:.1px;
+}
+
+.empty-state p{
+  margin:0;
+  font-size:13.5px;line-height:1.55;
+  color:var(--muted);
+}
+
+.empty-state .btn{margin-top:16px}
+
+/* inside table cells (my bets, profile bets, live feed) */
+td .empty-state,
+.empty-row td .empty-state{padding:14px 10px;max-width:420px}
+
+/* inside the notifications dropdown */
+#notifList .empty-state{padding:26px 16px}
+
+/* inside tx lists */
+.tx-list .empty-state{padding:26px 14px}
+
+/* ---------- 390px: keep illustration + text comfortably inside ---------- */
+@media(max-width:420px){
+  .empty-state{padding:28px 12px}
+  .empty-state h3{font-size:16px}
+  .empty-state p{font-size:13px}
+}
+
+/* ===== shared: game header + chip fx + dust ===== */
+.gh-wrap{display:flex;align-items:center;gap:16px;padding:14px 18px;margin-bottom:14px;border-radius:14px;background:linear-gradient(135deg,rgba(24,32,24,.88),rgba(10,14,10,.92));border:1px solid rgba(255,212,121,.3);box-shadow:0 6px 22px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,212,121,.14);position:relative;overflow:hidden}
+
+@media(max-width:640px){.gh-name{font-size:20px}.gh-medal{width:52px;height:52px}.gh-medal svg{width:32px;height:32px}.gh-wrap{padding:12px 14px;gap:12px}}
+
+/* ===== newgame: videopoker ===== */
+.vp-cab{position:relative;max-width:540px;margin:0 auto;background:linear-gradient(180deg,#241419 0%,#120a0e 60%,#0b0609 100%);border:2px solid #8a6a2f;border-radius:18px;padding:14px;box-shadow:0 14px 34px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,212,121,.2)}
+
+/* ===== newgame: moles ===== */
+.mo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto;width:100%;padding:18px;border-radius:18px;
+ background:
+  radial-gradient(ellipse at 20% 8%,rgba(120,180,80,.14),transparent 52%),
+  radial-gradient(ellipse at 85% 90%,rgba(120,180,80,.10),transparent 50%),
+  repeating-linear-gradient(45deg,rgba(0,0,0,.12) 0 3px,transparent 3px 7px),
+  linear-gradient(160deg,#2e3a1e,#1a2212 60%,#12170c);
+ border:1px solid rgba(150,200,110,.25);box-shadow:inset 0 0 30px rgba(0,0,0,.55)}
