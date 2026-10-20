@@ -33,7 +33,13 @@ Betvora-client/
 │   ├── games-data.js   # Shared game shell: BUILDERS registry (loads BEFORE games/)
 │   ├── games/
 │   │   ├── games-1.js  # 26 newer game builders (BUILDERS.*)
-│   │   └── games-2.js  # 6 original game builders (dice, crash, roulette, plinko, mines, slots)
+│   │   ├── games-2.js  # 6 original game builders (dice, crash, roulette, plinko, mines, slots)
+│   │   ├── games-3.js  # GAMES42 additions I: card & table games (Dragon Tiger, Teen Patti,
+│   │   │               # Andar Bahar, Casino War, Red Dog, Texas Hold'em, Hold'em Table,
+│   │   │               # Three Card Poker, Caribbean Stud, Pai Gow, Sic Bo, Lucky 7, Scratch Cards)
+│   │   └── games-4.js  # GAMES42 additions II: slots & variants (Fruit/Mythic/Gemstone/Adventure
+│                       # Slots, Baccarat Speed, Blackjack Classic, European/American Roulette,
+│                       # Plinko Neon, Mines Gold, Crash Rocket, Limbo Turbo, Keno Deluxe, Mega Wheel)
 │   └── init.js         # Boot sequence  (loads LAST)
 └── README.md
 ```

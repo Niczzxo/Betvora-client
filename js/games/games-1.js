@@ -2746,7 +2746,7 @@ BUILDERS.wheel=function(mount){
       retriggerView($("#view-game"));
       $$("#sidebar .side-item[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav==="game:"+id));
       $$(".bottom-nav button[data-bnav]").forEach(b=>b.classList.remove("on"));
-      $("#gameTitle").textContent=GAMES[id].name;
+      $("#gameTitle").innerHTML=gameLogoLockup(id);
       $("#gameSub").textContent="Betvora Original · "+GAMES[id].rtp+" · Provably Fair";
       $("#gameMount").innerHTML="";
       Skel.mountSkel($("#gameMount"));

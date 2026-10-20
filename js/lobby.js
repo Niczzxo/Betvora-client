@@ -430,11 +430,13 @@
       plinko:{title:"Plinko",tiles:[{game:"plinko"},{v:{n:"Plinko X",h:50},parent:"plinko"},{v:{n:"Turbo Plinko",h:130},parent:"plinko"},{v:{n:"Plinko Rush",h:210},parent:"plinko"},{v:{n:"Plinko Aztec",h:300},parent:"plinko"}]},
       mines:{title:"Mines",tiles:[{game:"mines"},{v:{n:"Mines Gold",h:40},parent:"mines"},{v:{n:"Turbo Mines",h:160},parent:"mines"},{v:{n:"Minesweeper",h:240},parent:"mines"},{v:{n:"Mine Gems",h:320},parent:"mines"}]},
       crash:{title:"Crash Games",tiles:[{game:"crash"},{v:{n:"Crash X",h:60},parent:"crash"},{v:{n:"Turbo Crash",h:150},parent:"crash"},{v:{n:"Jet Crash",h:230},parent:"crash"},{v:{n:"Sky Rocket",h:310},parent:"crash"}]},
-      more:{title:"More Games",tiles:[{game:"dice"},{game:"roulette"},{game:"slots"},{game:"keno"},{game:"hilo"},{game:"limbo"},{game:"wheel"}]}
+      more:{title:"More Games",tiles:[{game:"dice"},{game:"roulette"},{game:"slots"},{game:"keno"},{game:"hilo"},{game:"limbo"},{game:"wheel"}]},
+      new42:{title:"New Games",tiles:[{game:"dragontiger"},{game:"teenpatti"},{game:"andarbahar"},{game:"war"},{game:"reddog"},{game:"texasholdem"},{game:"holdemtable"},{game:"threecardpoker"},{game:"caribbeanstud"},{game:"paigow"},{game:"sicbo"},{game:"lucky7"},{game:"scratchcards"},{game:"fruitslots"},{game:"mythicslots"},{game:"gemstoneslots"},{game:"adventureslots"},{game:"baccaratspeed"},{game:"blackjackclassic"},{game:"europeanroulette"},{game:"americanroulette"},{game:"plinkoneon"},{game:"minesgold"},{game:"crashrocket"},{game:"limboturbo"},{game:"kenodeluxe"},{game:"megawheel"}]}
     };
     const LOBBY_ROWS=[
       {key:"popular",icon:ROW_ICON.flame,title:"Most Popular"},
       {key:"originals",icon:ROW_ICON.star,title:"Betvora Originals",green:true},
+      {key:"new42",icon:ROW_ICON.grid,title:"New Games",green:true},
       {key:"plinko",icon:ROW_ICON.dots,title:"Plinko"},
       "BANNER",
       {key:"mines",icon:ROW_ICON.gem,title:"Mines"},
