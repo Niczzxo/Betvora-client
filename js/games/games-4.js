@@ -1225,7 +1225,7 @@ BUILDERS.plinkoneon=function(mount){
       ctx.beginPath();ctx.arc(b.x-2.4,b.y-2.4,3,0,7);ctx.fillStyle="rgba(255,255,255,.85)";ctx.fill();
     }
   }
-  function sizeCanvas(){cv.width=cv.clientWidth||600;cv.height=430;drawBoard()}
+  function sizeCanvas(){var w=Math.max(1,Math.round(cv.getBoundingClientRect().width||cv.clientWidth||600));var h=Math.max(280,Math.round(cv.getBoundingClientRect().height||430));if(cv.width!==w)cv.width=w;if(cv.height!==h)cv.height=h;drawBoard()}
   function loop(){
     var m=metrics(),alive=false,i,b;
     for(i=0;i<flashes.length;i++)flashes[i].age++;
@@ -1271,6 +1271,8 @@ BUILDERS.plinkoneon=function(mount){
   for(var k=0;k<rowBtns.length;k++){rowBtns[k].addEventListener("click",function(){rows=parseInt(this.getAttribute("data-rows"),10);for(var i=0;i<rowBtns.length;i++)rowBtns[i].classList.toggle("on",rowBtns[i]===this);balls=[];paintSlots();drawBoard();sfx.click()})}
   $("#plinkoneonDrop").addEventListener("click",drop);
   paintSlots();sizeCanvas();
+  if(typeof ResizeObserver!=="undefined"){var plinkoNeonRO=new ResizeObserver(function(){sizeCanvas()});plinkoNeonRO.observe(cv);onCleanup(function(){plinkoNeonRO.disconnect()})}
+  else window.addEventListener("resize",sizeCanvas);
   onCleanup(function(){if(raf)cancelAnimationFrame(raf);raf=null});
   addDust($("#plinkoneonStage"),10);
 };
@@ -1414,8 +1416,8 @@ BUILDERS.crashrocket=function(mount){
     +'<li>If the rocket bursts before you cash out, the bet is lost. Optional auto-cashout bails automatically at your chosen multiplier.</li>'
     +'</ul></div></div>'
     +'<div class="stage cr-stage" id="crashrocketStage">'+gameHeaderHtml('crashrocket')
-    +'<div class="cr-sky" id="crashrocketSky">'+stars+'<div class="cr-rocket" id="crashrocketRocket">'+rocketSvg+'</div></div>'
-    +'<div class="cr-alt"><div class="cr-big" id="crashrocketMult">1.00×</div></div>'
+    +'<div class="cr-sky" id="crashrocketSky">'+stars+'<div class="cr-rocket" id="crashrocketRocket">'+rocketSvg+'</div>'
+    +'<div class="cr-alt"><div class="cr-big" id="crashrocketMult">1.00×</div></div></div>'
     +'<div class="cr-state" id="crashrocketState">Place a bet to launch</div>'
     +'</div></div>';
   wireAmount("crashrocketBet");
@@ -1462,7 +1464,7 @@ BUILDERS.crashrocket=function(mount){
     charge(bet);myBet=bet;totalBet=bet;cashedOut=false;crashPt=genCrash();autoAt=parseFloat($("#crashrocketAuto").value)||0;
     $("#crashrocketMyBet").textContent=fmt$(bet);$("#crashrocketCashVal").textContent=fmt$(bet);
     var cm=$("#crashrocketMult");cm.classList.remove("crashed","warm","hot");cm.textContent="1.00×";
-    var rock=$("#crashrocketRocket");rock.classList.remove("cr-shake");rock.style.opacity="1";rock.style.bottom="4%";
+    var rock=$("#crashrocketRocket");rock.classList.remove("cr-shake");rock.style.opacity="1";rock.style.left="8%";rock.style.bottom="4%";rock.style.transform="translateX(-50%) rotate(38deg)";
     var sky=$("#crashrocketSky");sky.style.background="linear-gradient(180deg,#1e2a5a 0%,#0b1030 60%,#05070f 100%)";
     var btn=$("#crashrocketBtn");btn.textContent="Cash Out";btn.classList.add("cashout");
     running=true;startedAt=performance.now();
@@ -1474,7 +1476,9 @@ BUILDERS.crashrocket=function(mount){
       cm.textContent=m.toFixed(2)+"×";
       cm.classList.toggle("warm",m>=2&&m<5);
       cm.classList.toggle("hot",m>=5);
-      var altPct=Math.min(82,4+Math.log(Math.max(m,1))*22);
+      var logM=Math.log(Math.max(m,1));
+      var altPct=Math.min(70,4+logM*13);
+      rock.style.left=(8+Math.min(70,logM*13))+"%";
       rock.style.bottom=altPct+"%";
       var dark=Math.min(70,Math.log(Math.max(m,1))*16);
       sky.style.background="linear-gradient(180deg, rgb("+(30-dark*0.35)+","+(42-dark*0.5)+","+(90-dark)+") 0%, #0b1030 60%, #05070f 100%)";

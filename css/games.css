@@ -1642,14 +1642,15 @@ html.no-motion .rays-on .bjc-rays{animation:none!important}
 .mg-bankbtn{margin-top:12px;width:100%}
 /* ===== crashrocket ===== */
 .cr-stage{background:linear-gradient(180deg,#05070f,#0b1030 55%,#1a0f2e);padding:16px 14px;overflow:hidden;transition:background .6s}
-.cr-sky{position:relative;height:340px;max-width:360px;margin:0 auto;overflow:hidden;border-radius:14px;background:linear-gradient(180deg,#1e2a5a 0%,#0b1030 60%,#05070f 100%)}
+.cr-sky{position:relative;width:100%;height:clamp(360px,54vh,540px);max-width:none;margin:0 auto;overflow:hidden;border-radius:14px;background:linear-gradient(180deg,#1e2a5a 0%,#0b1030 60%,#05070f 100%);border:1px solid rgba(255,212,121,.18);background-image:linear-gradient(rgba(130,160,220,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(130,160,220,.07) 1px,transparent 1px),linear-gradient(180deg,#1e2a5a 0%,#0b1030 60%,#05070f 100%);background-size:42px 42px,42px 42px,auto}
 .cr-star{position:absolute;background:#fff;border-radius:50%;opacity:.85}
-.cr-rocket{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);width:54px;transition:none;z-index:3}
+.cr-rocket{position:absolute;left:8%;bottom:4%;transform:translateX(-50%) rotate(38deg);width:clamp(48px,5vw,68px);transition:left .12s linear,bottom .12s linear;z-index:3;filter:drop-shadow(0 0 10px rgba(255,154,60,.35))}
+.cr-rocket svg{display:block;width:100%;height:auto;overflow:visible}
 .cr-rocket.cr-shake{animation:crShake .45s ease}
-@keyframes crShake{0%,100%{transform:translateX(-50%)}20%{transform:translateX(-62%) rotate(-7deg)}45%{transform:translateX(-38%) rotate(6deg)}70%{transform:translateX(-58%) rotate(-4deg)}}
+@keyframes crShake{0%,100%{transform:translateX(-50%) rotate(38deg)}20%{transform:translateX(-62%) rotate(28deg)}45%{transform:translateX(-38%) rotate(48deg)}70%{transform:translateX(-58%) rotate(32deg)}}
 .cr-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:#ffb35c;pointer-events:none;z-index:2}
-.cr-alt{text-align:center;margin-top:12px}
-.cr-alt .cr-big{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:46px;font-weight:900;color:#7df0ab;line-height:1}
+.cr-alt{position:absolute;left:0;right:0;top:42%;margin:0;text-align:center;z-index:2;pointer-events:none}
+.cr-alt .cr-big{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:clamp(42px,6vw,76px);font-weight:900;color:#e8ecf2;line-height:1;text-shadow:0 4px 22px rgba(0,0,0,.45)}
 .cr-alt .cr-big.warm{color:#ffd479}.cr-alt .cr-big.hot{color:#ff9a3c}.cr-alt .cr-big.crashed{color:#ff5c5c}
 .cr-state{text-align:center;color:#9fb3d9;font-weight:700;margin-top:6px;min-height:20px}
 .cr-cashbtn{margin-top:10px}
@@ -1715,3 +1716,75 @@ html.no-motion .rays-on .bjc-rays{animation:none!important}
 .gt-logo .gl-medal{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#2b3d2b,#0c110c);border:2px solid #ffd479;box-shadow:0 0 12px rgba(255,212,121,.35);flex:none}
 .gt-logo .gl-medal svg{width:25px;height:25px}
 @media(max-width:640px){.gh-art{height:78px}.gh-logo .gh-medal{left:12px;width:56px;height:56px}.gh-logo .gh-medal svg{width:34px;height:34px}.gh-logo .gh-badges{right:10px;bottom:9px}.gt-logo .gl-art{width:76px;height:46px}.gt-logo .gl-medal{width:34px;height:34px}.gt-logo .gl-medal svg{width:21px;height:21px}}
+
+
+/* ===== Global game-layout and animation alignment pass (all games) ===== */
+.game-layout{grid-template-columns:minmax(270px,308px) minmax(0,1fr);gap:16px;align-items:stretch;width:100%;min-width:0}
+.game-layout>*{min-width:0;max-width:100%;box-sizing:border-box}
+.game-layout .panel{min-width:0;align-self:start}
+.game-layout .stage{min-width:0;width:100%;max-width:100%;box-sizing:border-box;isolation:isolate}
+.game-layout .stage>*{min-width:0;max-width:100%}
+.game-layout .stage canvas{max-width:100%;display:block}
+.game-layout .stage img,.game-layout .stage svg{max-width:100%}
+.game-layout .stage [style*="position:absolute"]{box-sizing:border-box}
+
+/* Compact, consistent header: artwork is no longer stretched into a wide banner. */
+.gh-wrap.gh-logo{position:relative;display:grid;grid-template-columns:104px minmax(0,1fr) 48px;align-items:center;gap:14px;min-height:82px;margin:0 0 16px;padding:10px 12px;border:1px solid rgba(245,185,66,.28);border-radius:14px;overflow:hidden;background:linear-gradient(110deg,rgba(245,185,66,.08),rgba(0,224,101,.035) 45%,rgba(4,10,20,.2));}
+.gh-wrap.gh-logo::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 0 50%,rgba(245,185,66,.09),transparent 48%);pointer-events:none}
+.gh-logo .gh-art{position:relative;width:104px;height:60px;min-width:0;border-radius:9px;overflow:hidden;border:1px solid rgba(245,185,66,.22);background:rgba(5,12,22,.6);display:flex;align-items:center;justify-content:center}
+.gh-logo .gh-art img,.gh-logo .gh-art svg{width:100%;height:100%;display:block;object-fit:contain;object-position:center;background:transparent}
+.gh-logo .gh-art .gh-shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,8,6,.18),transparent 70%);pointer-events:none}
+.gh-logo .gh-copy{position:relative;z-index:1;min-width:0}
+.gh-logo .gh-name{font-family:Sora,Arial,sans-serif;font-size:clamp(17px,1.7vw,23px);font-weight:800;line-height:1.2;color:var(--text);letter-spacing:-.02em;overflow-wrap:anywhere}
+.gh-logo .gh-badges{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:7px}
+.gh-logo .gh-sub{font-size:11px;line-height:1.3;color:var(--muted);font-weight:700}
+.gh-logo .gh-rtp{font-size:10px;padding:4px 8px;white-space:nowrap}
+.gh-logo .gh-live{font-size:10px;padding:4px 8px;white-space:nowrap}
+.gh-logo .gh-medal{position:relative;left:auto;top:auto;transform:none;width:46px;height:46px;justify-self:end;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#2b3d2b,#0c110c);border:1.5px solid #ffd479;box-shadow:0 0 14px rgba(255,212,121,.2);z-index:1}
+.gh-logo .gh-medal svg{width:27px;height:27px;max-width:80%}
+
+/* Keep animated playfields inside their own stage and avoid clipping at narrow widths. */
+#crashCanvas{width:100%;height:clamp(280px,34vw,420px);min-height:260px;display:block}
+.crash-wrap{position:relative;flex:1 1 auto;min-width:0;width:100%;min-height:260px;overflow:hidden}
+.crash-center{z-index:2;inset:0;min-width:0;padding:12px}
+#plinkoCanvas,#plinkoneonCanvas{width:100%;height:clamp(340px,38vw,460px);min-height:320px;display:block}
+.wheel-box{width:min(360px,100%);max-width:100%}
+.slots-machine,.frt-cabinet,.dice-result,.mines-grid,.bet-board,.keno-grid,.er-board,.ar-board,.dt-board{min-width:0;max-width:100%}
+.stage .gh-wrap{flex:0 0 auto}
+.stage .gh-medal{flex-shrink:0}
+
+@media(max-width:1100px){
+ .game-layout{grid-template-columns:minmax(245px,285px) minmax(0,1fr);gap:12px}
+ .game-layout .stage{padding:16px}
+ .gh-wrap.gh-logo{grid-template-columns:86px minmax(0,1fr) 42px;gap:10px;min-height:74px;padding:9px}
+ .gh-logo .gh-art{width:86px;height:54px}
+ .gh-logo .gh-medal{width:40px;height:40px}
+}
+@media(max-width:920px){
+ .game-layout{grid-template-columns:minmax(0,1fr);gap:12px}
+ .game-layout .panel{order:2;width:100%}
+ .game-layout .stage{order:1;width:100%;padding:14px}
+ .gh-wrap.gh-logo{grid-template-columns:82px minmax(0,1fr) 40px}
+ #crashCanvas{height:clamp(260px,55vw,380px);min-height:250px}
+ #plinkoCanvas,#plinkoneonCanvas{height:clamp(320px,65vw,420px);min-height:300px}
+}
+@media(max-width:560px){
+ .game-layout{gap:10px}
+ .game-layout .stage{padding:10px;border-radius:13px}
+ .game-layout .panel{padding:14px;border-radius:13px}
+ .gh-wrap.gh-logo{grid-template-columns:64px minmax(0,1fr) 34px;gap:8px;min-height:64px;margin-bottom:12px;padding:7px}
+ .gh-logo .gh-art{width:64px;height:48px;border-radius:7px}
+ .gh-logo .gh-name{font-size:16px}
+ .gh-logo .gh-badges{gap:5px;margin-top:5px}
+ .gh-logo .gh-sub{font-size:9px}
+ .gh-logo .gh-rtp,.gh-logo .gh-live{font-size:9px;padding:3px 6px}
+ .gh-logo .gh-medal{width:32px;height:32px}
+ .gh-logo .gh-medal svg{width:20px;height:20px}
+ #crashCanvas{height:270px;min-height:240px}
+ #plinkoCanvas,#plinkoneonCanvas{height:320px;min-height:280px}
+ .crash-center .cm{font-size:clamp(36px,10vw,54px)}
+ .dice-result .big{font-size:clamp(44px,13vw,68px)}
+ .wheel-box{width:min(320px,100%)}
+ .chip-pick{gap:6px}
+ .chip-pick button{width:40px;height:40px}
+}

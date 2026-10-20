@@ -556,8 +556,8 @@ BUILDERS.chicken=function(mount){
     lanesEl.innerHTML=h;
   }
   buildLanes();
-  function placeBird(i){bird.style.left='calc('+(i*20+10)+'% - 17px)';}
-  function placeFox(i){fox.style.left='calc('+(i*20+10)+'% - 20px)';}
+  function placeBird(i){bird.style.left='calc('+(i*20+10)+'% - 23px)';}
+  function placeFox(i){fox.style.left='calc('+(i*20+10)+'% - 24px)';}
   placeBird(0);
   function markLanes(){
     var lanes=lanesEl.querySelectorAll(".ch-lane");

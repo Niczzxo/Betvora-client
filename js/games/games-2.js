@@ -75,8 +75,8 @@
         +'<div class="crash-center"><div class="cm" id="crashMult">1.00×</div><div class="cs" id="crashState">Place a bet to launch</div></div></div></div></div>';
       wireAmount("crashBet");
       const cv=$("#crashCanvas"), ctx=cv.getContext("2d");
-      let sparks=[], starPts=[], lastWhole=1;
-      function sizeCanvas(){ const r=cv.getBoundingClientRect(); cv.width=Math.max(300,r.width); cv.height=340; starPts=Array.from({length:38},()=>({x:Math.random(),y:Math.random(),s:Math.random()<.85?1:2})); }
+      let sparks=[], starPts=[], lastWhole=1, lastPts=[], lastCrashed=false;
+      function sizeCanvas(){ const r=cv.getBoundingClientRect(); const w=Math.max(1,Math.round(r.width)); const h=Math.max(240,Math.round(r.height||340)); if(cv.width!==w)cv.width=w; if(cv.height!==h)cv.height=h; starPts=Array.from({length:38},()=>({x:Math.random(),y:Math.random(),s:Math.random()<.85?1:2})); }
       sizeCanvas();
       function drawCurve(pts,crashed){
         const w=cv.width,h=cv.height; ctx.clearRect(0,0,w,h);
@@ -110,11 +110,24 @@
         const pr=6+Math.sin(performance.now()/140)*1.6;
         ctx.beginPath(); ctx.arc(lastQ.x,lastQ.y,pr+7,0,7); ctx.strokeStyle=crashed?"rgba(255,92,92,.35)":"rgba(0,224,101,.35)"; ctx.lineWidth=2; ctx.stroke();
         ctx.beginPath(); ctx.arc(lastQ.x,lastQ.y,6,0,7); ctx.fillStyle=crashed?"#ff5c5c":"#7df0ab"; ctx.fill();
+        /* A visible rocket sprite follows the curve head instead of leaving only a dot. */
+        if(!crashed){
+          const prev=xy(pts[Math.max(0,pts.length-2)]);
+          const ang=Math.atan2(lastQ.y-prev.y,lastQ.x-prev.x);
+          ctx.save(); ctx.translate(lastQ.x,lastQ.y); ctx.rotate(ang);
+          ctx.shadowColor="rgba(0,224,101,.55)"; ctx.shadowBlur=10;
+          ctx.fillStyle="#eaf2ff"; ctx.beginPath(); ctx.moveTo(13,0); ctx.lineTo(1,-6); ctx.quadraticCurveTo(-5,-4,-7,0); ctx.quadraticCurveTo(-5,4,1,6); ctx.closePath(); ctx.fill();
+          ctx.fillStyle="#38bdf8"; ctx.beginPath(); ctx.ellipse(1,0,3,3,0,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle="#ff9a3c"; ctx.beginPath(); ctx.moveTo(-6,-3); ctx.lineTo(-13,0); ctx.lineTo(-6,3); ctx.closePath(); ctx.fill();
+          ctx.restore();
+        }
       }
       drawCurve([],false);
+      if(typeof ResizeObserver!="undefined"){ const crashRO=new ResizeObserver(()=>{sizeCanvas();drawCurve(lastPts,lastCrashed);}); crashRO.observe(cv); onCleanup(()=>crashRO.disconnect()); }
+      else window.addEventListener("resize",sizeCanvas);
       function genCrash(){ const r=Math.random(); if(r<0.03) return 1; return Math.min(250,Math.max(1,0.99/(1-Math.random()))); }
       function endRound(crashedAt){
-        running=false;
+        running=false; lastCrashed=true;
         const cmEl=$("#crashMult");
         cmEl.textContent=crashedAt.toFixed(2)+"×"; cmEl.classList.remove("warm","hot"); cmEl.classList.add("crashed");
         $("#crashState").textContent="Crashed";
@@ -131,7 +144,7 @@
         $("#crashMyBet").textContent=fmt$(bet); $("#crashCashVal").textContent=fmt$(bet);
         $("#crashMult").classList.remove("crashed");
         const btn=$("#crashBtn"); btn.textContent="Cash Out"; btn.classList.add("cashout");
-        running=true; startedAt=performance.now(); lastWhole=1; sparks=[];
+        running=true; startedAt=performance.now(); lastWhole=1; sparks=[]; lastPts=[]; lastCrashed=false;
         const cmEl0=$("#crashMult"); cmEl0.classList.remove("warm","hot");
         const pts=[];
         const loop=()=>{
@@ -139,7 +152,7 @@
           const t=(performance.now()-startedAt)/1000;
           const m=Math.exp(0.115*t);
           pts.push({t:t,m:m}); if(pts.length>240) pts.shift();
-          drawCurve(pts,false);
+          lastPts=pts; lastCrashed=false; drawCurve(pts,false);
           cmEl0.textContent=m.toFixed(2)+"×";
           cmEl0.classList.toggle("warm",m>=2&&m<5);
           cmEl0.classList.toggle("hot",m>=5);
@@ -339,7 +352,7 @@
           ctx.beginPath(); ctx.arc(b.x-2.4,b.y-2.4,3,0,7); ctx.fillStyle="rgba(255,255,255,.75)"; ctx.fill();
         });
       }
-      function sizeCanvas(){ cv.width=cv.clientWidth||600; cv.height=430; drawBoard(); }
+      function sizeCanvas(){ const w=Math.max(1,Math.round(cv.getBoundingClientRect().width||cv.clientWidth||600)); const h=Math.max(280,Math.round(cv.getBoundingClientRect().height||430)); if(cv.width!==w)cv.width=w; if(cv.height!==h)cv.height=h; drawBoard(); }
       function drop(){
         const bet=getBet("plinkoBet"); if(bet===null) return;
         charge(bet); dropped++; $("#plinkoCount").textContent=dropped;
@@ -384,6 +397,8 @@
       $$("#plinkoRows button").forEach(b=>b.addEventListener("click",()=>{ rows=parseInt(b.dataset.rows,10); $$("#plinkoRows button").forEach(x=>x.classList.toggle("on",x===b)); balls=[]; paintSlots(); drawBoard(); sfx.click(); }));
       $("#plinkoDrop").addEventListener("click",drop);
       paintSlots(); sizeCanvas();
+      if(typeof ResizeObserver!=="undefined"){ const plinkoRO=new ResizeObserver(()=>sizeCanvas()); plinkoRO.observe(cv); onCleanup(()=>plinkoRO.disconnect()); }
+      else window.addEventListener("resize",sizeCanvas);
       onCleanup(()=>{ if(raf) cancelAnimationFrame(raf); raf=null; });
     };
 
