@@ -5,6 +5,16 @@
 
 /* ==================== DICE ==================== */
     BUILDERS.dice=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
       let mode="over", target=50, hist=[];
       mount.innerHTML='<div class="game-layout">'
         +'<div class="panel"><h4>Bet Controls</h4>'
@@ -44,7 +54,7 @@
         const big=$("#diceBig"), verdict=$("#diceVerdict");
         big.className="big rolling"; verdict.textContent="…";
         const dur=state.anim?650:60; const t0=performance.now();
-        const tickFn=()=>{ const p=(performance.now()-t0)/dur; if(p<1){ big.textContent=(Math.random()*100).toFixed(2); requestAnimationFrame(tickFn); } else {
+        const tickFn=()=>{ const p=(performance.now()-t0)/dur; if(p<1){ big.textContent=(Math.random()*100).toFixed(2); _bvRequestAnimationFrame(tickFn); } else {
           big.textContent=result.toFixed(2);
           big.classList.remove("rolling"); big.classList.add("pop");
           const chance= mode==="over"? 100-target : target;
@@ -57,12 +67,22 @@
           hist.unshift({t:result.toFixed(2),w:win}); hist=hist.slice(0,10); histChips($("#diceHist"),hist);
           rolling=false; btn.disabled=false; btn.textContent="Roll Dice";
         }};
-        requestAnimationFrame(tickFn);
+        _bvRequestAnimationFrame(tickFn);
       });
     };
 
     /* ==================== CRASH ==================== */
     BUILDERS.crash=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
       let hist=[], running=false, raf=null, myBet=null, cashedOut=false, crashPt=2.34, startedAt=0, autoAt=0;
       mount.innerHTML='<div class="game-layout">'
         +'<div class="panel"><h4>Bet Controls</h4>'
@@ -85,8 +105,8 @@
         ctx.strokeStyle="rgba(148,178,220,.12)"; ctx.lineWidth=1;
         for(let gx=0;gx<w;gx+=44){ ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,h); ctx.stroke(); }
         for(let gy=0;gy<h;gy+=44){ ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(w,gy); ctx.stroke(); }
-        if(pts.length<2) return;
-        const maxT=Math.max(10,pts[pts.length-1].t), maxM=Math.max(2.2,pts[pts.length-1].m);
+        if(!pts.length) return;
+        const maxT=Math.max(3,pts[pts.length-1].t*1.18), maxM=Math.max(2.2,pts[pts.length-1].m*1.12);
         const xy=p=>({x:26+(p.t/maxT)*(w-52), y:h-26-(Math.log(p.m)/Math.log(maxM))*(h-56)});
         /* gradient area under the curve */
         ctx.beginPath();
@@ -110,16 +130,19 @@
         const pr=6+Math.sin(performance.now()/140)*1.6;
         ctx.beginPath(); ctx.arc(lastQ.x,lastQ.y,pr+7,0,7); ctx.strokeStyle=crashed?"rgba(255,92,92,.35)":"rgba(0,224,101,.35)"; ctx.lineWidth=2; ctx.stroke();
         ctx.beginPath(); ctx.arc(lastQ.x,lastQ.y,6,0,7); ctx.fillStyle=crashed?"#ff5c5c":"#7df0ab"; ctx.fill();
-        /* A visible rocket sprite follows the curve head instead of leaving only a dot. */
-        if(!crashed){
+        /* Keep the vehicle visible at the curve head; show an impact burst at crash. */
+        {
           const prev=xy(pts[Math.max(0,pts.length-2)]);
-          const ang=Math.atan2(lastQ.y-prev.y,lastQ.x-prev.x);
+          const ang=pts.length>1?Math.atan2(lastQ.y-prev.y,lastQ.x-prev.x):0;
           ctx.save(); ctx.translate(lastQ.x,lastQ.y); ctx.rotate(ang);
-          ctx.shadowColor="rgba(0,224,101,.55)"; ctx.shadowBlur=10;
-          ctx.fillStyle="#eaf2ff"; ctx.beginPath(); ctx.moveTo(13,0); ctx.lineTo(1,-6); ctx.quadraticCurveTo(-5,-4,-7,0); ctx.quadraticCurveTo(-5,4,1,6); ctx.closePath(); ctx.fill();
-          ctx.fillStyle="#38bdf8"; ctx.beginPath(); ctx.ellipse(1,0,3,3,0,0,Math.PI*2); ctx.fill();
-          ctx.fillStyle="#ff9a3c"; ctx.beginPath(); ctx.moveTo(-6,-3); ctx.lineTo(-13,0); ctx.lineTo(-6,3); ctx.closePath(); ctx.fill();
+          ctx.shadowColor=crashed?"rgba(255,92,92,.75)":"rgba(0,224,101,.55)"; ctx.shadowBlur=crashed?16:10;
+          ctx.fillStyle=crashed?"#8c98a9":"#eaf2ff"; ctx.beginPath(); ctx.moveTo(16,0); ctx.lineTo(2,-7); ctx.quadraticCurveTo(-6,-5,-8,0); ctx.quadraticCurveTo(-6,5,2,7); ctx.closePath(); ctx.fill();
+          ctx.fillStyle=crashed?"#ff5c5c":"#38bdf8"; ctx.beginPath(); ctx.ellipse(2,0,3.5,3.5,0,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle=crashed?"#ffb347":"#ff9a3c"; ctx.beginPath(); ctx.moveTo(-7,-4); ctx.lineTo(-16,0); ctx.lineTo(-7,4); ctx.closePath(); ctx.fill();
           ctx.restore();
+          if(crashed){
+            for(let i=0;i<12;i++){const a=(Math.PI*2*i/12)+(performance.now()/1000);const rr=10+(i%3)*4;ctx.beginPath();ctx.arc(lastQ.x+Math.cos(a)*rr,lastQ.y+Math.sin(a)*rr,2.2,0,Math.PI*2);ctx.fillStyle=i%2?"#ff5c5c":"#ffd479";ctx.fill();}
+          }
         }
       }
       drawCurve([],false);
@@ -133,7 +156,7 @@
         $("#crashState").textContent="Crashed";
         hist.unshift({t:crashedAt.toFixed(2)+"×",w:crashedAt>=2}); hist=hist.slice(0,12); histChips($("#crashHist"),hist);
         const stageEl=mount.querySelector(".stage");
-        stageFx(stageEl,"shake"); setTimeout(()=>stageFx(stageEl,"lose"),70);
+        stageFx(stageEl,"shake"); _bvSetTimeout(()=>stageFx(stageEl,"lose"),70);
         if(myBet!==null&&!cashedOut){ settle("Crash",myBet,0); $("#crashCashVal").textContent=fmt$(0); sfx.lose(); burstFX(stageEl,{colors:["#ff5c5c","#ff8a3d","#ffd479"],n:22}); }
         const btn=$("#crashBtn"); btn.disabled=false; btn.textContent="Place Bet & Launch"; btn.classList.remove("cashout");
         myBet=null;
@@ -162,9 +185,9 @@
           if(myBet!==null&&!cashedOut) $("#crashCashVal").textContent=fmt$(myBet*m);
           if(autoAt>1&&m>=autoAt&&myBet!==null&&!cashedOut){ doCashout(autoAt); return; }
           if(m>=crashPt){ drawCurve(pts,true); endRound(crashPt); return; }
-          raf=requestAnimationFrame(loop);
+          raf=_bvRequestAnimationFrame(loop);
         };
-        raf=requestAnimationFrame(loop);
+        raf=_bvRequestAnimationFrame(loop);
       }
       function doCashout(atMult){
         if(myBet===null||cashedOut||!running) return;
@@ -179,13 +202,23 @@
         if(!running){ startRound(); return; }
         if(myBet!==null&&!cashedOut){ const m=parseFloat($("#crashMult").textContent)||1; doCashout(Math.max(1,m)); }
       });
-      onCleanup(()=>{ running=false; if(raf) cancelAnimationFrame(raf); });
+      onCleanup(()=>{ running=false; if(raf) _bvCancelAnimationFrame(raf); });
     };
 
     /* ==================== ROULETTE ==================== */
     const WHEEL=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
     const REDS=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
     BUILDERS.roulette=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
       let chip=25, bets={}, spinning=false, rot=0, lastBets=null, ballRaf=null;
       mount.innerHTML='<div class="game-layout">'
         +'<div class="panel"><h4>Chip Value</h4><div class="chip-pick" id="chipPick">'
@@ -266,7 +299,7 @@
         $("#hubLbl").textContent="Spinning";
         /* the ball: whips around the rim, ticks past pockets, drops in as the wheel settles */
         const ball=$("#wheelBall");
-        if(ballRaf) cancelAnimationFrame(ballRaf);
+        if(ballRaf) _bvCancelAnimationFrame(ballRaf);
         if(ball){
           if(!state.anim){ ball.style.opacity="1"; ball.style.left="50%"; ball.style.top="9.3%"; }
           else{
@@ -282,12 +315,12 @@
               ball.style.top=(50-rad*Math.cos(a))+"%";
               const tickIdx=Math.floor(Math.abs(ang)/(360/37));
               if(tickIdx!==lastTick){ lastTick=tickIdx; if(p<.97) beep(1150,0.02,"square",0.012); }
-              if(p<1) ballRaf=requestAnimationFrame(bStep); else ballRaf=null;
+              if(p<1) ballRaf=_bvRequestAnimationFrame(bStep); else ballRaf=null;
             };
-            ballRaf=requestAnimationFrame(bStep);
+            ballRaf=_bvRequestAnimationFrame(bStep);
           }
         }
-        setTimeout(()=>{
+        _bvSetTimeout(()=>{
           let ret=0; Object.keys(bets).forEach(k=>{ const w=betWins(k,n); if(w>=0) ret+=bets[k]*(w+1); });
           const mult= total>0? ret/total : 0;
           settle("Roulette",total,mult);
@@ -303,7 +336,7 @@
           bets={}; paintChips(); spinning=false; spinBtn.disabled=false; spinBtn.textContent="Spin Wheel";
         }, state.anim? 5300 : 120);
       });
-      onCleanup(()=>{ if(ballRaf) cancelAnimationFrame(ballRaf); });
+      onCleanup(()=>{ if(ballRaf) _bvCancelAnimationFrame(ballRaf); });
     };
 
     /* ==================== PLINKO ==================== */
@@ -313,6 +346,16 @@
       16:{low:[16,9,2,1.4,1.4,1.2,1.1,1,0.5,1,1.1,1.2,1.4,1.4,2,9,16],med:[110,41,10,5,3,1.5,1,0.5,0.3,0.5,1,1.5,3,5,10,41,110],high:[1000,130,26,9,4,2,0.2,0.2,0.2,0.2,0.2,2,4,9,26,130,1000]}
     };
     BUILDERS.plinko=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
       let rows=12, risk="med", balls=[], raf=null, dropping=false, flashes=[];
       mount.innerHTML='<div class="game-layout">'
         +'<div class="panel"><h4>Bet Controls</h4>'
@@ -322,7 +365,8 @@
         +'<button class="action-btn" id="plinkoDrop">Drop Ball</button>'
         +'<div class="stat-grid"><div class="stat-box"><small>Top Payout</small><b id="plinkoTop">33.00×</b></div><div class="stat-box"><small>Balls Dropped</small><b id="plinkoCount">0</b></div></div>'
         +'<div class="hist-row" id="plinkoHist"></div></div>'
-        +'<div class="stage" style="padding:14px">'+gameHeaderHtml('plinko')+'<canvas id="plinkoCanvas"></canvas><div class="slot-labels" id="plinkoSlots"></div></div></div>';
+        +'<div class="stage plinko-stage" style="padding:14px">'+gameHeaderHtml('plinko')+'<canvas id="plinkoCanvas" aria-label="Plinko peg board"></canvas><div class="slot-labels" id="plinkoSlots"></div>'
+        +'<div class="plinko-last-result" id="plinkoLastResult" aria-live="polite"><span id="plinkoResultCap">LAST DROP</span><strong id="plinkoResultMult">—</strong><small id="plinkoResultPay">Drop a ball to begin</small></div></div></div>';
       wireAmount("plinkoBet");
       const cv=$("#plinkoCanvas"), ctx=cv.getContext("2d");
       let dropped=0, hist=[];
@@ -381,7 +425,17 @@
             const t=PLINKO_TABLES[rows][risk]; const mult=t[b.slot];
             const pay=settle("Plinko",b.bet,mult);
             const slots=$$("#plinkoSlots [data-slot]"); const cellEl=slots[b.slot];
-            if(cellEl){ cellEl.classList.remove("hot"); void cellEl.offsetWidth; cellEl.classList.add("hot"); setTimeout(()=>cellEl.classList.remove("hot"),700); }
+            if(cellEl){ cellEl.classList.remove("hot"); void cellEl.offsetWidth; cellEl.classList.add("hot"); _bvSetTimeout(()=>cellEl.classList.remove("hot"),900); }
+            // Keep the landing result on screen after the animated ball has reached its slot.
+            const result=$("#plinkoLastResult"), resultMult=$("#plinkoResultMult"), resultPay=$("#plinkoResultPay"), resultCap=$("#plinkoResultCap");
+            if(result&&resultMult&&resultPay&&resultCap){
+              result.classList.remove("is-win","is-loss","result-pop");
+              result.classList.add(mult>=1?"is-win":"is-loss");
+              resultMult.textContent=mult.toFixed(2)+"×";
+              resultPay.textContent=mult>1?"Practice payout "+fmt$(pay):(mult===1?"Stake returned: "+fmt$(pay):"No payout this round");
+              resultCap.textContent="LANDED IN SLOT "+(b.slot+1)+" / "+t.length;
+              void result.offsetWidth;result.classList.add("result-pop");
+            }
             if(mult>=10){ sfx.big(); const stageEl=mount.querySelector(".stage"); winBanner(stageEl,mult+"× — "+fmt$(pay)); burstFX(stageEl); stageFx(stageEl,"win"); }
             else if(mult>=1){ sfx.win(); }
             else if(mult>0){ sfx.click(); }
@@ -391,7 +445,7 @@
         });
         balls=balls.filter(b=>!b.done);
         drawBoard();
-        if(alive||balls.length) raf=requestAnimationFrame(loop); else raf=null;
+        if(alive||balls.length) raf=_bvRequestAnimationFrame(loop); else raf=null;
       }
       $$("#plinkoRisk button").forEach(b=>b.addEventListener("click",()=>{ risk=b.dataset.r; $$("#plinkoRisk button").forEach(x=>x.classList.toggle("on",x===b)); paintSlots(); drawBoard(); sfx.click(); }));
       $$("#plinkoRows button").forEach(b=>b.addEventListener("click",()=>{ rows=parseInt(b.dataset.rows,10); $$("#plinkoRows button").forEach(x=>x.classList.toggle("on",x===b)); balls=[]; paintSlots(); drawBoard(); sfx.click(); }));
@@ -399,11 +453,21 @@
       paintSlots(); sizeCanvas();
       if(typeof ResizeObserver!=="undefined"){ const plinkoRO=new ResizeObserver(()=>sizeCanvas()); plinkoRO.observe(cv); onCleanup(()=>plinkoRO.disconnect()); }
       else window.addEventListener("resize",sizeCanvas);
-      onCleanup(()=>{ if(raf) cancelAnimationFrame(raf); raf=null; });
+      onCleanup(()=>{ if(raf) _bvCancelAnimationFrame(raf); raf=null; });
     };
 
     /* ==================== MINES ==================== */
     BUILDERS.mines=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
       let active=false, minesSet=new Set(), mineCount=3, curBet=0, revealed=0;
       mount.innerHTML='<div class="game-layout">'
         +'<div class="panel"><h4>Bet Controls</h4>'
@@ -468,7 +532,7 @@
           settle("Mines",curBet,0);
           renderGrid(true,i); endRound(); updStats();
           $("#minesHint").textContent="Boom — that tile hid a mine. Round lost.";
-          sfx.lose(); stageFx(stageEl,"shake"); setTimeout(()=>stageFx(stageEl,"lose"),70); burstFX(stageEl,{at:tileAt,colors:["#ff5c5c","#ff8a3d","#ffd479"],n:22});
+          sfx.lose(); stageFx(stageEl,"shake"); _bvSetTimeout(()=>stageFx(stageEl,"lose"),70); burstFX(stageEl,{at:tileAt,colors:["#ff5c5c","#ff8a3d","#ffd479"],n:22});
         } else {
           t.dataset.done="1"; t.innerHTML=GEM; t.classList.add("gem","flip"); t.disabled=true;
           revealed++; beep(520+revealed*45,0.06,"triangle",0.04); updStats();
@@ -492,6 +556,16 @@
     ];
     function pickSym(){ const tot=SLOT_SYMS.reduce((a,s)=>a+s.w,0); let r=Math.random()*tot; for(const s of SLOT_SYMS){ r-=s.w; if(r<=0) return s; } return SLOT_SYMS[0]; }
     BUILDERS.slots=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
       let spinning=false, hist=[];
       const cellsInit=Array.from({length:9},()=>pickSym());
       mount.innerHTML='<div class="game-layout">'
@@ -522,17 +596,17 @@
         if(winAmt) winAmt.textContent="$0.00";
         const final=Array.from({length:9},()=>pickSym());
         cells.forEach(c=>{ c.classList.remove("win-cell","land","anticipation"); c.classList.add("spinning"); });
-        const iv=setInterval(()=>{ cells.forEach((c,i)=>{ c.innerHTML=pickSym().svg; }); },90);
+        const iv=_bvSetInterval(()=>{ cells.forEach((c,i)=>{ c.innerHTML=pickSym().svg; }); },90);
         /* anticipation: if any line opens with a matching pair, the last reel spins longer under a golden glow */
         const anti= state.anim && LINES.some(line=>final[line[0]].id===final[line[1]].id);
         const stopAt= state.anim? [500,850, anti? 1750:1200] : [60,90,120];
         stopAt.forEach((ms,col)=>{
-          setTimeout(()=>{
+          _bvSetTimeout(()=>{
             for(let rI=0;rI<3;rI++){ const idx=rI*3+col; cells[idx].innerHTML=final[idx].svg; cells[idx].classList.remove("spinning"); cells[idx].classList.add("land"); }
             beep(340+col*70,0.06,"triangle",0.04);
             if(col===1&&anti){ for(let rI=0;rI<3;rI++) cells[rI*3+2].classList.add("anticipation"); beep(920,0.1,"sine",0.05,0.05); }
             if(col===2){
-              clearInterval(iv);
+              _bvClearInterval(iv);
               cells.forEach((c,i)=>{ c.innerHTML=final[i].svg; c.classList.remove("spinning","anticipation"); });
               let mult=0; const winCells=new Set();
               LINES.forEach(line=>{
@@ -544,7 +618,7 @@
               if(winAmt&&mult>0) countUp(winAmt,pay);
               winCells.forEach(i=>cells[i].classList.add("win-cell"));
               if(marquee&&mult===0) marquee.classList.remove("on");
-              if(marquee&&mult>0) setTimeout(()=>marquee.classList.remove("on"),2400);
+              if(marquee&&mult>0) _bvSetTimeout(()=>marquee.classList.remove("on"),2400);
               if(mult>=30){ sfx.big(); machine.classList.add("jackpot"); winBanner(stageEl,"BIG WIN "+fmt$(pay)); burstFX(stageEl,{n:40}); stageFx(stageEl,"win"); }
               else if(mult>0){ sfx.win(); winBanner(stageEl,"WIN "+fmt$(pay)); burstFX(stageEl,{n:20}); stageFx(stageEl,"win"); }
               else sfx.lose();
@@ -553,6 +627,6 @@
             }
           },ms);
         });
-        onCleanup(()=>clearInterval(iv));
+        onCleanup(()=>_bvClearInterval(iv));
       });
     };

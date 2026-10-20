@@ -1829,3 +1829,29 @@ html.no-motion .rays-on .bjc-rays{animation:none!important}
 .action-btn:disabled{opacity:.58;cursor:not-allowed;filter:saturate(.65);box-shadow:none}
 @media(max-width:920px){.game-stage-head.gh-wrap.gh-logo{grid-template-columns:40px minmax(0,1fr);min-height:54px;margin-bottom:12px}.game-stage-head .gh-medal{width:38px;height:38px}}
 @media(max-width:560px){.game-stage-head.gh-wrap.gh-logo{grid-template-columns:34px minmax(0,1fr);gap:9px;padding:5px 2px;min-height:48px}.game-stage-head .gh-medal{width:32px;height:32px;border-radius:9px}.game-stage-head .gh-medal svg{width:20px;height:20px}.game-stage-head .gh-name{font-size:15px}.game-stage-head .gh-sub{font-size:10px}}
+
+
+/* Dragon Tower: keep the currently playable floor in a contained, scrollable viewport. */
+.dt-tower{max-height:min(70vh,720px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(245,185,66,.5) transparent;scroll-padding:12px;}
+.dt-tower::-webkit-scrollbar{width:7px}
+.dt-tower::-webkit-scrollbar-thumb{background:rgba(245,185,66,.4);border-radius:9px}
+.dt-tile{padding:0;font:inherit;color:inherit;appearance:none;-webkit-appearance:none;width:100%;}
+.dt-row.dt-active .dt-tile{cursor:pointer;outline-offset:2px}
+.dt-row.dt-active .dt-tile:focus-visible{outline:2px solid #ffd479}
+/* Plinko keeps the final landing visible after the animated ball has left the board. */
+.plinko-last-result{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:12px 0 2px;padding:12px 16px;border:1px solid rgba(148,178,220,.22);border-radius:12px;background:linear-gradient(105deg,rgba(10,22,38,.94),rgba(16,33,52,.86));box-shadow:inset 0 1px rgba(255,255,255,.035);}
+.plinko-last-result span{font-size:10px;letter-spacing:.1em;font-weight:800;color:#8fa7c4;text-transform:uppercase}
+.plinko-last-result strong{font-family:Sora,Arial,sans-serif;font-size:clamp(22px,2vw,30px);line-height:1;font-weight:900;color:#e9f1ff;font-variant-numeric:tabular-nums}
+.plinko-last-result small{font-size:12px;color:#9fb3d9;flex:1 1 130px;text-align:right}
+.plinko-last-result.is-win{border-color:rgba(0,224,101,.4);background:linear-gradient(105deg,rgba(0,224,101,.08),rgba(16,33,52,.9))}
+.plinko-last-result.is-win strong{color:#53e6a0;text-shadow:0 0 18px rgba(0,224,101,.18)}
+.plinko-last-result.is-loss{border-color:rgba(255,92,92,.25)}
+.plinko-last-result.is-loss strong{color:#ff8686}
+.plinko-last-result.result-pop{animation:plinkoResultPop .35s cubic-bezier(.2,1.35,.35,1)}
+@keyframes plinkoResultPop{0%{transform:scale(.98);opacity:.6}65%{transform:scale(1.015);opacity:1}100%{transform:scale(1);opacity:1}}
+.cr-rocket.cr-explode{animation:crRocketImpact .58s ease-out both;filter:drop-shadow(0 0 14px rgba(255,92,92,.9)) saturate(1.35)}
+.cr-rocket.cr-explode::after{content:"";position:absolute;left:50%;top:50%;width:95px;height:95px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,245,190,.9) 0 5%,rgba(255,154,60,.68) 12%,rgba(255,92,92,.24) 34%,transparent 68%);animation:crImpactBurst .65s ease-out both;}
+@keyframes crRocketImpact{0%{transform:translateX(-50%) rotate(38deg) scale(1)}35%{transform:translateX(-50%) rotate(52deg) scale(1.12)}100%{transform:translateX(-50%) rotate(70deg) scale(.88)}}
+@keyframes crImpactBurst{0%{opacity:0;scale:.3}28%{opacity:1;scale:1.1}100%{opacity:0;scale:1.5}}
+@media(max-width:560px){.dt-tower{max-height:62vh;padding-left:28px;padding-right:28px}.plinko-last-result{gap:8px;padding:10px 12px}.plinko-last-result small{text-align:left;flex-basis:100%}}
+html.no-motion .plinko-last-result.result-pop,html.no-motion .cr-rocket.cr-explode,html.no-motion .cr-rocket.cr-explode::after{animation:none!important}

@@ -5,6 +5,16 @@
 
 /* ==================== GAMES42: DRAGONTIGER ==================== */
 BUILDERS.dragontiger=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
   var shoe=[];
@@ -91,12 +101,22 @@ BUILDERS.dragontiger=function(mount){
       else{stageFx(stage,"lose");sfx.lose()}
       dealing=false;
     }
-    if(ngAnim()){setTimeout(finish,420)}else{finish()}
+    if(ngAnim()){_bvSetTimeout(finish,420)}else{finish()}
   });
   addDust($("#dragontigerStage"),10);
 };
 /* ==================== GAMES42: TEENPATTI ==================== */
 BUILDERS.teenpatti=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
   function newDeck(){var d=[];for(var s=0;s<4;s++)for(var r=0;r<13;r++)d.push({r:RANKS[r],s:SUITS[s],v:r+2,red:(s===1||s===2)});for(var i=d.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=d[i];d[i]=d[j];d[j]=t}return d}
@@ -131,8 +151,8 @@ BUILDERS.teenpatti=function(mount){
     return mx>=12;
   }
   var hist=[],player=[],dealer=[],ante=0,totalBet=0,active=false,busy=false,timers=[];
-  function later(fn,ms){var t=setTimeout(fn,ms);timers.push(t);return t}
-  onCleanup(function(){for(var i=0;i<timers.length;i++)clearTimeout(timers[i])});
+  function later(fn,ms){var t=_bvSetTimeout(fn,ms);timers.push(t);return t}
+  onCleanup(function(){for(var i=0;i<timers.length;i++)_bvClearTimeout(timers[i])});
   function cardHtml(c,d){return '<div class="tp-card '+(c.red?"red ":"")+(ngAnim()?"tp-card-in":"")+'"'+(d?' style="animation-delay:'+(d*120)+'ms"':"")+'>'+'<div class="rk">'+c.r+'</div><div class="st">'+c.s+'</div></div>'}
   function backHtml(d){return '<div class="tp-card back '+(ngAnim()?"tp-card-in":"")+'"'+(d?' style="animation-delay:'+(d*120)+'ms"':"")+'><div class="bk">B</div></div>'}
   function render(reveal){
@@ -221,6 +241,16 @@ BUILDERS.teenpatti=function(mount){
 };
 /* ==================== GAMES42: ANDARBAHAR ==================== */
 BUILDERS.andarbahar=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
   function newDeck(){var d=[];for(var s=0;s<4;s++)for(var r=0;r<13;r++)d.push({r:RANKS[r],s:SUITS[s],v:r+2,red:(s===1||s===2)});for(var i=d.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=d[i];d[i]=d[j];d[j]=t}return d}
@@ -230,7 +260,7 @@ BUILDERS.andarbahar=function(mount){
      price (vs 1:1 Bahar) offsets. Combined theoretical RTP for this standard
      Andar Bahar pay table is approx 97.0%. */
   var hist=[],choice="andar",busy=false,iv=null;
-  onCleanup(function(){if(iv){clearInterval(iv);iv=null}});
+  onCleanup(function(){if(iv){_bvClearInterval(iv);iv=null}});
   function cardHtml(c,big,anim){return '<div class="ab-card '+(big?"big ":"")+(c.red?"red ":"")+((anim&&ngAnim())?"ab-card-in":"")+'"><div class="rk">'+c.r+'</div><div class="st">'+c.s+'</div></div>'}
   mount.innerHTML='<div class="game-layout">'
     +'<div class="panel"><h4>Bet Controls</h4>'
@@ -304,21 +334,31 @@ BUILDERS.andarbahar=function(mount){
       busy=false;$("#andarbaharPlay").disabled=false;
     }
     function step(){
-      if(revealed>=seq.length){if(iv){clearInterval(iv);iv=null}finish();return}
+      if(revealed>=seq.length){if(iv){_bvClearInterval(iv);iv=null}finish();return}
       var item=seq[revealed];revealed++;
       if(item.side==="andar")aPile.push(item.c);else bPile.push(item.c);
       render(true);
       $("#andarbaharMsg").textContent="Dealing... "+revealed+" card(s) — waiting for a "+house.r+".";
-      if(revealed>=seq.length){if(iv){clearInterval(iv);iv=null}finish()}
+      if(revealed>=seq.length){if(iv){_bvClearInterval(iv);iv=null}finish()}
     }
     $("#andarbaharMsg").textContent="House card is "+house.r+house.s+". Dealing to Andar first...";
     render(false);
-    if(ngAnim()){iv=setInterval(step,140)}else{while(revealed<seq.length){var it=seq[revealed];revealed++;if(it.side==="andar")aPile.push(it.c);else bPile.push(it.c)}render(false);finish()}
+    if(ngAnim()){iv=_bvSetInterval(step,140)}else{while(revealed<seq.length){var it=seq[revealed];revealed++;if(it.side==="andar")aPile.push(it.c);else bPile.push(it.c)}render(false);finish()}
   });
   addDust($("#andarbaharStage"),10);
 };
 /* ==================== GAMES42: WAR ==================== */
 BUILDERS.war=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
   function newDeck(){var d=[];for(var s=0;s<4;s++)for(var r=0;r<13;r++)d.push({r:RANKS[r],s:SUITS[s],v:r+2,red:(s===1||s===2)});for(var i=d.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=d[i];d[i]=d[j];d[j]=t}return d}
@@ -327,8 +367,8 @@ BUILDERS.war=function(mount){
      2:1 bonus on the raise. Published theoretical RTP for this ruleset with
      optimal (always war) play is approx 97.1%. */
   var hist=[],deck=null,pc=null,dc=null,bet0=0,totalBet=0,phase="idle",busy=false,timers=[];
-  function later(fn,ms){var t=setTimeout(fn,ms);timers.push(t);return t}
-  onCleanup(function(){for(var i=0;i<timers.length;i++)clearTimeout(timers[i])});
+  function later(fn,ms){var t=_bvSetTimeout(fn,ms);timers.push(t);return t}
+  onCleanup(function(){for(var i=0;i<timers.length;i++)_bvClearTimeout(timers[i])});
   function cardHtml(c,d){return '<div class="wr-card '+(c.red?"red ":"")+(ngAnim()?"wr-card-in":"")+'"'+(d?' style="animation-delay:'+(d*120)+'ms"':"")+'>'+'<div class="rk">'+c.r+'</div><div class="st">'+c.s+'</div></div>'}
   function backHtml(d){return '<div class="wr-card back '+(ngAnim()?"wr-card-in":"")+'"'+(d?' style="animation-delay:'+(d*90)+'ms"':"")+'><div class="bk">B</div></div>'}
   function setWarBtns(on){
@@ -422,6 +462,16 @@ BUILDERS.war=function(mount){
 };
 /* ==================== GAMES42: REDDOG ==================== */
 BUILDERS.reddog=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
   function newDeck(){var d=[];for(var s=0;s<4;s++)for(var r=0;r<13;r++)d.push({r:RANKS[r],s:SUITS[s],v:r+2,red:(s===1||s===2)});for(var i=d.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=d[i];d[i]=d[j];d[j]=t}return d}
@@ -433,8 +483,8 @@ BUILDERS.reddog=function(mount){
   var ODDS={1:5,2:4,3:2};
   function oddsFor(spread){return spread>=4?1:(ODDS[spread]||1)}
   var hist=[],deck=null,c1=null,c2=null,bet0=0,totalBet=0,spread=0,phase="idle",busy=false,raised=false,timers=[];
-  function later(fn,ms){var t=setTimeout(fn,ms);timers.push(t);return t}
-  onCleanup(function(){for(var i=0;i<timers.length;i++)clearTimeout(timers[i])});
+  function later(fn,ms){var t=_bvSetTimeout(fn,ms);timers.push(t);return t}
+  onCleanup(function(){for(var i=0;i<timers.length;i++)_bvClearTimeout(timers[i])});
   function cardHtml(c,cls,d){return '<div class="rd-card '+(cls||"")+(c.red?" red":"")+(ngAnim()?" rd-card-in":"")+'"'+(d?' style="animation-delay:'+(d*120)+'ms"':"")+'>'+'<div class="rk">'+c.r+'</div><div class="st">'+c.s+'</div></div>'}
   function setActions(on){
     $("#reddogRaiseBtn").style.display=on?"":"none";
@@ -539,6 +589,16 @@ BUILDERS.reddog=function(mount){
 };
 /* ==================== GAMES42: TEXASHOLDEM ==================== */
 BUILDERS.texasholdem=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* RTP basis: standard Casino Hold'em paytable (ante bonus up to 100:1, dealer qualifies pair of 4s+) — published RTP for this exact structure is ~97.8% with basic call/fold strategy. */
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
@@ -658,13 +718,23 @@ BUILDERS.texasholdem=function(mount){
     render(false,3);
     function revealTurn(){render(false,4);$("#texasholdemMsg").textContent="Turn dealt..."}
     function revealRiver(){render(false,5);$("#texasholdemMsg").textContent="River dealt — showdown!";showdown()}
-    if(ngAnim()){setTimeout(revealTurn,420);setTimeout(revealRiver,840)}
+    if(ngAnim()){_bvSetTimeout(revealTurn,420);_bvSetTimeout(revealRiver,840)}
     else{revealRiver()}
   });
   addDust($("#texasholdemStage"),10);
 };
 /* ==================== GAMES42: HOLDEMTABLE ==================== */
 BUILDERS.holdemtable=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* RTP basis: pot is 6x bet, house rake is exactly 3% (winner receives 5.82x bet), so RTP is a flat 97.0% whenever the player wins or splits; ties split the raked pot equally. */
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
@@ -695,8 +765,8 @@ BUILDERS.holdemtable=function(mount){
   function bestOf(cards){var best=null;function rec(st,cur){if(cur.length===5){var e=eval5(cur);if(!best||cmpEv(e,best)>0)best=e;return}for(var i=st;i<cards.length;i++){cur.push(cards[i]);rec(i+1,cur);cur.pop()}}rec(0,[]);return best}
   function handName(e){var names=["High Card","Pair","Two Pair","Three of a Kind","Straight","Flush","Full House","Four of a Kind","Straight Flush"];if(e.cat===8&&e.tb[0]===14)return "Royal Flush";return names[e.cat]}
   var hist=[],deck=[],holes=[],comm=[],bet0=0,busy=false,timers=[];
-  function later(fn,ms){if(ngAnim()){var id=setTimeout(fn,ms);timers.push(id)}else{fn()}}
-  onCleanup(function(){for(var i=0;i<timers.length;i++)clearTimeout(timers[i]);timers=[]});
+  function later(fn,ms){if(ngAnim()){var id=_bvSetTimeout(fn,ms);timers.push(id)}else{fn()}}
+  onCleanup(function(){for(var i=0;i<timers.length;i++)_bvClearTimeout(timers[i]);timers=[]});
   function miniHtml(c){return '<div class="htb-card'+(c.red?" red":"")+'"><div class="rk">'+c.r+'</div><div class="st">'+c.s+'</div></div>'}
   function miniBack(){return '<div class="htb-card htb-back"><div class="rk">?</div><div class="st">?</div></div>'}
   function bigHtml(c,d){return '<div class="bac-card '+(c.red?"red ":"")+(ngAnim()?"bac-card-in":"")+'"'+(d!=null?' style="animation-delay:'+(d*90)+'ms"':"")+'>'+'<div class="rk">'+c.r+'</div><div class="st">'+c.s+'</div></div>'}
@@ -785,6 +855,16 @@ BUILDERS.holdemtable=function(mount){
 };
 /* ==================== GAMES42: THREECARDPOKER ==================== */
 BUILDERS.threecardpoker=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* RTP basis: standard Three Card Poker — Ante/Play RTP ~96.6% with Q-6-4 play strategy; Pair Plus paytable (40/30/6/3/1) is the standard published table. */
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
@@ -913,6 +993,16 @@ BUILDERS.threecardpoker=function(mount){
 };
 /* ==================== GAMES42: CARIBBEANSTUD ==================== */
 BUILDERS.caribbeanstud=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* RTP basis: standard Caribbean Stud paytable on the raise bet (Royal 100:1 down to Pair/AK 1:1) with Ace-King dealer qualification — the published RTP for this exact classic paytable is ~94.8% (element of risk basis, optimal raise/fold strategy). */
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
@@ -1029,6 +1119,16 @@ BUILDERS.caribbeanstud=function(mount){
 };
 /* ==================== GAMES42: PAIGOW ==================== */
 BUILDERS.paigow=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* RTP basis: standard Pai Gow Poker with 5% commission on wins (0.95:1), copies go to the dealer, no joker, house-way setting for both sides — published RTP for this structure is ~97.0% with house-way play. */
   var SUITS=["\u2660","\u2665","\u2666","\u2663"],RANKS=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
@@ -1200,6 +1300,16 @@ BUILDERS.paigow=function(mount){
 };
 /* ==================== GAMES42: SICBO ==================== */
 BUILDERS.sicbo=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* RTP basis: Small/Big win on 105 of 216 outcomes (totals in range, triples excluded)
      at mult 2 -> EV 210/216 = 97.22% -> registry "97.2% RTP" is the Small/Big basis. */
@@ -1213,8 +1323,8 @@ BUILDERS.sicbo=function(mount){
     return '<svg class="sb-die" viewBox="0 0 60 60"><rect x="3" y="3" width="54" height="54" rx="11" fill="#f8f4e8" stroke="#caa14f" stroke-width="2.5"/>'+c+'</svg>';
   }
   var hist=[],choice='small',pickDouble=6,pickTotal=10,busy=false,pending=null,timers=[];
-  function later(fn,ms){var t=setTimeout(fn,ms);timers.push(t);return t;}
-  onCleanup(function(){for(var i=0;i<timers.length;i++)clearTimeout(timers[i]);timers=[];if(pending){var p=pending;pending=null;p.finish();}});
+  function later(fn,ms){var t=_bvSetTimeout(fn,ms);timers.push(t);return t;}
+  onCleanup(function(){for(var i=0;i<timers.length;i++)_bvClearTimeout(timers[i]);timers=[];if(pending){var p=pending;pending=null;p.finish();}});
   function pickInfo(){
     if(choice==='small')return 'Small: total 4-10 wins 1:1, except any triple loses.';
     if(choice==='big')return 'Big: total 11-17 wins 1:1, except any triple loses.';
@@ -1313,15 +1423,25 @@ BUILDERS.sicbo=function(mount){
     pending={finish:finish};
     if(ngAnim()){
       showDice([1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6)],true);
-      var iv=setInterval(function(){showDice([1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6)],false);},110);
+      var iv=_bvSetInterval(function(){showDice([1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6)],false);},110);
       timers.push(iv);
-      later(function(){clearInterval(iv);if(pending)finish();},620);
+      later(function(){_bvClearInterval(iv);if(pending)finish();},620);
     }else{finish();}
   });
   addDust($('#sicboStage'),10);
 };
 /* ==================== GAMES42: LUCKY7 ==================== */
 BUILDERS.lucky7=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* Honest RTP math for the exact payouts in the spec:
      Under 7 (sums 2-6): 15/36 outcomes x mult 2 = 30/36 = 83.33%
@@ -1342,8 +1462,8 @@ BUILDERS.lucky7=function(mount){
     probs+='<div class="l7-prow'+(s===7?' l7-seven':'')+'"><span class="l7-plab">'+s+'</span><span class="l7-pbar"><i style="width:'+(SUMCOUNT[s]/6*100).toFixed(1)+'%"></i></span><span class="l7-pval">'+pct.toFixed(1)+'%</span></div>';
   }
   var hist=[],choice='under',busy=false,pending=null,timers=[];
-  function later(fn,ms){var t=setTimeout(fn,ms);timers.push(t);return t;}
-  onCleanup(function(){for(var i=0;i<timers.length;i++)clearTimeout(timers[i]);timers=[];if(pending){var p=pending;pending=null;p.finish();}});
+  function later(fn,ms){var t=_bvSetTimeout(fn,ms);timers.push(t);return t;}
+  onCleanup(function(){for(var i=0;i<timers.length;i++)_bvClearTimeout(timers[i]);timers=[];if(pending){var p=pending;pending=null;p.finish();}});
   mount.innerHTML='<div class="game-layout">'
     +'<div class="panel"><h4>Bet Controls</h4>'
     +betAmountHtml("lucky7Bet","10.00")
@@ -1409,15 +1529,25 @@ BUILDERS.lucky7=function(mount){
     pending={finish:finish};
     if(ngAnim()){
       showDice([rndDie(),rndDie()],true);
-      var iv=setInterval(function(){showDice([rndDie(),rndDie()],false);},110);
+      var iv=_bvSetInterval(function(){showDice([rndDie(),rndDie()],false);},110);
       timers.push(iv);
-      later(function(){clearInterval(iv);if(pending)finish();},620);
+      later(function(){_bvClearInterval(iv);if(pending)finish();},620);
     }else{finish();}
   });
   addDust($('#lucky7Stage'),10);
 };
 /* ==================== GAMES42: SCRATCHCARDS ==================== */
 BUILDERS.scratchcards=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* Prize design (exact, verified by scratchcards-sim.js, 1,000,000 cards):
      71.20% of cards win nothing. 28.80% are winning cards, split by symbol:

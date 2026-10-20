@@ -5,6 +5,16 @@
 
 /* ==================== GAMES42: FRUITSLOTS ==================== */
 BUILDERS.fruitslots=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var CFG={
     syms:[
@@ -63,7 +73,7 @@ BUILDERS.fruitslots=function(mount){
     else if(p.mult>0){stageFx(stage,"shake");sfx.coin();}
     else{stageFx(stage,"lose");sfx.lose();}
   }
-  onCleanup(function(){if(pending){for(var t=0;t<pending.timers.length;t++)clearTimeout(pending.timers[t]);for(var v=0;v<pending.ivs.length;v++)clearInterval(pending.ivs[v]);resolve();}});
+  onCleanup(function(){if(pending){for(var t=0;t<pending.timers.length;t++)_bvClearTimeout(pending.timers[t]);for(var v=0;v<pending.ivs.length;v++)_bvClearInterval(pending.ivs[v]);resolve();}});
   play.addEventListener("click",function(){
     if(busy)return;
     var bet=getBet("fruitslotsBet");if(bet==null)return;
@@ -79,10 +89,10 @@ BUILDERS.fruitslots=function(mount){
       var stops=[520,880,1240];
       for(var col=0;col<3;col++){
         (function(cc){
-          var iv=setInterval(function(){for(var r=0;r<3;r++){var cell=$("#fruitslotsC"+(r*3+cc));cell.innerHTML=CFG.syms[pick()].svg;cell.classList.add("spinning");}},90);
+          var iv=_bvSetInterval(function(){for(var r=0;r<3;r++){var cell=$("#fruitslotsC"+(r*3+cc));cell.innerHTML=CFG.syms[pick()].svg;cell.classList.add("spinning");}},90);
           pending.ivs.push(iv);
-          var tm=setTimeout(function(){
-            clearInterval(iv);
+          var tm=_bvSetTimeout(function(){
+            _bvClearInterval(iv);
             for(var r=0;r<3;r++){var cell=$("#fruitslotsC"+(r*3+cc));cell.innerHTML=CFG.syms[grid[r*3+cc]].svg;cell.classList.remove("spinning");cell.classList.add("land");}
             sfx.coin();
             if(cc===2)resolve();
@@ -99,6 +109,16 @@ BUILDERS.fruitslots=function(mount){
 };
 /* ==================== GAMES42: MYTHICSLOTS ==================== */
 BUILDERS.mythicslots=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var BOLT='<path d="M27 4 12 27h9l-5 17 17-24h-10l6-16z" fill="#ffd479" stroke="#b8860b" stroke-width="1.6" stroke-linejoin="round"/>';
   var CFG={
@@ -197,12 +217,12 @@ BUILDERS.mythicslots=function(mount){
     var stops=[dur,dur+150,dur+300,dur+450,dur+600];
     for(var col=0;col<5;col++){
       (function(cc){
-        var iv=setInterval(function(){
+        var iv=_bvSetInterval(function(){
           for(var row=0;row<3;row++){var el=cellEl(cc,row);el.innerHTML=CFG.syms[(Math.random()*9)|0].svg;el.classList.add("spinning");}
         },90);
         pending.ivs.push(iv);
-        var tm=setTimeout(function(){
-          clearInterval(iv);
+        var tm=_bvSetTimeout(function(){
+          _bvClearInterval(iv);
           for(var row=0;row<3;row++){var el=cellEl(cc,row),v=g[cc][row];el.innerHTML=CFG.syms[v].svg;el.classList.remove("spinning");el.classList.add("land");el.classList.toggle("zeus",v===7);}
           sfx.coin();
           if(cc===4)cb();
@@ -228,7 +248,7 @@ BUILDERS.mythicslots=function(mount){
     else if(mult>0){stageFx(stage,"shake");sfx.coin();}
     else{stageFx(stage,"lose");sfx.lose();}
   }
-  onCleanup(function(){if(pending){for(var t=0;t<pending.timers.length;t++)clearTimeout(pending.timers[t]);for(var v=0;v<pending.ivs.length;v++)clearInterval(pending.ivs[v]);resolve();}});
+  onCleanup(function(){if(pending){for(var t=0;t<pending.timers.length;t++)_bvClearTimeout(pending.timers[t]);for(var v=0;v<pending.ivs.length;v++)_bvClearInterval(pending.ivs[v]);resolve();}});
   play.addEventListener("click",function(){
     if(busy)return;
     var bet=getBet("mythicslotsBet");if(bet==null)return;
@@ -264,7 +284,7 @@ BUILDERS.mythicslots=function(mount){
         highlight(sc.ev);
         $("#mythicslotsWinAmt").textContent=fmt$(sc.cumAfter);
         if(sc.fs)fsBanner.textContent="FREE SPINS \u00b7 "+(sc.left-1)+" LEFT \u00b7 FS WIN "+fmt$(sc.cumAfter-be.pay);
-        var tm=setTimeout(next,ngAnim()?(sc.fs?430:680):0);
+        var tm=_bvSetTimeout(next,ngAnim()?(sc.fs?430:680):0);
         pending.timers.push(tm);
       });
     }
@@ -274,6 +294,16 @@ BUILDERS.mythicslots=function(mount){
 };
 /* ==================== GAMES42: GEMSTONESLOTS ==================== */
 BUILDERS.gemstoneslots=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var CFG={
     syms:[
@@ -373,7 +403,7 @@ BUILDERS.gemstoneslots=function(mount){
     else if(mult>0){stageFx(stage,"shake");sfx.coin();}
     else{stageFx(stage,"lose");sfx.lose();}
   }
-  onCleanup(function(){if(pending){for(var t=0;t<pending.timers.length;t++)clearTimeout(pending.timers[t]);resolve();}});
+  onCleanup(function(){if(pending){for(var t=0;t<pending.timers.length;t++)_bvClearTimeout(pending.timers[t]);resolve();}});
   play.addEventListener("click",function(){
     if(busy)return;
     var bet=getBet("gemstoneslotsBet");if(bet==null)return;
@@ -411,15 +441,15 @@ BUILDERS.gemstoneslots=function(mount){
         cascadeEl.classList.add("on");
         cascadeEl.textContent="CASCADE \u00d7"+idx+" \u00b7 +"+fmt$(s.ev.pay*bet)+" \u00b7 TOTAL "+fmt$(s.cumMult*bet);
         $("#gemstoneslotsWinAmt").textContent=fmt$(s.cumMult*bet);
-        var tm=setTimeout(function(){
+        var tm=_bvSetTimeout(function(){
           if(!pending)return;
           if(s.after)renderGrid(s.after,s.newCells);
-          var tm2=setTimeout(next,300);pending.timers.push(tm2);
+          var tm2=_bvSetTimeout(next,300);pending.timers.push(tm2);
         },520);
         pending.timers.push(tm);
       }else{
         cascadeEl.classList.remove("on");
-        var tm3=setTimeout(next,60);pending.timers.push(tm3);
+        var tm3=_bvSetTimeout(next,60);pending.timers.push(tm3);
       }
     }
     next();
@@ -428,6 +458,16 @@ BUILDERS.gemstoneslots=function(mount){
 };
 /* ==================== GAMES42: ADVENTURESLOTS ==================== */
 BUILDERS.adventureslots=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var CFG={
     syms:[
@@ -542,12 +582,12 @@ BUILDERS.adventureslots=function(mount){
     var stops=[500,650,800,950,1100];
     for(var col=0;col<5;col++){
       (function(cc){
-        var iv=setInterval(function(){
+        var iv=_bvSetInterval(function(){
           for(var row=0;row<3;row++){var el=cellEl(cc,row);el.innerHTML=CFG.syms[(Math.random()*8)|0].svg;el.classList.add("spinning");}
         },90);
         pending.ivs.push(iv);
-        var tm=setTimeout(function(){
-          clearInterval(iv);
+        var tm=_bvSetTimeout(function(){
+          _bvClearInterval(iv);
           for(var row=0;row<3;row++){var el=cellEl(cc,row),v=g[cc][row];el.innerHTML=CFG.syms[v].svg;el.classList.remove("spinning");el.classList.add("land");el.classList.toggle("wild",v===6);}
           sfx.coin();
           if(cc===4)cb();
@@ -568,10 +608,10 @@ BUILDERS.adventureslots=function(mount){
     if(ngAnim()){
       wheelEl.style.transition="transform 3.4s cubic-bezier(.12,.8,.16,1)";
       wheelEl.style.transform="rotate("+wheelRot+"deg)";
-      var tm=setTimeout(function(){
+      var tm=_bvSetTimeout(function(){
         wheelResult.textContent="WHEEL AWARD: "+CFG.wheel.values[segIdx]+"\u00d7 \u00b7 "+fmt$(CFG.wheel.values[segIdx]*pending.totalBet);
         sfx.big();
-        var tm2=setTimeout(function(){wheelWrap.classList.remove("on");done();},1000);
+        var tm2=_bvSetTimeout(function(){wheelWrap.classList.remove("on");done();},1000);
         pending.timers.push(tm2);
       },3500);
       pending.timers.push(tm);
@@ -579,7 +619,7 @@ BUILDERS.adventureslots=function(mount){
       wheelEl.style.transition="none";
       wheelEl.style.transform="rotate("+wheelRot+"deg)";
       wheelResult.textContent="WHEEL AWARD: "+CFG.wheel.values[segIdx]+"\u00d7 \u00b7 "+fmt$(CFG.wheel.values[segIdx]*pending.totalBet);
-      var tm3=setTimeout(function(){wheelWrap.classList.remove("on");done();},350);
+      var tm3=_bvSetTimeout(function(){wheelWrap.classList.remove("on");done();},350);
       pending.timers.push(tm3);
     }
   }
@@ -600,7 +640,7 @@ BUILDERS.adventureslots=function(mount){
     else if(mult>0){stageFx(stage,"shake");sfx.coin();}
     else{stageFx(stage,"lose");sfx.lose();}
   }
-  onCleanup(function(){if(pending){for(var t=0;t<pending.timers.length;t++)clearTimeout(pending.timers[t]);for(var v=0;v<pending.ivs.length;v++)clearInterval(pending.ivs[v]);resolve();}});
+  onCleanup(function(){if(pending){for(var t=0;t<pending.timers.length;t++)_bvClearTimeout(pending.timers[t]);for(var v=0;v<pending.ivs.length;v++)_bvClearInterval(pending.ivs[v]);resolve();}});
   play.addEventListener("click",function(){
     if(busy)return;
     var bet=getBet("adventureslotsBet");if(bet==null)return;
@@ -622,10 +662,10 @@ BUILDERS.adventureslots=function(mount){
       $("#adventureslotsWinAmt").textContent=fmt$(ev.pay);
       if(segIdx>=0){
         $("#adventureslotsMsg").textContent="Compass \u00d7 "+ev.scat+" \u2014 BONUS WHEEL!";
-        var tm=setTimeout(function(){if(pending)runWheel(segIdx,function(){if(pending)resolve();});},ngAnim()?650:60);
+        var tm=_bvSetTimeout(function(){if(pending)runWheel(segIdx,function(){if(pending)resolve();});},ngAnim()?650:60);
         pending.timers.push(tm);
       }else{
-        var tm2=setTimeout(function(){if(pending)resolve();},ngAnim()?550:0);
+        var tm2=_bvSetTimeout(function(){if(pending)resolve();},ngAnim()?550:0);
         pending.timers.push(tm2);
       }
     });
@@ -634,6 +674,16 @@ BUILDERS.adventureslots=function(mount){
 };
 /* ==================== GAMES42: BACCARATSPEED ==================== */
 BUILDERS.baccaratspeed=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   /* RTP basis: standard punto banco with 6-deck shoe and 5% banker commission.
      Banker bet RTP ~98.94%, Player ~98.76%, blended headline 98.8% as listed. */
   var $=function(s){return mount.querySelector(s)};
@@ -729,7 +779,7 @@ BUILDERS.baccaratspeed=function(mount){
       renderRoad();
       $("#baccaratspeedMsg").textContent="Player "+pt+" — Banker "+bt+". "+label+(mult>1?" — Won "+fmt$(payout):(mult===1?" — Stake back":""));
       $("#baccaratspeedRebet").disabled=false;
-      if(mult>1){stageFx(stage,"win");burstFX(stage,{});winBanner(stage,"WON "+fmt$(payout));sfx.win();if(ngAnim()){stage.classList.add("rays-on");setTimeout(function(){stage.classList.remove("rays-on")},1500)}}
+      if(mult>1){stageFx(stage,"win");burstFX(stage,{});winBanner(stage,"WON "+fmt$(payout));sfx.win();if(ngAnim()){stage.classList.add("rays-on");_bvSetTimeout(function(){stage.classList.remove("rays-on")},1500)}}
       else if(mult===1){stageFx(stage,"shake");sfx.click()}
       else{stageFx(stage,"lose");sfx.lose()}
       dealing=false;
@@ -748,7 +798,7 @@ BUILDERS.baccaratspeed=function(mount){
       }
       finishRound();
     }
-    if(ngAnim()){setTimeout(function(){if(!done)third();else finishRound()},100)}else{if(!done)third();else finishRound()}
+    if(ngAnim()){_bvSetTimeout(function(){if(!done)third();else finishRound()},100)}else{if(!done)third();else finishRound()}
   }
   $("#baccaratspeedPlay").addEventListener("click",playRound);
   $("#baccaratspeedRebet").addEventListener("click",function(){
@@ -763,6 +813,16 @@ BUILDERS.baccaratspeed=function(mount){
 };
 /* ==================== GAMES42: BLACKJACKCLASSIC ==================== */
 BUILDERS.blackjackclassic=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   /* RTP basis: standard single-deck blackjack, dealer stands on all 17s,
      blackjack pays 3:2, no splits, insurance available — basic-strategy RTP ~99.4%. */
   var $=function(s){return mount.querySelector(s)};
@@ -792,7 +852,7 @@ BUILDERS.blackjackclassic=function(mount){
     var stage=$("#blackjackclassicStage"),payout=settle("Blackjack Classic",totalBet,mult);
     hist.unshift({t:msg,w:mult>1});histChips($("#blackjackclassicHist"),hist.slice(0,12));
     $("#blackjackclassicMsg").textContent=msg+(mult>1?" — Won "+fmt$(payout):(mult===1?" — Stake back":(mult>0?" — Returned "+fmt$(payout):"")));
-    if(mult>1){stageFx(stage,"win");burstFX(stage,{});winBanner(stage,"WON "+fmt$(payout));sfx.win();if(ngAnim()){stage.classList.add("rays-on");setTimeout(function(){stage.classList.remove("rays-on")},1500)}}
+    if(mult>1){stageFx(stage,"win");burstFX(stage,{});winBanner(stage,"WON "+fmt$(payout));sfx.win();if(ngAnim()){stage.classList.add("rays-on");_bvSetTimeout(function(){stage.classList.remove("rays-on")},1500)}}
     else if(mult===1){stageFx(stage,"shake");sfx.click()}
     else if(mult>0){stageFx(stage,"shake");sfx.click()}
     else{stageFx(stage,"lose");sfx.lose()}
@@ -910,6 +970,16 @@ BUILDERS.blackjackclassic=function(mount){
 };
 /* ==================== GAMES42: EUROPEANROULETTE ==================== */
 BUILDERS.europeanroulette=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   /* RTP basis: single-zero (37 pockets) European wheel. Straight 35:1, dozen 2:1,
      even-money 1:1 — RTP 97.30% (36/37). La Partage lifts even-money bets on zero
      to ~98.65% on those bets; headline stays 97.3% as listed. */
@@ -1011,7 +1081,7 @@ BUILDERS.europeanroulette=function(mount){
     svg.style.transform="rotate("+rot+"deg)";
     $("#europeanrouletteHubLbl").textContent="Spinning";
     $("#europeanrouletteMsg").textContent="Rien ne va plus — no more bets.";
-    spinTimer=setTimeout(function(){
+    spinTimer=_bvSetTimeout(function(){
       spinTimer=null;
       var ret=0;
       for(var key in bets){
@@ -1033,11 +1103,21 @@ BUILDERS.europeanroulette=function(mount){
       bets={};paintChips();spinning=false;spinBtn.disabled=false;spinBtn.textContent="Spin Wheel";
     },ngAnim()?5300:120);
   });
-  onCleanup(function(){if(spinTimer)clearTimeout(spinTimer)});
+  onCleanup(function(){if(spinTimer)_bvClearTimeout(spinTimer)});
   addDust($("#europeanrouletteStage"),10);
 };
 /* ==================== GAMES42: AMERICANROULETTE ==================== */
 BUILDERS.americanroulette=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   /* RTP basis: double-zero American wheel, 38 pockets, standard payouts
      (straight 35:1, dozen 2:1, even-money 1:1, basket 6:1). Every bet returns
      36/38 = 94.74% — the honest double-zero math behind the 94.7% headline. NO La Partage. */
@@ -1145,7 +1225,7 @@ BUILDERS.americanroulette=function(mount){
     svg.style.transform="rotate("+rot+"deg)";
     $("#americanrouletteHubLbl").textContent="Spinning";
     $("#americanrouletteMsg").textContent="No more bets.";
-    spinTimer=setTimeout(function(){
+    spinTimer=_bvSetTimeout(function(){
       spinTimer=null;
       var ret=0;
       for(var key in bets){var w=betWins(key,n);if(w>=0)ret+=bets[key]*(w+1)}
@@ -1164,11 +1244,21 @@ BUILDERS.americanroulette=function(mount){
       bets={};paintChips();spinning=false;spinBtn.disabled=false;spinBtn.textContent="Spin Wheel";
     },ngAnim()?5300:120);
   });
-  onCleanup(function(){if(spinTimer)clearTimeout(spinTimer)});
+  onCleanup(function(){if(spinTimer)_bvClearTimeout(spinTimer)});
   addDust($("#americanrouletteStage"),10);
 };
 /* ==================== GAMES42: PLINKONEON ==================== */
 BUILDERS.plinkoneon=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   /* Payout derivation (binomial): bin k of R rows has probability C(R,k)/2^R.
      Multipliers are symmetric, edge bins highest, centre lowest.
@@ -1245,7 +1335,7 @@ BUILDERS.plinkoneon=function(mount){
         var t=TABLES[rows],mult=t[b.slot];
         var pay=settle("Plinko Neon",b.bet,mult);
         var slots=$("#plinkoneonSlots").querySelectorAll("[data-slot]"),cellEl=slots[b.slot];
-        if(cellEl){cellEl.classList.remove("hot");void cellEl.offsetWidth;cellEl.classList.add("hot");setTimeout(function(){cellEl.classList.remove("hot")},700)}
+        if(cellEl){cellEl.classList.remove("hot");void cellEl.offsetWidth;cellEl.classList.add("hot");_bvSetTimeout(function(){cellEl.classList.remove("hot")},700)}
         var stage=$("#plinkoneonStage");
         if(mult>=10){sfx.big();winBanner(stage,mult+"× — "+fmt$(pay));burstFX(stage,{});stageFx(stage,"win")}
         else if(mult>=1){sfx.win()}
@@ -1256,7 +1346,7 @@ BUILDERS.plinkoneon=function(mount){
     }
     balls=balls.filter(function(b){return !b.done});
     drawBoard();
-    if(alive||balls.length)raf=requestAnimationFrame(loop);else raf=null;
+    if(alive||balls.length)raf=_bvRequestAnimationFrame(loop);else raf=null;
   }
   function drop(){
     var bet=getBet("plinkoneonBet");if(bet==null)return;
@@ -1273,11 +1363,21 @@ BUILDERS.plinkoneon=function(mount){
   paintSlots();sizeCanvas();
   if(typeof ResizeObserver!=="undefined"){var plinkoNeonRO=new ResizeObserver(function(){sizeCanvas()});plinkoNeonRO.observe(cv);onCleanup(function(){plinkoNeonRO.disconnect()})}
   else window.addEventListener("resize",sizeCanvas);
-  onCleanup(function(){if(raf)cancelAnimationFrame(raf);raf=null});
+  onCleanup(function(){if(raf)_bvCancelAnimationFrame(raf);raf=null});
   addDust($("#plinkoneonStage"),10);
 };
 /* ==================== GAMES42: MINESGOLD ==================== */
 BUILDERS.minesgold=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var active=false,minesSet={},mineCount=3,curBet=0,totalBet=0,revealed=0,hist=[];
   var NUG='<svg viewBox="0 0 24 24" fill="none" stroke="#ffd479" stroke-width="1.7" stroke-linejoin="round"><path d="M5 15 L9 7h6l4 8-3 5H8Z" fill="rgba(245,185,66,.35)"/><path d="M9 7l3 5 3-5M12 12v8" opacity=".8"/></svg>';
@@ -1380,7 +1480,7 @@ BUILDERS.minesgold=function(mount){
       hist.unshift({t:"Boom",w:false});histChips($("#minesgoldHist"),hist.slice(0,12));
       renderGrid(true,i);endRound();updStats();
       $("#minesgoldHint").textContent="Boom — that cell hid dynamite. Round lost.";
-      sfx.lose();stageFx(stage,"shake");setTimeout(function(){stageFx(stage,"lose")},70);burstFX(stage,{at:tileAt,colors:["#ff5c5c","#ff8a3d","#ffd479"],n:22});
+      sfx.lose();stageFx(stage,"shake");_bvSetTimeout(function(){stageFx(stage,"lose")},70);burstFX(stage,{at:tileAt,colors:["#ff5c5c","#ff8a3d","#ffd479"],n:22});
     }else{
       var doneList=grid.getAttribute("data-done-list")||"";
       grid.setAttribute("data-done-list",doneList?doneList+","+i:""+i);
@@ -1398,6 +1498,16 @@ BUILDERS.minesgold=function(mount){
 };
 /* ==================== GAMES42: CRASHROCKET ==================== */
 BUILDERS.crashrocket=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var hist=[],running=false,raf=null,myBet=null,totalBet=0,cashedOut=false,crashPt=2.34,startedAt=0,autoAt=0,timers=[];
   var rocketSvg='<svg viewBox="0 0 46 88"><polygon points="23,88 13,64 33,64" fill="#ff9a3c"/><polygon points="23,88 17,66 29,66" fill="#ffd479"/><polygon points="23,2 34,20 12,20" fill="#e63946"/><polygon points="23,2 34,20 23,20" fill="#ff7070"/><rect x="12" y="20" width="22" height="38" rx="4" fill="#e8ecf2"/><rect x="12" y="20" width="22" height="7" fill="#ffd479"/><circle cx="23" cy="38" r="6.5" fill="#14335c" stroke="#8a6a2f" stroke-width="2"/><circle cx="21" cy="36" r="2" fill="#9fc4e8"/><polygon points="12,58 3,76 12,74" fill="#e63946"/><polygon points="34,58 43,76 34,74" fill="#e63946"/><rect x="17" y="58" width="12" height="8" rx="2" fill="#5a5f6a"/></svg>';
@@ -1432,18 +1542,18 @@ BUILDERS.crashrocket=function(mount){
     d.style.opacity="0.9";
     sky.appendChild(d);
     var steps=0;
-    var iv=setInterval(function(){steps++;d.style.opacity=(0.9-steps*0.14)+"";d.style.bottom="calc("+bottomPct+"% - "+(steps*5)+"px)";if(steps>=6){clearInterval(iv);if(d.parentNode)d.parentNode.removeChild(d)}},70);
+    var iv=_bvSetInterval(function(){steps++;d.style.opacity=(0.9-steps*0.14)+"";d.style.bottom="calc("+bottomPct+"% - "+(steps*5)+"px)";if(steps>=6){_bvClearInterval(iv);if(d.parentNode)d.parentNode.removeChild(d)}},70);
     timers.push(iv);
   }
   function endRound(crashedAt){
     running=false;
     var cm=$("#crashrocketMult");
     cm.textContent=crashedAt.toFixed(2)+"×";cm.classList.remove("warm","hot");cm.classList.add("crashed");
-    $("#crashrocketState").textContent="Crashed";
-    var rock=$("#crashrocketRocket");if(rock){rock.classList.add("cr-shake");rock.style.opacity="0.35"}
+    $("#crashrocketState").textContent="Rocket crashed at "+crashedAt.toFixed(2)+"×";
+    var rock=$("#crashrocketRocket");if(rock){rock.classList.remove("cr-shake");rock.classList.add("cr-explode");rock.style.opacity="1"}
     hist.unshift({t:crashedAt.toFixed(2)+"×",w:crashedAt>=2});hist=hist.slice(0,12);histChips($("#crashrocketHist"),hist);
     var stage=$("#crashrocketStage");
-    stageFx(stage,"shake");timers.push(setTimeout(function(){stageFx(stage,"lose")},70));
+    stageFx(stage,"shake");timers.push(_bvSetTimeout(function(){stageFx(stage,"lose")},70));
     if(myBet!==null&&!cashedOut){settle("Crash Rocket",totalBet,0);$("#crashrocketCashVal").textContent=fmt$(0);sfx.lose();burstFX(stage,{colors:["#ff5c5c","#ff8a3d","#ffd479"],n:26})}
     var btn=$("#crashrocketBtn");btn.disabled=false;btn.textContent="Place Bet & Launch";btn.classList.remove("cashout");
     myBet=null;
@@ -1464,7 +1574,7 @@ BUILDERS.crashrocket=function(mount){
     charge(bet);myBet=bet;totalBet=bet;cashedOut=false;crashPt=genCrash();autoAt=parseFloat($("#crashrocketAuto").value)||0;
     $("#crashrocketMyBet").textContent=fmt$(bet);$("#crashrocketCashVal").textContent=fmt$(bet);
     var cm=$("#crashrocketMult");cm.classList.remove("crashed","warm","hot");cm.textContent="1.00×";
-    var rock=$("#crashrocketRocket");rock.classList.remove("cr-shake");rock.style.opacity="1";rock.style.left="8%";rock.style.bottom="4%";rock.style.transform="translateX(-50%) rotate(38deg)";
+    var rock=$("#crashrocketRocket");rock.classList.remove("cr-shake","cr-explode");rock.style.opacity="1";rock.style.left="8%";rock.style.bottom="4%";rock.style.transform="translateX(-50%) rotate(38deg)";
     var sky=$("#crashrocketSky");sky.style.background="linear-gradient(180deg,#1e2a5a 0%,#0b1030 60%,#05070f 100%)";
     var btn=$("#crashrocketBtn");btn.textContent="Cash Out";btn.classList.add("cashout");
     running=true;startedAt=performance.now();
@@ -1485,21 +1595,31 @@ BUILDERS.crashrocket=function(mount){
       frame++;if(frame%5===0)spawnDot();
       $("#crashrocketState").textContent="Climbing… altitude "+m.toFixed(2)+"×";
       if(myBet!==null&&!cashedOut)$("#crashrocketCashVal").textContent=fmt$(myBet*m);
-      if(autoAt>1&&m>=autoAt&&myBet!==null&&!cashedOut){doCashout(autoAt);raf=requestAnimationFrame(loop);return}
+      if(autoAt>1&&m>=autoAt&&myBet!==null&&!cashedOut){doCashout(autoAt);raf=_bvRequestAnimationFrame(loop);return}
       if(m>=crashPt){endRound(crashPt);return}
-      raf=requestAnimationFrame(loop);
+      raf=_bvRequestAnimationFrame(loop);
     };
-    raf=requestAnimationFrame(loop);
+    raf=_bvRequestAnimationFrame(loop);
   }
   $("#crashrocketBtn").addEventListener("click",function(){
     if(!running){startRound();return}
     if(myBet!==null&&!cashedOut){var m=parseFloat($("#crashrocketMult").textContent)||1;doCashout(Math.max(1,m))}
   });
-  onCleanup(function(){running=false;if(raf)cancelAnimationFrame(raf);for(var i=0;i<timers.length;i++){clearTimeout(timers[i]);clearInterval(timers[i])}timers=[]});
+  onCleanup(function(){running=false;if(raf)_bvCancelAnimationFrame(raf);for(var i=0;i<timers.length;i++){_bvClearTimeout(timers[i]);_bvClearInterval(timers[i])}timers=[]});
   addDust($("#crashrocketStage"),10);
 };
 /* ==================== GAMES42: LIMBOTURBO ==================== */
 BUILDERS.limboturbo=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var hist=[],busy=false,timers=[];
   mount.innerHTML='<div class="game-layout">'
@@ -1562,7 +1682,7 @@ BUILDERS.limboturbo=function(mount){
     }
     if(ngAnim()){
       res.className="lt-big";res.textContent="…";
-      timers.push(setTimeout(finish,250));
+      timers.push(_bvSetTimeout(finish,250));
     }else{finish()}
   });
   renderStrip();
@@ -1570,6 +1690,16 @@ BUILDERS.limboturbo=function(mount){
 };
 /* ==================== GAMES42: KENODELUXE ==================== */
 BUILDERS.kenodeluxe=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var hist=[],picks=[],busy=false,timers=[];
   /* Deluxe paytable (total payout multipliers). Hypergeometric EV per pick count:
@@ -1677,8 +1807,8 @@ BUILDERS.kenodeluxe=function(mount){
       if(isHit){hits++;sfx.coin()}
       status.textContent="Drawn "+(di+1)+" / 20 — "+hits+" hit"+(hits===1?"":"s");
       di++;
-      if(di<drawn.length)timers.push(setTimeout(markOne,ngAnim()?170:0));
-      else timers.push(setTimeout(finish,ngAnim()?250:0));
+      if(di<drawn.length)timers.push(_bvSetTimeout(markOne,ngAnim()?170:0));
+      else timers.push(_bvSetTimeout(finish,ngAnim()?250:0));
     }
     markOne();
   });
@@ -1687,6 +1817,16 @@ BUILDERS.kenodeluxe=function(mount){
 };
 /* ==================== GAMES42: MEGAWHEEL ==================== */
 BUILDERS.megawheel=function(mount){
+  // Per-game lifecycle: stop pending async work when navigating away.
+  var _bvDisposed=false,_bvTimers=new Set(),_bvIntervals=new Set(),_bvRafs=new Set();
+  function _bvSetTimeout(fn,ms){var id=window.setTimeout(function(){_bvTimers.delete(id);if(!_bvDisposed)fn();},ms);_bvTimers.add(id);return id;}
+  function _bvClearTimeout(id){window.clearTimeout(id);_bvTimers.delete(id);}
+  function _bvSetInterval(fn,ms){var id=window.setInterval(function(){if(!_bvDisposed)fn();},ms);_bvIntervals.add(id);return id;}
+  function _bvClearInterval(id){window.clearInterval(id);_bvIntervals.delete(id);}
+  function _bvRequestAnimationFrame(fn){var id=window.requestAnimationFrame(function(ts){_bvRafs.delete(id);if(!_bvDisposed)fn(ts);});_bvRafs.add(id);return id;}
+  function _bvCancelAnimationFrame(id){window.cancelAnimationFrame(id);_bvRafs.delete(id);}
+  onCleanup(function(){_bvDisposed=true;_bvTimers.forEach(function(id){window.clearTimeout(id);});_bvTimers.clear();_bvIntervals.forEach(function(id){window.clearInterval(id);});_bvIntervals.clear();_bvRafs.forEach(function(id){window.cancelAnimationFrame(id);});_bvRafs.clear();});
+
   var $=function(s){return mount.querySelector(s)};
   var VALUES=[1,2,5,10,20,40];
   var COUNTS={1:41,2:28,5:14,10:7,20:4,40:2};
@@ -1813,10 +1953,10 @@ BUILDERS.megawheel=function(mount){
     res.textContent="Spinning…";
     if(ngAnim()){
       wrap.style.transform="rotate("+curRot+"deg)";
-      timers.push(setTimeout(finish,3550));
+      timers.push(_bvSetTimeout(finish,3550));
     }else{
       wrap.style.transition="none";wrap.style.transform="rotate("+curRot+"deg)";
-      timers.push(setTimeout(function(){wrap.style.transition="";finish()},30));
+      timers.push(_bvSetTimeout(function(){wrap.style.transition="";finish()},30));
     }
   });
   addDust($("#megawheelStage"),10);

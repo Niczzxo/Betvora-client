@@ -40,3 +40,20 @@ Push the project contents to the repository's `main` branch, then enable GitHub 
 - This remains a frontend practice build. Authentication, balances, bonuses, leaderboards and game outcomes are not backed by a production server.
 - Real cross-user live activity requires a backend and real event data; the site must not imply that simulated activity is genuine.
 - This source pass received static code validation, but a full browser-based visual regression test across all 42 games and mobile breakpoints has not been completed. Individual avatar placement, movement and every game-specific animation still need manual browser verification.
+
+## Gameplay reliability repair pass (2026-10-20)
+
+- Added per-game timeout, interval and animation-frame cleanup for all 59 registered builder functions, preventing stale animation callbacks from mutating a newly opened game screen.
+- Corrected Chicken crossing positions so the character remains inside the board at the start, lane centers and finish.
+- Rebuilt Moles target waves so visible moles spawn immediately, target holes are interactive, hits/bombs have distinct feedback, and round state resets cleanly.
+- Added a persistent Plinko last-drop result panel and reset it when the row count changes.
+- Improved Crash curve scaling and kept the rocket marker visible at the curve head and crash point.
+- Fixed Crash Rocket crash/reset states and impact feedback.
+- Made Dragon Tower's focused floor scroll calculation relative to its own viewport.
+- Added target pulse, mole bob, case idle glow and Chicken finish feedback styles.
+
+### Validation performed
+
+- `node --check` passed for all top-level and game JavaScript files.
+- Registry audit: all 42 game IDs have a matching builder. There are 17 extra builders not currently listed in the 42-game registry.
+- Browser visual regression could not be completed in this environment because Chromium navigation was blocked by the execution environment. Please run the project locally and check the interaction flows in the README instructions before deployment.
