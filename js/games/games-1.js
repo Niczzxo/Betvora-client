@@ -3073,7 +3073,7 @@ BUILDERS.wheel=function(mount){
       let b=stageEl.querySelector(".win-banner");
       if(!b){ b=document.createElement("div"); b.className="win-banner"; stageEl.appendChild(b); }
       b.textContent=text; b.classList.add("show");
-      _bvSetTimeout(()=>b.classList.remove("show"),2600);
+      window.setTimeout(()=>b.classList.remove("show"),2600);
     }
     function histChips(el,items){
       el.innerHTML=items.map(x=>'<span class="hist-chip '+(x.w?"w":"l")+'">'+esc(x.t)+"</span>").join("");
@@ -3103,7 +3103,7 @@ BUILDERS.wheel=function(mount){
           {transform:"translate(calc(-50% + "+dx.toFixed(0)+"px), calc(-50% + "+(dy+130).toFixed(0)+"px)) rotate("+(Math.random()*420-210).toFixed(0)+"deg)",opacity:0}
         ],{duration:760+Math.random()*560,easing:"cubic-bezier(.15,.6,.4,1)"});
         anim.onfinish=()=>p.remove();
-        _bvSetTimeout(()=>{ if(p.parentNode) p.remove(); },1700);
+        window.setTimeout(()=>{ if(p.parentNode) p.remove(); },1700);
       }
     }
     function countUp(el,to,fmt,dur){
@@ -3114,7 +3114,7 @@ BUILDERS.wheel=function(mount){
       const cls= kind==="win"? "fx-win" : kind==="shake"? "fx-shake" : "fx-lose";
       stageEl.classList.remove("fx-win","fx-lose","fx-shake"); void stageEl.offsetWidth;
       stageEl.classList.add(cls);
-      _bvSetTimeout(()=>stageEl.classList.remove(cls),1150);
+      window.setTimeout(()=>stageEl.classList.remove(cls),1150);
     }
 
         function ngAnim(){ return state.anim && !(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches); }
@@ -3138,8 +3138,8 @@ BUILDERS.wheel=function(mount){
             {transform:"translate(calc(-50% + "+dx.toFixed(0)+"px), calc(-50% + "+dy.toFixed(0)+"px)) scale(.55)",opacity:.85}
           ],{duration:640,easing:"cubic-bezier(.3,.7,.4,1)"});
           a.onfinish=function(){c.remove();};
-          _bvSetTimeout(function(){if(c.parentNode)c.remove();},950);
-        } else { _bvSetTimeout(function(){c.remove();},50); }
+          window.setTimeout(function(){if(c.parentNode)c.remove();},950);
+        } else { window.setTimeout(function(){c.remove();},50); }
       }catch(e){}
     }
     /* ---- shared: ambient dust particles on a stage ---- */
