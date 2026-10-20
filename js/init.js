@@ -151,8 +151,8 @@ window.Empty={
     if(tab==="mine") return emptyWrap(SVG.dice,"No bets from you yet",
       "Switch a tab or place your first bet — it will show up here instantly.",
       '<button class="btn btn-green" data-nav="lobby">Play now</button>');
-    return emptyWrap(SVG.crown,"No big demo bets right now",
-      "Simulated demo bets of $250 and up appear here. None are showing at the moment — this feed is illustrative, not real players.");
+    return emptyWrap(SVG.crown,"No practice activity yet",
+      "Sample practice activity appears here; it is not a feed of real players.");
   },
   /* Saved Games shelf */
   saved:function(){

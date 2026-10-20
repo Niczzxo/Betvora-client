@@ -213,16 +213,14 @@ TILE_ARTS.minesgold='<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid sl
     TILE_ARTS.megawheel='<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="t42mw-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b0f1e"/><stop offset="1" stop-color="#12060d"/></linearGradient><radialGradient id="t42mw-g" cx="50%" cy="50%" r="55%"><stop offset="0" stop-color="#f5b942" stop-opacity=".45"/><stop offset="100%" stop-color="#f5b942" stop-opacity="0"/></radialGradient><radialGradient id="t42mw-v" cx="50%" cy="42%" r="75%"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#02060e" stop-opacity=".6"/></radialGradient></defs><rect width="320" height="200" fill="url(#t42mw-bg)"/><rect width="320" height="200" fill="url(#t42mw-g)"/><circle cx="160" cy="104" r="78" fill="#1c1013" stroke="#ffd479" stroke-width="3"/><circle cx="160" cy="104" r="62" fill="none" stroke="#f5b942" stroke-width="14" stroke-dasharray="10 22" opacity=".85"/><circle cx="160" cy="104" r="34" fill="#402035" stroke="#ffd479" stroke-width="2"/><text x="160" y="112" text-anchor="middle" font-size="20" font-weight="900" fill="#ffd479">40×</text><path d="M160 12l10 16h-20z" fill="#ff5c5c"/><g fill="#ffd479"><circle cx="160" cy="22" r="3.4"/><circle cx="232" cy="60" r="3.4"/><circle cx="238" cy="140" r="3.4"/><circle cx="160" cy="186" r="3.4"/><circle cx="82" cy="140" r="3.4"/><circle cx="88" cy="60" r="3.4"/></g><rect width="320" height="200" fill="url(#t42mw-v)"/></svg>';
     /* ---- shared: unified in-stage game header (logo medallion + name + sub + RTP + playing count) ---- */
     function gameHeaderHtml(id){
-      var g=(typeof GAMES!=="undefined"&&GAMES[id])?GAMES[id]:{name:id,sub:"",rtp:"",players:0};
+      var g=(typeof GAMES!=="undefined"&&GAMES[id])?GAMES[id]:{name:id,sub:"",cat:"originals"};
       var logo=(typeof GAME_LOGOS!=="undefined"&&GAME_LOGOS[id])?GAME_LOGOS[id]:"";
-      var art= g.img? '<img src="'+g.img+'" alt="" />' : ((typeof TILE_ARTS!=="undefined"&&TILE_ARTS[id])?TILE_ARTS[id]:"");
-      return '<div class="gh-wrap gh-logo">'
-        +'<div class="gh-art">'+art+'<div class="gh-shade"></div></div>'
+      var category=({originals:"Betvora Originals",instant:"Quick Games",table:"Table Games",cards:"Card Games",slots:"Slots",crash:"Crash Games",numbers:"Number Games",live:"Live-style Games"})[g.cat]||"Betvora Originals";
+      return '<div class="gh-wrap gh-logo game-stage-head">'
+        +'<div class="gh-medal">'+logo+'</div>'
         +'<div class="gh-copy"><div class="gh-name">'+esc(g.name||id)+'</div>'
-        +'<div class="gh-badges"><span class="gh-sub">Betvora Original · Demo</span>'
-        +(g.rtp?'<span class="gh-rtp">'+esc(g.rtp)+'</span>':'')
-        +'<span class="gh-live"><i class="live-dot"></i>Demo game</span></div></div>'
-        +'<div class="gh-medal">'+logo+'</div></div>';
+        +'<div class="gh-badges"><span class="gh-sub">'+esc(category)+'</span>'
+        +'<span class="gh-live"><i class="live-dot"></i>Practice mode</span></div></div></div>';
     }
     /* ---- game title lockup: artwork + logo medallion instead of a text name ---- */
     function gameLogoLockup(id){

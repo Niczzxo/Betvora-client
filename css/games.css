@@ -1788,3 +1788,44 @@ html.no-motion .rays-on .bjc-rays{animation:none!important}
  .chip-pick{gap:6px}
  .chip-pick button{width:40px;height:40px}
 }
+
+
+/* ===== Betvora game polish pass: coherent stage hierarchy and restrained motion ===== */
+.game-stage-head.gh-wrap.gh-logo{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;min-height:60px;margin:0 0 16px;padding:8px 10px;border:0;border-bottom:1px solid rgba(245,185,66,.2);border-radius:0;background:linear-gradient(90deg,rgba(245,185,66,.045),transparent 72%);overflow:visible}
+.game-stage-head.gh-wrap.gh-logo::before{display:none}
+.game-stage-head .gh-medal{grid-column:1;grid-row:1;width:42px;height:42px;justify-self:start;border-radius:12px;background:linear-gradient(145deg,#20334c,#0b1526);border:1px solid rgba(245,185,66,.55);box-shadow:inset 0 1px rgba(255,255,255,.08),0 5px 16px rgba(0,0,0,.22)}
+.game-stage-head .gh-medal svg{width:25px;height:25px}
+.game-stage-head .gh-copy{grid-column:2;grid-row:1;min-width:0}
+.game-stage-head .gh-name{font-size:clamp(16px,1.45vw,21px);letter-spacing:-.025em}
+.game-stage-head .gh-badges{gap:8px;margin-top:4px}
+.game-stage-head .gh-sub{font-size:11px;color:var(--muted);font-weight:650}
+.game-stage-head .gh-live{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border-radius:99px;background:rgba(0,224,101,.08);border:1px solid rgba(0,224,101,.15);color:#9eddb9;font-size:10px;font-weight:750}
+.game-stage-head .gh-live .live-dot{width:6px;height:6px;flex:none}
+.game-layout .stage{background:radial-gradient(ellipse at 50% 0%,rgba(31,65,88,.25),transparent 55%),linear-gradient(145deg,#14243a,#101d30 60%,#0d192a);border-color:rgba(148,178,220,.18);box-shadow:inset 0 1px rgba(255,255,255,.025),0 12px 28px rgba(0,0,0,.12)}
+.game-layout .panel{background:linear-gradient(155deg,#172940,#122139);border-color:rgba(148,178,220,.18);box-shadow:inset 0 1px rgba(255,255,255,.025)}
+.game-layout .stage canvas{height:auto;max-width:100%;image-rendering:auto}
+.game-layout .stage button,.game-layout .panel button{transition:transform .14s ease,filter .14s ease,box-shadow .14s ease,border-color .14s ease}
+.game-layout .stage button:active,.game-layout .panel button:active{transform:translateY(1px) scale(.985)}
+.game-layout .stage button:focus-visible,.game-layout .panel button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+/* Prevent decorative artwork from becoming oversized banners inside every game's board. */
+.game-stage-head .gh-art,.game-stage-head .gh-stage-mark{display:none!important}
+/* Use restrained ambient effects: gameplay animation should be the visual focus. */
+.fx-dust{opacity:.18!important;filter:blur(.15px);pointer-events:none}
+.fx-p{filter:drop-shadow(0 0 3px rgba(245,185,66,.15))}
+.bac-card,.bj-card,.dt-card,.tp-card,.paigow-card,.tc-card{transform-origin:50% 80%;backface-visibility:hidden;will-change:transform,opacity}
+.bac-card-in,.card-deal,.deal-in{animation:cardDealNatural .34s cubic-bezier(.18,.72,.24,1) both}
+@keyframes cardDealNatural{0%{opacity:0;transform:translateY(-18px) rotate(-4deg) scale(.96)}70%{opacity:1;transform:translateY(2px) rotate(1deg) scale(1.01)}100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+.ch-chicken,.ch-fox{will-change:left,transform;transform-origin:50% 80%}
+.ch-chicken.ch-flap{animation:chickenStep .32s ease-in-out}
+@keyframes chickenStep{0%{transform:translateY(0) rotate(0)}35%{transform:translateY(-10px) rotate(-3deg)}65%{transform:translateY(-7px) rotate(3deg)}100%{transform:translateY(0) rotate(0)}}
+.ch-fox.ch-show{animation:foxPounce .38s cubic-bezier(.2,.85,.25,1) both}
+@keyframes foxPounce{0%{opacity:.35;transform:translateY(14px) scale(.86)}65%{opacity:1;transform:translateY(-5px) scale(1.05)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.reel-cell,.myt-cell,.frt-cell{transform-origin:center;backface-visibility:hidden}
+.reel-cell.land,.myt-cell.land,.frt-cell.land{animation:reelLandNatural .28s cubic-bezier(.2,.8,.25,1) both}
+@keyframes reelLandNatural{0%{transform:translateY(-7px);filter:brightness(1.3)}70%{transform:translateY(2px)}100%{transform:translateY(0);filter:brightness(1)}}
+.wheel-box{contain:layout paint}
+.wheel-ball{will-change:transform,left,top}
+.mines-grid .mine-tile{transform-style:preserve-3d;backface-visibility:hidden}
+.action-btn:disabled{opacity:.58;cursor:not-allowed;filter:saturate(.65);box-shadow:none}
+@media(max-width:920px){.game-stage-head.gh-wrap.gh-logo{grid-template-columns:40px minmax(0,1fr);min-height:54px;margin-bottom:12px}.game-stage-head .gh-medal{width:38px;height:38px}}
+@media(max-width:560px){.game-stage-head.gh-wrap.gh-logo{grid-template-columns:34px minmax(0,1fr);gap:9px;padding:5px 2px;min-height:48px}.game-stage-head .gh-medal{width:32px;height:32px;border-radius:9px}.game-stage-head .gh-medal svg{width:20px;height:20px}.game-stage-head .gh-name{font-size:15px}.game-stage-head .gh-sub{font-size:10px}}

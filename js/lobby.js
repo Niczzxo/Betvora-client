@@ -59,17 +59,17 @@
     function gsTileHtml(t){
       return '<button class="gs-tile" data-gs-soon="'+esc(t.n)+'" aria-label="'+esc(t.n)+' — coming soon with the live studio">'
         +'<span class="gs-art" style="background:linear-gradient(150deg,'+t.c[0]+','+t.c[1]+')">'
-        +'<span class="live-chip"><i></i>LIVE</span><span class="soon-chip">SOON</span>'
+        +'<span class="soon-chip">PREVIEW</span>'
         +'<span class="motif">'+(GS_MOTIFS[t.m]||GS_MOTIFS.wheel)+'</span>'
         +'<span class="t-name">'+esc(t.n)+'</span><span class="t-sub">'+esc(t.pub)+'</span></span>'
         +'</button>';
     }
     function gsVisibleTiles(){
       let list=GS_TILES.filter(t=> (gsPub==="all"||t.pub===gsPub) && (!gsQuery || t.n.toLowerCase().includes(gsQuery)));
-      if(gsSort==="popular") list=list.slice().sort((a,b)=>b.players-a.players);
+      if(gsSort==="popular") list=list.slice().sort((a,b)=>a.n.localeCompare(b.n));
       else if(gsSort==="az") list=list.slice().sort((a,b)=>a.n.localeCompare(b.n));
       else if(gsSort==="za") list=list.slice().sort((a,b)=>b.n.localeCompare(a.n));
-      else if(gsSort==="fewest") list=list.slice().sort((a,b)=>a.players-b.players);
+      else if(gsSort==="fewest") list=list.slice().sort((a,b)=>a.n.localeCompare(b.n));
       return list;
     }
     function gsGridHtml(){ return gsVisibleTiles().map(gsTileHtml).join(""); }
@@ -79,19 +79,8 @@
       g.innerHTML=list.map(gsTileHtml).join("");
       const nr=$("#gsNoResults"); if(nr) nr.style.display= list.length? "none":"block";
     }
-    const gsFeed=[];
-    function gsFakeBet(){
-      const t=GS_TILES[Math.floor(Math.random()*GS_TILES.length)];
-      const bet=Math.round((Math.random()<0.05? 300+Math.random()*1800 : 2+Math.random()*220)*100)/100;
-      const r=Math.random(); let mult=0;
-      if(r<0.5) mult=0; else if(r<0.88) mult=Math.round((1.05+Math.random()*2.2)*100)/100; else mult=Math.round((3.5+Math.random()*120)*100)/100;
-      return {game:t.n,player:NAMES[Math.floor(Math.random()*NAMES.length)],time:nowT(),bet:bet,mult:mult,payout:Math.round(bet*mult*100)/100};
-    }
-    let gsSeeded=false;
-    function gsSeed(){ if(gsSeeded) return; gsSeeded=true; for(let i=0;i<10;i++) gsFeed.push(gsFakeBet()); }
-    function gsInitialBetsHtml(){ gsSeed(); return gsFeed.slice(0,10).map(rowHtml).join(""); }
+    function gsInitialBetsHtml(){ return '<tr class="empty-row"><td colspan="7">Your practice rounds will appear here after you play.</td></tr>'; }
     function gsRenderBets(){
-      gsSeed();
       const body=$("#gsBetsBody"); if(!body) return;
       const head=$("#gsTableHead");
       if(gsTab==="race"){
@@ -105,11 +94,10 @@
         }).join("");
         return;
       }
-      if(head) head.innerHTML='<tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Demo bet</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Profit (demo)</th></tr>';
-      let rows=gsFeed;
-      if(gsTab==="mine") rows=state.myBets;
-      if(gsTab==="high") rows=gsFeed.filter(r=>r.bet>=250);
-      body.innerHTML= rows.length? rows.slice(0,10).map(rowHtml).join("") : '<tr class="empty-row"><td colspan="7">'+(gsTab==="mine"?"You haven't placed any bets yet — bets from every Betvora game land here.":"No big demo bets right now.")+'</td></tr>';
+      if(head) head.innerHTML='<tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Practice stake</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Practice result</th></tr>';
+      let rows=state.myBets||[];
+      if(gsTab==="high") rows=rows.filter(r=>r.bet>=250);
+      body.innerHTML= rows.length? rows.slice(0,10).map(rowHtml).join("") : '<tr class="empty-row"><td colspan="7">'+(gsTab==="mine"?"You haven't placed any bets yet — bets from every Betvora game land here.":"No practice activity yet.")+'</td></tr>';
     }
     function gsClearSearch(){
       const inp=$("#gsSearch"); if(inp) inp.value="";
@@ -118,7 +106,7 @@
     }
     document.addEventListener("click",e=>{
       const tile=e.target.closest("[data-gs-soon]");
-      if(tile){ sfx.click(); toast("Coming soon",tile.dataset.gsSoon+" opens with the Betvora live studio. Dice, Crash, Roulette, Plinko, Mines and Betvora Slots are live right now.","gold"); return; }
+      if(tile){ sfx.click(); toast("Not connected",tile.dataset.gsSoon+" is a preview; live-studio integrations are not connected in this build.","gold"); return; }
       const dd=e.target.closest("[data-gs-dd]");
       if(dd){ sfx.click(); const drop=document.getElementById(dd.dataset.gsDd); if(drop){ const was=drop.classList.contains("open"); $$(".drop").forEach(d=>d.classList.remove("open")); if(!was) drop.classList.add("open"); } return; }
       const pub=e.target.closest("[data-gs-pub]");
@@ -134,13 +122,7 @@
     document.addEventListener("input",e=>{
       if(e.target && e.target.id==="gsSearch"){ gsQuery=e.target.value.trim().toLowerCase(); const b=$("#gsSearchBox"); if(b) b.classList.toggle("has-q",!!gsQuery); gsRenderGrid(); }
     });
-    setInterval(()=>{
-      if(motionOff()) return;
-      if(Math.random()<0.75){ gsFeed.unshift(gsFakeBet()); if(gsFeed.length>40) gsFeed.pop(); }
-      if(document.getElementById("gsGrid")){
-        if(gsTab!=="mine" && gsTab!=="race") gsRenderBets();
-      }
-    },3600);
+    setInterval(()=>{ if(document.getElementById("gsGrid")) gsRenderBets(); },3600);
     /* ==================== BURST GAMES BROWSE ==================== */
     const BG_MOTIFS=Object.assign({}, GS_MOTIFS, {
       plane:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21.5 2.5 3 10.8l6.8 2.7 2.7 6.8 9-17.8Z"/><path d="M9.8 13.5 21.5 2.5"/></svg>',
@@ -208,10 +190,10 @@
     }
     function bgVisibleTiles(){
       let list=BG_TILES.filter(t=> (bgPub==="all"||t.pub===bgPub) && (!bgQuery || t.n.toLowerCase().includes(bgQuery)));
-      if(bgSort==="popular") list=list.slice().sort((a,b)=>b.players-a.players);
+      if(bgSort==="popular") list=list.slice().sort((a,b)=>a.n.localeCompare(b.n));
       else if(bgSort==="az") list=list.slice().sort((a,b)=>a.n.localeCompare(b.n));
       else if(bgSort==="za") list=list.slice().sort((a,b)=>b.n.localeCompare(a.n));
-      else if(bgSort==="fewest") list=list.slice().sort((a,b)=>a.players-b.players);
+      else if(bgSort==="fewest") list=list.slice().sort((a,b)=>a.n.localeCompare(b.n));
       return list;
     }
     function bgGridHtml(){ return bgVisibleTiles().slice(0,bgShown).map(bgTileHtml).join(""); }
@@ -224,19 +206,8 @@
       const wrap=$("#bgLoadWrap"); if(wrap) wrap.style.display= list.length>bgShown? "":"none";
       const c=$("#bgCount"); if(c) c.textContent=bgCountText(list);
     }
-    const bgFeed=[];
-    function bgFakeBet(){
-      const t=BG_TILES[Math.floor(Math.random()*BG_TILES.length)];
-      const bet=Math.round((Math.random()<0.05? 250+Math.random()*1500 : 1+Math.random()*160)*100)/100;
-      const r=Math.random(); let mult=0;
-      if(r<0.48) mult=0; else if(r<0.9) mult=Math.round((1.02+Math.random()*2.2)*100)/100; else mult=Math.round((3.5+Math.random()*160)*100)/100;
-      return {game:t.n,player:NAMES[Math.floor(Math.random()*NAMES.length)],time:nowT(),bet:bet,mult:mult,payout:Math.round(bet*mult*100)/100};
-    }
-    let bgSeeded=false;
-    function bgSeed(){ if(bgSeeded) return; bgSeeded=true; for(let i=0;i<10;i++) bgFeed.push(bgFakeBet()); }
-    function bgInitialBetsHtml(){ bgSeed(); return bgFeed.slice(0,10).map(rowHtml).join(""); }
+    function bgInitialBetsHtml(){ return '<tr class="empty-row"><td colspan="7">Your practice rounds will appear here after you play.</td></tr>'; }
     function bgRenderBets(){
-      bgSeed();
       const body=$("#bgBetsBody"); if(!body) return;
       const head=$("#bgTableHead");
       if(bgTab==="race"){
@@ -250,11 +221,10 @@
         }).join("");
         return;
       }
-      if(head) head.innerHTML='<tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Demo bet</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Profit (demo)</th></tr>';
-      let rows=bgFeed;
-      if(bgTab==="mine") rows=state.myBets;
-      if(bgTab==="high") rows=bgFeed.filter(r=>r.bet>=200);
-      body.innerHTML= rows.length? rows.slice(0,10).map(rowHtml).join("") : '<tr class="empty-row"><td colspan="7">'+(bgTab==="mine"?"You haven't placed any bets yet — bets from every Betvora game land here.":"No big demo bets right now.")+'</td></tr>';
+      if(head) head.innerHTML='<tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Practice stake</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Practice result</th></tr>';
+      let rows=state.myBets||[];
+      if(bgTab==="high") rows=rows.filter(r=>r.bet>=200);
+      body.innerHTML= rows.length? rows.slice(0,10).map(rowHtml).join("") : '<tr class="empty-row"><td colspan="7">'+(bgTab==="mine"?"You haven't placed any bets yet — bets from every Betvora game land here.":"No practice activity yet.")+'</td></tr>';
     }
     function bgClearSearch(){
       const inp=$("#bgSearch"); if(inp) inp.value="";
@@ -263,7 +233,7 @@
     }
     document.addEventListener("click",e=>{
       const tile=e.target.closest("[data-bg-soon]");
-      if(tile){ sfx.click(); toast("Coming soon",tile.dataset.bgSoon+" is in integration testing. Crash, Dice, Plinko and Mines are live right now as Betvora Originals.","gold"); return; }
+      if(tile){ sfx.click(); toast("Not connected",tile.dataset.bgSoon+" is a preview; external game integrations are not connected in this build.","gold"); return; }
       const dd=e.target.closest("[data-bg-dd]");
       if(dd){ sfx.click(); const drop=document.getElementById(dd.dataset.bgDd); if(drop){ const was=drop.classList.contains("open"); $$(".drop").forEach(d=>d.classList.remove("open")); if(!was) drop.classList.add("open"); } return; }
       const pub=e.target.closest("[data-bg-pub]");
@@ -280,13 +250,7 @@
     document.addEventListener("input",e=>{
       if(e.target && e.target.id==="bgSearch"){ bgQuery=e.target.value.trim().toLowerCase(); bgShown=BG_PAGE; const b=$("#bgSearchBox"); if(b) b.classList.toggle("has-q",!!bgQuery); bgRenderGrid(); }
     });
-    setInterval(()=>{
-      if(motionOff()) return;
-      if(Math.random()<0.75){ bgSeed(); bgFeed.unshift(bgFakeBet()); if(bgFeed.length>40) bgFeed.pop(); }
-      if(document.getElementById("bgGrid")){
-        if(bgTab!=="mine" && bgTab!=="race") bgRenderBets();
-      }
-    },3400);
+    setInterval(()=>{ if(document.getElementById("bgGrid")) bgRenderBets(); },3400);
     /* ==================== SEARCH ==================== */
     const searchInput=$("#searchInput");
     searchInput.addEventListener("input",()=>{
@@ -319,8 +283,8 @@
       return '<button class="game-card" data-nav="game:'+id+'" aria-label="Open '+esc(g.name)+'">'
         +'<span class="thumb'+(g.img?"":" noimg")+'">'+art
         +'<span class="game-category-chip">'+esc(category)+'</span>'
-        +'<span class="rtp">'+(g.rtp||"DEMO")+'</span><span class="g-heart'+(savedSet.has(id)?" on":"")+'" role="button" tabindex="0" data-save-toggle="'+id+'" aria-pressed="'+(savedSet.has(id)?"true":"false")+'" aria-label="Save '+esc(g.name)+' to Saved Games" title="Save to Saved Games"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>'
-        +'<span class="play-veil"><span class="play-circ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></span><span>Play demo</span></span></span>'
+        +'<span class="rtp">Practice</span><span class="g-heart'+(savedSet.has(id)?" on":"")+'" role="button" tabindex="0" data-save-toggle="'+id+'" aria-pressed="'+(savedSet.has(id)?"true":"false")+'" aria-label="Save '+esc(g.name)+' to Saved Games" title="Save to Saved Games"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>'
+        +'<span class="play-veil"><span class="play-circ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></span><span>Play</span></span></span>'
         +'<span class="g-meta"><span><h3>'+esc(g.name)+'</h3><span class="g-sub">'+esc(g.sub||category)+'</span></span>'
         +'<span class="g-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg></span></span></button>';
     }
@@ -397,38 +361,19 @@
     $$(".hero-dot").forEach(d=>d.addEventListener("click",()=>heroGo(parseInt(d.dataset.slide,10))));
     heroTimer=setInterval(()=>{ if(!motionOff()) heroGo(heroIdx+1); },6000);
 
-    /* ==================== TICKERS & LIVE FEED ==================== */
-    let jackpot=1284392.18, online=48213, paid=8412905;
-    setInterval(()=>{
-      if(motionOff()) return;
-      jackpot+=Math.random()*38+4; paid+=Math.floor(Math.random()*900+80);
-      online=Math.max(41000,online+Math.floor(Math.random()*161-78));
-      tweenFromLast($("#jackpotVal"),jackpot,fmt$,2600);
-      tweenFromLast($("#paidVal"),paid,function(v){ return "$"+fmtN(v); },2600);
-      tweenFromLast($("#onlineVal"),online,fmtN,2600);
-    },2600);
-    const NAMES=["CryptoWhale99","LuckyLena","SpinDoctor","MoonBettor","SilentShark","DiceQueen","HighVoltage","VoraRunner","BetStorm","NovaKid","PixelPete","TurboTara","GhostChip","IronBanker","VelvetViper","ZeroCool","MegaMint","OrbitOllie","QuartzQueen","BlazeBet"];
-    const feedRows=[];
-    function fakeBet(){
-      const ids=Object.keys(GAMES); const g=GAMES[ids[Math.floor(Math.random()*ids.length)]];
-      const bet=Math.round((Math.random()<0.06? 400+Math.random()*2600 : 2+Math.random()*220)*100)/100;
-      const r=Math.random(); let mult=0;
-      if(r<0.52) mult=0; else if(r<0.9) mult=Math.round((1.1+Math.random()*2.4)*100)/100; else mult=Math.round((3.5+Math.random()*38)*100)/100;
-      return {game:g.name,player:NAMES[Math.floor(Math.random()*NAMES.length)],time:nowT(),bet:bet,mult:mult,payout:Math.round(bet*mult*100)/100};
-    }
-    for(let i=0;i<9;i++) feedRows.push(fakeBet());
+    /* ==================== PRACTICE ACTIVITY ==================== */
+    /* Do not animate fabricated jackpot, online-player or payout totals as if they were real. */
+    /* Recent Activity uses only bets generated in this browser session. A real cross-user feed needs a backend. */
     function renderFeed(){
       const body=$("#feedBody"); if(!body) return;
-      let rows=feedRows;
-      if(state.feedTab==="mine") rows=state.myBets;
-      if(state.feedTab==="high") rows=feedRows.filter(r=>r.bet>=250);
-      body.innerHTML= rows.length? rows.slice(0,12).map(r=>rowHtml(r)).join("") : '<tr class="empty-row"><td colspan="7">'+Empty.feed(state.feedTab)+"</td></tr>";
+      let rows=state.myBets||[];
+      if(state.feedTab==="high") rows=rows.filter(r=>r.bet>=250);
+      body.innerHTML= rows.length? rows.slice(0,12).map(r=>rowHtml(r)).join("") : '<tr class="empty-row"><td colspan="7">'+(state.feedTab==="mine"?"Your recent practice rounds will appear here after you play.":"No activity yet. Results from your current session will appear here.")+"</td></tr>";
     }
     $$("#feedTabs button").forEach(b=>b.addEventListener("click",()=>{
       $$("#feedTabs button").forEach(x=>x.classList.toggle("on",x===b));
       state.feedTab=b.dataset.feed; renderFeed(); sfx.click();
     }));
-    setInterval(()=>{ if(motionOff()) return; feedRows.unshift(fakeBet()); if(feedRows.length>40) feedRows.pop(); if(state.feedTab!=="mine") renderFeed(); },3400);
     /* ==================== LOBBY: CATEGORY ROWS (reference layout) ==================== */
     const CHEV_L='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 5.5-6.5 6.5 6.5 6.5"/></svg>';
     const CHEV_R='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg>';
@@ -441,7 +386,7 @@
       grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
       gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7m0 0H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7Zm0 0h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z"/></svg>'
     };
-    const byPlayers=Object.keys(GAMES).slice().sort((a,b)=>GAMES[b].players-GAMES[a].players);
+    const byPlayers=Object.keys(GAMES).slice().sort((a,b)=>GAMES[a].name.localeCompare(GAMES[b].name));
     const ROW_CATS={
       popular:{title:"Most Popular",tiles: byPlayers.map(id=>({game:id}))},
       originals:{title:"Betvora Originals",tiles: Object.keys(GAMES).map(id=>({game:id}))},
@@ -577,7 +522,7 @@
       if(key==="refer"){
         requireAuth(()=>{
           const code="BETVORA-"+(state.user? acctId(state.user.email).slice(3):"GUEST");
-          const link="betvora.demo/join?ref="+code;
+          const link=location.origin+location.pathname+"?ref="+code;
           if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(link).then(()=>toast("Referral link copied","Share it — you earn $25 for every friend who makes a first deposit.")).catch(()=>toast("Your referral code",code)); }
           else toast("Your referral code",code);
         });

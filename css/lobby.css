@@ -264,8 +264,8 @@ html.no-motion #jackpotVal{animation:none!important}
 html.no-motion .vp-marquee::after{animation:none!important}
 
 /* ===== Live Activity panel: honest demo labelling + status + mobile ===== */
-.demo-chip{display:inline-flex;align-items:center;flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,185,66,.5);background:rgba(245,185,66,.1);padding:5px 10px;border-radius:99px;white-space:nowrap}
-html[data-theme="light"] .demo-chip{color:#9a6a08}
+.sample-chip{display:inline-flex;align-items:center;flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,185,66,.5);background:rgba(245,185,66,.1);padding:5px 10px;border-radius:99px;white-space:nowrap}
+html[data-theme="light"] .sample-chip{color:#9a6a08}
 .status-pill{display:inline-flex;align-items:center;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:99px;border:1px solid;white-space:nowrap}
 .status-pill.won{color:var(--green);border-color:rgba(0,224,101,.45);background:rgba(0,224,101,.09)}
 .status-pill.lost{color:var(--faint);border-color:var(--line2);background:transparent}

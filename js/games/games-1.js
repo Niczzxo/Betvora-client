@@ -2742,7 +2742,7 @@ BUILDERS.wheel=function(mount){
 };
     function openGame(id){
       cleanupFns.splice(0).forEach(f=>{try{f();}catch(e){}});
-      /* Guests get a session-only play-money demo balance; no payment or real-money wagering. */
+      /* Guests use session-only practice credits; no payment or real-money wagering. */
       if(!state.user && state.balance<=0) state.balance=1000;
       state.view="game"; state.game=id;
       $$(".view").forEach(v=>v.classList.remove("active"));
@@ -2750,7 +2750,7 @@ BUILDERS.wheel=function(mount){
       $$("#sidebar .side-item[data-nav]").forEach(b=>b.classList.toggle("active",b.dataset.nav==="game:"+id));
       $$(".bottom-nav button[data-bnav]").forEach(b=>b.classList.remove("on"));
       $("#gameTitle").innerHTML=gameLogoLockup(id);
-      $("#gameSub").textContent="Betvora Original · "+GAMES[id].rtp+" · Provably Fair";
+      $("#gameSub").textContent="Betvora Originals · Practice mode";
       $("#gameMount").innerHTML="";
       Skel.mountSkel($("#gameMount"));
       requestAnimationFrame(()=>{ if(state.view==="game" && state.game===id) BUILDERS[id]($("#gameMount")); });

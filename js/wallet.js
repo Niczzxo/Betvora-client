@@ -69,7 +69,7 @@
       $("#bellAnchor").style.display="none";
       $("#userAnchor").style.display="none";
       $$(".drop").forEach(d=>d.classList.remove("open"));
-      toast("Logged out","See you soon. Your demo session stays in this tab.");
+      toast("Logged out","See you soon. Your practice session stays in this tab.");
     }
     $("#logoutBtn").addEventListener("click",doLogout);
     $("#profLogoutBtn").addEventListener("click",doLogout);
@@ -347,9 +347,9 @@ function drawQrToCanvas(text, canvas, target) {
     function rndFrom(cs,n){ let s=""; for(let i=0;i<n;i++) s+=cs.charAt(Math.floor(Math.random()*cs.length)); return s; }
     const B58="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     const DEP_CURS={
-      USDT:{name:"USDT", summary:"USDT · Tether (TRC20)", addrLabel:"Your USDT deposit address", netChip:"Network · TRC20 (demo)", curChip:"Currency · USDT Tether", tx:"USDT (TRC20)", gen:()=>"T"+rndFrom(B58,33)},
-      BTC:{name:"BTC", summary:"BTC · Bitcoin", addrLabel:"Your Bitcoin deposit address", netChip:"Network · Bitcoin (demo)", curChip:"Currency · BTC Bitcoin", tx:"Bitcoin (BTC)", gen:()=>"bc1q"+rndFrom("023456789acdefghjklmnpqrstuvwxyz",38)},
-      GRAM:{name:"GRAM", summary:"GRAM · Gram (TON)", addrLabel:"Your Gram deposit address", netChip:"Network · TON (demo)", curChip:"Currency · GRAM Gram", tx:"Gram (TON)", gen:()=>"EQ"+rndFrom("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",46)}
+      USDT:{name:"USDT", summary:"USDT · Tether (TRC20)", addrLabel:"Your USDT deposit address", netChip:"Network · TRC20 (practice)", curChip:"Currency · USDT Tether", tx:"USDT (TRC20)", gen:()=>"T"+rndFrom(B58,33)},
+      BTC:{name:"BTC", summary:"BTC · Bitcoin", addrLabel:"Your Bitcoin deposit address", netChip:"Network · Bitcoin (practice)", curChip:"Currency · BTC Bitcoin", tx:"Bitcoin (BTC)", gen:()=>"bc1q"+rndFrom("023456789acdefghjklmnpqrstuvwxyz",38)},
+      GRAM:{name:"GRAM", summary:"GRAM · Gram (TON)", addrLabel:"Your Gram deposit address", netChip:"Network · TON (practice)", curChip:"Currency · GRAM Gram", tx:"Gram (TON)", gen:()=>"EQ"+rndFrom("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",46)}
     };
     let depCur="USDT";
     const depAddrs={};
@@ -443,7 +443,7 @@ function drawQrToCanvas(text, canvas, target) {
       drawDepQr();
       startDepClock();
       sfx.click();
-      toast("New address generated","A fresh "+depCur+" demo address and a new 30-minute window are ready.");
+      toast("Practice-only address generated","A fresh "+depCur+" practice-only address and a new 30-minute window are ready.");
     });
     $("#depNextBtn").addEventListener("click",()=>{
       const amt=parseFloat($("#depAmount").value);
@@ -528,5 +528,5 @@ function drawQrToCanvas(text, canvas, target) {
       state.balance-=amt; renderBalance(); addTx("wd","Withdrawal · USDT",-amt); sfx.coin();
       $("#wdAmount").value=""; $("#wdAddress").value="";
       err.textContent=""; err.classList.remove("show");
-      toast("Withdrawal sent",fmt$(amt)+" is on its way to your wallet (demo).","gold");
+      toast("Withdrawal sent",fmt$(amt)+" is on its way to your practice wallet.","gold");
     });
