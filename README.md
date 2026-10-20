@@ -72,3 +72,13 @@ Push the contents of this directory to the repo's `main` branch, then enable
 Pages: Settings → Pages → Deploy from branch → `main` → `/(root)`.
 
 Live: https://niczzxo.github.io/Betvora-client/
+
+
+## Visual update (October 2026)
+
+- Refined game-card styling with consistent artwork proportions, category labels, clearer play affordances, and responsive sizing.
+- Removed the extra logo medallion overlay on cards so it no longer obscures or conflicts with the game's artwork.
+- Replaced hue-shifted duplicates in the New Games row with original SVG concept art generated for each preview title.
+- Fixed the New Games row to reference valid game concepts instead of undefined registry IDs.
+- The current source includes 32 registered playable demo games and 10 clearly marked preview concepts (42 card entries in the New Games catalogue target). The 10 previews are not yet independent playable games.
+- This remains a play-money demonstration; there is no real-money wagering or verified real-player live activity.

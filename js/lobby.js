@@ -311,22 +311,45 @@
     /* ==================== LOBBY: GAMES GRID ==================== */
     function gameCardHtml(id){
       const g=GAMES[id];
-      return '<button class="game-card" data-nav="game:'+id+'">'
-        +'<span class="thumb'+(g.img?"":" noimg")+'">'+(g.img?'<img src="'+g.img+'" alt="'+esc(g.name)+' game artwork" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()" />':'<span class="tile-art">'+(TILE_ARTS[id]||"")+'</span>')
-        +'<span class="g-logo">'+(GAME_LOGOS[id]||"")+'</span>'
-        +'<span class="rtp">'+g.rtp+'</span><span class="g-heart'+(savedSet.has(id)?" on":"")+'" role="button" tabindex="0" data-save-toggle="'+id+'" aria-pressed="'+(savedSet.has(id)?"true":"false")+'" aria-label="Save '+esc(g.name)+' to Saved Games" title="Save to Saved Games"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>'
-        +'<span class="play-veil"><span class="play-circ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></span></span></span>'
-        +'<span class="g-meta"><span><h3>'+g.name+'</h3><span class="g-sub">'+g.sub+'</span></span>'
+      if(!g) return '';
+      const art = g.img
+        ? '<img src="'+g.img+'" alt="'+esc(g.name)+' artwork" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()" />'
+        : '<span class="tile-art">'+(TILE_ARTS[id]||'')+'</span>';
+      const category = (g.cat || (["blackjack","baccarat","videopoker"].includes(id)?"Table Games":"Betvora Originals"));
+      return '<button class="game-card" data-nav="game:'+id+'" aria-label="Open '+esc(g.name)+'">'
+        +'<span class="thumb'+(g.img?"":" noimg")+'">'+art
+        +'<span class="game-category-chip">'+esc(category)+'</span>'
+        +'<span class="rtp">'+(g.rtp||"DEMO")+'</span><span class="g-heart'+(savedSet.has(id)?" on":"")+'" role="button" tabindex="0" data-save-toggle="'+id+'" aria-pressed="'+(savedSet.has(id)?"true":"false")+'" aria-label="Save '+esc(g.name)+' to Saved Games" title="Save to Saved Games"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>'
+        +'<span class="play-veil"><span class="play-circ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></span><span>Play demo</span></span></span>'
+        +'<span class="g-meta"><span><h3>'+esc(g.name)+'</h3><span class="g-sub">'+esc(g.sub||category)+'</span></span>'
         +'<span class="g-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg></span></span></button>';
     }
+    function variantArtSvg(v,parentId){
+      const name=String(v.n||"Game");
+      const key=name.toLowerCase();
+      const themes=[
+        {test:/crash|rocket|jet|sky/,icon:"🚀",a:"#00e065",b:"#0c4560"},
+        {test:/plinko/,icon:"●",a:"#27e5c0",b:"#2437a8"},
+        {test:/mine|gem/,icon:"◆",a:"#46f5ad",b:"#5b21b6"},
+        {test:/slot|fruit|bonanza|dragon/,icon:"777",a:"#f5b942",b:"#b91c5c"},
+        {test:/wheel|roulette/,icon:"◉",a:"#f5b942",b:"#9f1239"},
+        {test:/card|poker|baccarat|blackjack|teen|hold'em|holdem|stud|paigow|war/,icon:"A♠",a:"#60a5fa",b:"#7c3aed"},
+        {test:/dice|keno|lucky|sic bo/,icon:"⚄",a:"#00e065",b:"#b45309"},
+        {test:/tower|adventure/,icon:"♜",a:"#f5b942",b:"#14532d"},
+        {test:/scratch/,icon:"★",a:"#f472b6",b:"#7c2d12"}
+      ];
+      const t=themes.find(x=>x.test.test(key))||{icon:"✦",a:"#00e065",b:"#1d4ed8"};
+      const safe=name.replace(/[&<>"]/g,"");
+      return '<svg class="variant-art-svg" viewBox="0 0 320 200" role="img" aria-label="'+esc(safe)+' artwork" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="va'+(v.h||0)+'" x1="0" y1="0" x2="1" y2="1"><stop stop-color="'+t.a+'"/><stop offset="1" stop-color="'+t.b+'"/></linearGradient><radialGradient id="vb'+(v.h||0)+'"><stop stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#07111f" stop-opacity=".9"/></radialGradient></defs><rect width="320" height="200" fill="#07111f"/><rect width="320" height="200" fill="url(#va'+(v.h||0)+')" opacity=".55"/><circle cx="160" cy="100" r="78" fill="#06101d" stroke="'+t.a+'" stroke-opacity=".8" stroke-width="2"/><circle cx="160" cy="100" r="63" fill="url(#vb'+(v.h||0)+')" stroke="#f5b942" stroke-opacity=".6"/><path d="M0 160 Q80 115 150 175 T320 130 V200 H0Z" fill="#020711" opacity=".6"/><text x="160" y="118" text-anchor="middle" font-size="'+(t.icon.length>2?42:66)+'" font-weight="900" font-family="Arial,sans-serif" fill="#fff" stroke="#06101d" stroke-width="1.2" paint-order="stroke">'+t.icon+'</text><circle cx="48" cy="42" r="3" fill="#fff"/><circle cx="270" cy="46" r="2" fill="'+t.a+'"/><circle cx="260" cy="160" r="4" fill="#f5b942"/><path d="M35 150L90 95M235 80L285 35" stroke="#fff" stroke-opacity=".12" stroke-width="2"/><text x="160" y="184" text-anchor="middle" font-size="12" letter-spacing="2" font-weight="700" fill="#dbeafe">'+esc(safe.toUpperCase())+'</text></svg>';
+    }
     function variantCardHtml(v,parentId){
-      const g=GAMES[parentId];
-      return '<button class="game-card soon" data-soon="'+esc(v.n)+'" data-parent="'+esc(g.name)+'">'
-        +'<span class="thumb"><img src="'+g.img+'" alt="'+esc(v.n)+' game artwork" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()" style="filter:hue-rotate('+v.h+'deg) saturate(1.15)" /><span class="v-duo" style="--h:'+v.h+'"></span>'
-        +'<span class="g-logo">'+(GAME_LOGOS[parentId]||"")+'</span>'
-        +'<span class="soon-chip">SOON</span>'
-        +'<span class="play-veil"><span class="play-circ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></span></span></span>'
-        +'<span class="g-meta"><span><h3>'+v.n+'</h3><span class="g-sub">Betvora Studios</span></span>'
+      const g=GAMES[parentId]||{name:"Betvora Studios"};
+      const label = v.status || "PREVIEW";
+      return '<button class="game-card soon" type="button" data-soon="'+esc(v.n)+'" data-parent="'+esc(g.name)+'" aria-label="'+esc(v.n)+' preview">'
+        +'<span class="thumb variant-thumb">'+variantArtSvg(v,parentId)
+        +'<span class="preview-chip">'+label+'</span>'
+        +'<span class="play-veil"><span class="play-circ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></span><span>Preview</span></span></span>'
+        +'<span class="g-meta"><span><h3>'+esc(v.n)+'</h3><span class="g-sub">Betvora game concept</span></span>'
         +'<span class="g-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg></span></span></button>';
     }
     function tileHtml(t){ return t.game? gameCardHtml(t.game) : variantCardHtml(t.v,t.parent); }
@@ -426,7 +449,18 @@
       mines:{title:"Mines",tiles:[{game:"mines"},{v:{n:"Mines Gold",h:40},parent:"mines"},{v:{n:"Turbo Mines",h:160},parent:"mines"},{v:{n:"Minesweeper",h:240},parent:"mines"},{v:{n:"Mine Gems",h:320},parent:"mines"}]},
       crash:{title:"Crash Games",tiles:[{game:"crash"},{v:{n:"Crash X",h:60},parent:"crash"},{v:{n:"Turbo Crash",h:150},parent:"crash"},{v:{n:"Jet Crash",h:230},parent:"crash"},{v:{n:"Sky Rocket",h:310},parent:"crash"}]},
       more:{title:"More Games",tiles:[{game:"dice"},{game:"roulette"},{game:"slots"},{game:"keno"},{game:"hilo"},{game:"limbo"},{game:"wheel"}]},
-      new42:{title:"New Games",tiles:[{game:"dragontiger"},{game:"teenpatti"},{game:"andarbahar"},{game:"war"},{game:"reddog"},{game:"texasholdem"},{game:"holdemtable"},{game:"threecardpoker"},{game:"caribbeanstud"},{game:"paigow"},{game:"sicbo"},{game:"lucky7"},{game:"scratchcards"},{game:"fruitslots"},{game:"mythicslots"},{game:"gemstoneslots"},{game:"adventureslots"},{game:"baccaratspeed"},{game:"blackjackclassic"},{game:"europeanroulette"},{game:"americanroulette"},{game:"plinkoneon"},{game:"minesgold"},{game:"crashrocket"},{game:"limboturbo"},{game:"kenodeluxe"},{game:"megawheel"}]}
+      new42:{title:"New Games",tiles:[
+        {v:{n:"Dragon Tiger",h:31},parent:"baccarat"},
+        {v:{n:"Teen Patti",h:72},parent:"blackjack"},
+        {v:{n:"Andar Bahar",h:113},parent:"baccarat"},
+        {v:{n:"Three Card Poker",h:154},parent:"videopoker"},
+        {v:{n:"Texas Hold’em",h:195},parent:"videopoker"},
+        {v:{n:"Sic Bo",h:236},parent:"dice"},
+        {v:{n:"Scratch Cards",h:277},parent:"slots"},
+        {v:{n:"Mega Wheel",h:318},parent:"wheel"},
+        {v:{n:"Gemstone Slots",h:359},parent:"slots"},
+        {v:{n:"Adventure Slots",h:400},parent:"slots"}
+      ]}
     };
     const LOBBY_ROWS=[
       {key:"popular",icon:ROW_ICON.flame,title:"Most Popular"},
