@@ -35,6 +35,7 @@
       window.scrollTo({top:0});
     }
     document.addEventListener("click",e=>{
+      if(e.target.closest("[data-save-toggle]")) return;
       const navEl=e.target.closest("[data-nav]");
       if(navEl){ e.preventDefault(); sfx.click(); navigate(navEl.dataset.nav); return; }
       if(!e.target.closest(".anchor")) $$(".drop").forEach(d=>d.classList.remove("open"));
@@ -553,8 +554,8 @@
         +'</div></div></div>'
         +'<div class="gs-grid" id="gsGrid">'+gsGridHtml()+'</div>'
         +'<div class="no-results" id="gsNoResults">No game shows match your search. <button id="gsNoClear" style="color:var(--green);font-weight:800">Clear search</button></div>'
-        +'<div class="sec-head"><span class="live-dot"></span><h2 style="font-size:19px">Latest bets</h2><div class="right"><div class="tabs" id="gsTabs"><button data-gs-tab="mine">My Bets</button><button class="on" data-gs-tab="all">All Bets</button><button data-gs-tab="high">High Rollers</button><button data-gs-tab="race">Race Leaderboard</button></div></div></div>'
-        +'<div class="table-wrap"><table><thead id="gsTableHead"><tr><th>Game</th><th>User</th><th class="col-time">Time</th><th>Bet Amount</th><th class="col-mult">Multiplier</th><th style="text-align:right">Profit</th></tr></thead><tbody id="gsBetsBody">'+gsInitialBetsHtml()+'</tbody></table></div>'
+        +'<div class="sec-head"><span class="live-dot"></span><h2 style="font-size:19px">Latest activity</h2><span class="demo-chip">Simulated demo activity</span><div class="right"><div class="tabs" id="gsTabs"><button data-gs-tab="mine">My Bets</button><button class="on" data-gs-tab="all">All Activity</button><button data-gs-tab="high">Big Demo Bets</button><button data-gs-tab="race">Race Leaderboard</button></div></div></div>'
+        +'<div class="table-wrap feed-wrap"><table><thead id="gsTableHead"><tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Demo bet</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Profit (demo)</th></tr></thead><tbody id="gsBetsBody">'+gsInitialBetsHtml()+'</tbody></table></div>'
         +secHead("About Betvora game shows")
         +'<div class="card"><div class="gs-article">'
         +'<div><h3>Game shows at Betvora — watch, bet, win live</h3><p>Game shows are the loudest corner of the live casino: TV-style sets, charismatic hosts and mechanics borrowed from the shows you grew up watching. Titles like Crazy Time, Monopoly Live and Sweet Bonanza CandyLand turn a single spin into a story — and the bonus rounds are where the real money hides.</p>'
@@ -597,8 +598,8 @@
         +'<div class="gs-grid" id="bgGrid">'+bgGridHtml()+'</div>'
         +'<div class="no-results" id="bgNoResults">No burst games match your search. <button id="bgNoClear" style="color:var(--green);font-weight:800">Clear search</button></div>'
         +'<div class="bg-load" id="bgLoadWrap"><button class="btn btn-ghost" id="bgLoadBtn">Load More</button><span class="bg-count" id="bgCount">'+bgCountText()+'</span></div>'
-        +'<div class="sec-head"><span class="live-dot"></span><h2 style="font-size:19px">Latest bets</h2><div class="right"><div class="tabs" id="bgTabs"><button data-bg-tab="mine">My Bets</button><button class="on" data-bg-tab="all">All Bets</button><button data-bg-tab="high">High Rollers</button><button data-bg-tab="race">Race Leaderboard</button></div></div></div>'
-        +'<div class="table-wrap"><table><thead id="bgTableHead"><tr><th>Game</th><th>User</th><th class="col-time">Time</th><th>Bet Amount</th><th class="col-mult">Multiplier</th><th style="text-align:right">Profit</th></tr></thead><tbody id="bgBetsBody">'+bgInitialBetsHtml()+'</tbody></table></div>'
+        +'<div class="sec-head"><span class="live-dot"></span><h2 style="font-size:19px">Latest activity</h2><span class="demo-chip">Simulated demo activity</span><div class="right"><div class="tabs" id="bgTabs"><button data-bg-tab="mine">My Bets</button><button class="on" data-bg-tab="all">All Activity</button><button data-bg-tab="high">Big Demo Bets</button><button data-bg-tab="race">Race Leaderboard</button></div></div></div>'
+        +'<div class="table-wrap feed-wrap"><table><thead id="bgTableHead"><tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Demo bet</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Profit (demo)</th></tr></thead><tbody id="bgBetsBody">'+bgInitialBetsHtml()+'</tbody></table></div>'
         +secHead("About Betvora burst games")
         +'<div class="card"><div class="gs-article">'
         +'<div><h3>Burst games at Betvora — speciality games, exclusively fast</h3><p>The online casino world is filled to the brim with fantastic ways to play — and burst games are the newest of them. This is a category of speciality games that blends the worlds of online gambling and video games: vibrant colours, big payouts and wacky animations, in rounds that never last more than a few seconds.</p>'
@@ -867,18 +868,22 @@
     const FOLLOW_PUBS=[["Betvora Studios","Dice, Crash, Roulette, Plinko, Mines and Betvora Slots — the in-house originals."],["Betvora Live","The live-dealer studio: roulette, blackjack, baccarat and game shows."],["Evolution","Crazy Time, Monopoly Live, Lightning Roulette and the live classics."],["Pragmatic Play Live","Mega Wheel, Spaceman and Sweet Bonanza CandyLand."],["Playtech","Red Door Roulette, The Bingo Spot and Snakes & Ladders Live."],["Spribe","Aviator and the crash originals."],["SmartSoft","Jet X, AviaJet and the Chicken Road series."],["Turbo Games","Mine Drop, Plinko 100000 and the burst catalogue."],["BGaming","AviaMasters and arcade-style originals."]];
     function savedGridHtml(){ return savedSet.size? gamesGridHtml(Array.from(savedSet)) : Empty.saved(); }
     function savedRowHtml(id){ const g=GAMES[id]; const on=savedSet.has(id);
-      return '<div class="fx-row"><img src="'+g.img+'" alt="" style="width:56px;height:42px;object-fit:cover;border-radius:9px;flex:none" /><div class="fx-teams"><b>'+g.name+'</b><span class="fx-vs">·</span><span style="color:var(--muted);font-size:13px">'+g.sub+'</span></div><div class="fx-odds"><button class="btn '+(on?"btn-green":"btn-ghost")+'" data-save-toggle="'+id+'" style="height:36px;font-size:13px">'+(on?"Saved ✓":"Save")+'</button><button class="btn btn-ghost" data-nav="game:'+id+'" style="height:36px;font-size:13px">Play</button></div></div>'; }
+      return '<div class="fx-row"><span style="width:56px;height:42px;border-radius:9px;flex:none;overflow:hidden;position:relative;display:block;background:#0a1424">'+(g.img?'<img src="'+g.img+'" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()" />':'<span class="tile-art" style="position:absolute;inset:0">'+(TILE_ARTS[id]||"")+'</span>')+'</span><div class="fx-teams"><b>'+g.name+'</b><span class="fx-vs">·</span><span style="color:var(--muted);font-size:13px">'+g.sub+'</span></div><div class="fx-odds"><button class="btn '+(on?"btn-green":"btn-ghost")+'" data-save-toggle="'+id+'" style="height:36px;font-size:13px">'+(on?"Saved ✓":"Save")+'</button><button class="btn btn-ghost" data-nav="game:'+id+'" style="height:36px;font-size:13px">Play</button></div></div>'; }
     function followRowHtml(p){ const on=followSet.has(p[0]);
       return '<div class="fx-row"><span class="tx-ic" style="background:rgba(245,185,66,.13);color:var(--gold);font-family:Sora;font-weight:800;font-size:16px">'+esc(p[0].charAt(0))+'</span><div class="fx-teams" style="display:block"><b>'+esc(p[0])+'</b><span style="display:block;color:var(--muted);font-size:12.5px;font-weight:600;margin-top:1px">'+esc(p[1])+'</span></div><div class="fx-odds"><button class="btn '+(on?"btn-green":"btn-ghost")+'" data-follow-toggle="'+esc(p[0])+'" style="height:36px;font-size:13px">'+(on?"Following ✓":"Follow")+'</button></div></div>'; }
     function forYouRecs(){ if(!playedList.length) return byPlayers.slice(0,4); const cats={}; playedList.forEach(id=>{ cats[GAMES[id].cat]=(cats[GAMES[id].cat]||0)+1; }); const topCat=Object.keys(cats).sort((a,b)=>cats[b]-cats[a])[0]; const inCat=Object.keys(GAMES).filter(id=>GAMES[id].cat===topCat&&!playedList.includes(id)); const rest=byPlayers.filter(id=>!playedList.includes(id)&&GAMES[id].cat!==topCat); return inCat.concat(rest).slice(0,4); }
-    function refreshSaved(){ const g=$("#savedGrid"); if(g) g.innerHTML=savedGridHtml(); const l=$("#savedList"); if(l) l.innerHTML=Object.keys(GAMES).map(savedRowHtml).join(""); }
+    function savedKey(){ return (typeof state!=="undefined"&&state.user&&state.user.email)? "betvora_saved_"+state.user.email : null; }
+    function persistSaved(){ const k=savedKey(); if(!k) return; try{ localStorage.setItem(k,JSON.stringify(Array.from(savedSet))); }catch(e){} }
+    function restoreSaved(){ savedSet.clear(); const k=savedKey(); if(k){ try{ (JSON.parse(localStorage.getItem(k)||"[]")).forEach(id=>{ if(GAMES[id]) savedSet.add(id); }); }catch(e){} } refreshSaved(); }
+    function resetSaved(){ savedSet.clear(); refreshSaved(); }
+    function refreshSaved(){ const g=$("#savedGrid"); if(g) g.innerHTML=savedGridHtml(); const l=$("#savedList"); if(l) l.innerHTML=Object.keys(GAMES).map(savedRowHtml).join(""); $$(".g-heart").forEach(el=>{ const on=savedSet.has(el.dataset.saveToggle); el.classList.toggle("on",on); el.setAttribute("aria-pressed",String(on)); }); }
     function refreshFollow(){ const l=$("#followList"); if(l) l.innerHTML=FOLLOW_PUBS.map(followRowHtml).join(""); }
     function switchSideTab(tab){ $$("[data-side-tab]").forEach(b=>{ const on=b.dataset.sideTab===tab; b.classList.toggle("on",on); b.setAttribute("aria-selected",String(on)); }); const c=$("#sideCasinoMenu"), s=$("#sideSportsMenu"); if(c) c.style.display=tab==="casino"?"":"none"; if(s) s.style.display=tab==="sports"?"":"none"; if(tab==="sports") navigate("section:sportshome"); else navigate("lobby"); }
     document.addEventListener("click",e=>{
-      const nv=e.target.closest("[data-nav]");
+      const nv=e.target.closest("[data-save-toggle]")? null : e.target.closest("[data-nav]");
       if(nv&&nv.dataset.nav.indexOf("game:")===0){ const id=nv.dataset.nav.slice(5); if(GAMES[id]) playedList=[id].concat(playedList.filter(x=>x!==id)).slice(0,6); }
       const sv=e.target.closest("[data-save-toggle]");
-      if(sv){ const id=sv.dataset.saveToggle; if(savedSet.has(id)){ savedSet.delete(id); toast("Removed from Saved",GAMES[id].name+" was removed from your shelf."); } else { savedSet.add(id); sfx.coin(); toast("Saved",GAMES[id].name+" is on your shelf — find it any time in Saved Games.","gold"); } refreshSaved(); return; }
+      if(sv){ const id=sv.dataset.saveToggle; if(savedSet.has(id)){ savedSet.delete(id); toast("Removed from Saved",GAMES[id].name+" was removed from your shelf."); } else { savedSet.add(id); sfx.coin(); toast("Saved",GAMES[id].name+" is on your shelf — find it any time in Saved Games.","gold"); } persistSaved(); refreshSaved(); return; }
       const fw=e.target.closest("[data-follow-toggle]");
       if(fw){ const p=fw.dataset.followToggle; if(followSet.has(p)){ followSet.delete(p); toast("Unfollowed",p+" removed from your Following list."); } else { followSet.add(p); sfx.coin(); toast("Following "+p,"New releases from "+p+" will surface in your recommendations.","gold"); } refreshFollow(); return; }
       const st=e.target.closest("[data-side-tab]");
@@ -888,6 +893,12 @@
       if(e.target.closest("[data-lang-cur]")){ sfx.click(); toast("Language","You're browsing Betvora in English."); return; }
       const lg=e.target.closest("[data-lang-soon]");
       if(lg){ sfx.click(); toast("Coming soon","Betvora is English-only in this demo build — "+lg.dataset.langSoon+" is on the roadmap.","gold"); return; }
+    });
+
+    document.addEventListener("keydown",e=>{
+      if(e.key!=="Enter"&&e.key!==" ") return;
+      const t=e.target.closest? e.target.closest("[data-save-toggle]") : null;
+      if(t && t.classList.contains("g-heart")){ e.preventDefault(); t.click(); }
     });
 
     /* ==================== SUPPORT CHAT ==================== */

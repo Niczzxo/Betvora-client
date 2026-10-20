@@ -62,7 +62,7 @@
         +'<span class="live-chip"><i></i>LIVE</span><span class="soon-chip">SOON</span>'
         +'<span class="motif">'+(GS_MOTIFS[t.m]||GS_MOTIFS.wheel)+'</span>'
         +'<span class="t-name">'+esc(t.n)+'</span><span class="t-sub">'+esc(t.pub)+'</span></span>'
-        +'<span class="gs-playing"><i></i><span class="gs-count" data-gs-players="'+esc(t.n)+'">'+fmtN(t.players)+'</span> playing</span></button>';
+        +'</button>';
     }
     function gsVisibleTiles(){
       let list=GS_TILES.filter(t=> (gsPub==="all"||t.pub===gsPub) && (!gsQuery || t.n.toLowerCase().includes(gsQuery)));
@@ -105,11 +105,11 @@
         }).join("");
         return;
       }
-      if(head) head.innerHTML='<tr><th>Game</th><th>User</th><th class="col-time">Time</th><th>Bet Amount</th><th class="col-mult">Multiplier</th><th style="text-align:right">Profit</th></tr>';
+      if(head) head.innerHTML='<tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Demo bet</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Profit (demo)</th></tr>';
       let rows=gsFeed;
       if(gsTab==="mine") rows=state.myBets;
       if(gsTab==="high") rows=gsFeed.filter(r=>r.bet>=250);
-      body.innerHTML= rows.length? rows.slice(0,10).map(rowHtml).join("") : '<tr class="empty-row"><td colspan="6">'+(gsTab==="mine"?"You haven't placed any bets yet — bets from every Betvora game land here.":"No high-roller bets right now.")+'</td></tr>';
+      body.innerHTML= rows.length? rows.slice(0,10).map(rowHtml).join("") : '<tr class="empty-row"><td colspan="7">'+(gsTab==="mine"?"You haven't placed any bets yet — bets from every Betvora game land here.":"No big demo bets right now.")+'</td></tr>';
     }
     function gsClearSearch(){
       const inp=$("#gsSearch"); if(inp) inp.value="";
@@ -136,10 +136,8 @@
     });
     setInterval(()=>{
       if(motionOff()) return;
-      GS_TILES.forEach(t=>{ t.players=Math.max(4,t.players+Math.floor(Math.random()*13-6)); });
       if(Math.random()<0.75){ gsFeed.unshift(gsFakeBet()); if(gsFeed.length>40) gsFeed.pop(); }
       if(document.getElementById("gsGrid")){
-        $$("[data-gs-players]").forEach(el=>{ const t=GS_TILES.find(x=>x.n===el.dataset.gsPlayers); if(t) tweenFromLast(el,t.players,fmtN,700); });
         if(gsTab!=="mine" && gsTab!=="race") gsRenderBets();
       }
     },3600);
@@ -206,7 +204,7 @@
         +'<span class="soon-chip">SOON</span>'
         +'<span class="motif">'+(BG_MOTIFS[t.m]||BG_MOTIFS.crash)+'</span>'
         +'<span class="t-name">'+esc(t.n)+'</span><span class="t-sub">'+esc(t.pub)+'</span></span>'
-        +'<span class="gs-playing"><i></i><span class="gs-count" data-bg-players="'+esc(t.n)+'">'+fmtN(t.players)+'</span> playing</span></button>';
+        +'</button>';
     }
     function bgVisibleTiles(){
       let list=BG_TILES.filter(t=> (bgPub==="all"||t.pub===bgPub) && (!bgQuery || t.n.toLowerCase().includes(bgQuery)));
@@ -252,11 +250,11 @@
         }).join("");
         return;
       }
-      if(head) head.innerHTML='<tr><th>Game</th><th>User</th><th class="col-time">Time</th><th>Bet Amount</th><th class="col-mult">Multiplier</th><th style="text-align:right">Profit</th></tr>';
+      if(head) head.innerHTML='<tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Demo bet</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Profit (demo)</th></tr>';
       let rows=bgFeed;
       if(bgTab==="mine") rows=state.myBets;
       if(bgTab==="high") rows=bgFeed.filter(r=>r.bet>=200);
-      body.innerHTML= rows.length? rows.slice(0,10).map(rowHtml).join("") : '<tr class="empty-row"><td colspan="6">'+(bgTab==="mine"?"You haven't placed any bets yet — bets from every Betvora game land here.":"No high-roller bets right now.")+'</td></tr>';
+      body.innerHTML= rows.length? rows.slice(0,10).map(rowHtml).join("") : '<tr class="empty-row"><td colspan="7">'+(bgTab==="mine"?"You haven't placed any bets yet — bets from every Betvora game land here.":"No big demo bets right now.")+'</td></tr>';
     }
     function bgClearSearch(){
       const inp=$("#bgSearch"); if(inp) inp.value="";
@@ -284,10 +282,8 @@
     });
     setInterval(()=>{
       if(motionOff()) return;
-      BG_TILES.forEach(t=>{ t.players=Math.max(1,t.players+Math.floor(Math.random()*7-3)); });
       if(Math.random()<0.75){ bgSeed(); bgFeed.unshift(bgFakeBet()); if(bgFeed.length>40) bgFeed.pop(); }
       if(document.getElementById("bgGrid")){
-        $$("[data-bg-players]").forEach(el=>{ const t=BG_TILES.find(x=>x.n===el.dataset.bgPlayers); if(t) tweenFromLast(el,t.players,fmtN,700); });
         if(bgTab!=="mine" && bgTab!=="race") bgRenderBets();
       }
     },3400);
@@ -316,9 +312,9 @@
     function gameCardHtml(id){
       const g=GAMES[id];
       return '<button class="game-card" data-nav="game:'+id+'">'
-        +'<span class="thumb'+(g.img?"":" noimg")+'">'+(g.img?'<img src="'+g.img+'" alt="'+esc(g.name)+' game artwork" loading="lazy" />':'<span class="tile-art">'+(TILE_ARTS[id]||"")+'</span>')
-        +'<span class="g-logo">'+GAME_LOGOS[id]+'</span>'
-        +'<span class="rtp">'+g.rtp+'</span><span class="g-live"><i></i><span data-players="'+id+'">'+fmtN(g.players)+'</span></span>'
+        +'<span class="thumb'+(g.img?"":" noimg")+'">'+(g.img?'<img src="'+g.img+'" alt="'+esc(g.name)+' game artwork" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()" />':'<span class="tile-art">'+(TILE_ARTS[id]||"")+'</span>')
+        +'<span class="g-logo">'+(GAME_LOGOS[id]||"")+'</span>'
+        +'<span class="rtp">'+g.rtp+'</span><span class="g-heart'+(savedSet.has(id)?" on":"")+'" role="button" tabindex="0" data-save-toggle="'+id+'" aria-pressed="'+(savedSet.has(id)?"true":"false")+'" aria-label="Save '+esc(g.name)+' to Saved Games" title="Save to Saved Games"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></span>'
         +'<span class="play-veil"><span class="play-circ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></span></span></span>'
         +'<span class="g-meta"><span><h3>'+g.name+'</h3><span class="g-sub">'+g.sub+'</span></span>'
         +'<span class="g-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg></span></span></button>';
@@ -326,8 +322,8 @@
     function variantCardHtml(v,parentId){
       const g=GAMES[parentId];
       return '<button class="game-card soon" data-soon="'+esc(v.n)+'" data-parent="'+esc(g.name)+'">'
-        +'<span class="thumb"><img src="'+g.img+'" alt="'+esc(v.n)+' game artwork" loading="lazy" style="filter:hue-rotate('+v.h+'deg) saturate(1.15)" /><span class="v-duo" style="--h:'+v.h+'"></span>'
-        +'<span class="g-logo">'+GAME_LOGOS[parentId]+'</span>'
+        +'<span class="thumb"><img src="'+g.img+'" alt="'+esc(v.n)+' game artwork" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove()" style="filter:hue-rotate('+v.h+'deg) saturate(1.15)" /><span class="v-duo" style="--h:'+v.h+'"></span>'
+        +'<span class="g-logo">'+(GAME_LOGOS[parentId]||"")+'</span>'
         +'<span class="soon-chip">SOON</span>'
         +'<span class="play-veil"><span class="play-circ"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></span></span></span>'
         +'<span class="g-meta"><span><h3>'+v.n+'</h3><span class="g-sub">Betvora Studios</span></span>'
@@ -387,7 +383,6 @@
       tweenFromLast($("#jackpotVal"),jackpot,fmt$,2600);
       tweenFromLast($("#paidVal"),paid,function(v){ return "$"+fmtN(v); },2600);
       tweenFromLast($("#onlineVal"),online,fmtN,2600);
-      Object.keys(GAMES).forEach(id=>{ GAMES[id].players=Math.max(400,GAMES[id].players+Math.floor(Math.random()*41-19)); document.querySelectorAll('[data-players="'+id+'"]').forEach(el=>{ tweenFromLast(el,GAMES[id].players,fmtN,700); }); });
     },2600);
     const NAMES=["CryptoWhale99","LuckyLena","SpinDoctor","MoonBettor","SilentShark","DiceQueen","HighVoltage","VoraRunner","BetStorm","NovaKid","PixelPete","TurboTara","GhostChip","IronBanker","VelvetViper","ZeroCool","MegaMint","OrbitOllie","QuartzQueen","BlazeBet"];
     const feedRows=[];
@@ -404,7 +399,7 @@
       let rows=feedRows;
       if(state.feedTab==="mine") rows=state.myBets;
       if(state.feedTab==="high") rows=feedRows.filter(r=>r.bet>=250);
-      body.innerHTML= rows.length? rows.slice(0,12).map(r=>rowHtml(r)).join("") : '<tr class="empty-row"><td colspan="6">'+Empty.feed(state.feedTab)+"</td></tr>";
+      body.innerHTML= rows.length? rows.slice(0,12).map(r=>rowHtml(r)).join("") : '<tr class="empty-row"><td colspan="7">'+Empty.feed(state.feedTab)+"</td></tr>";
     }
     $$("#feedTabs button").forEach(b=>b.addEventListener("click",()=>{
       $$("#feedTabs button").forEach(x=>x.classList.toggle("on",x===b));

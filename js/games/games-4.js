@@ -1410,7 +1410,7 @@ BUILDERS.crashrocket=function(mount){
     +'<h4 style="margin-top:18px">Recent Crashes</h4><div class="hist-row" id="crashrocketHist" style="margin-top:0"></div>'
     +'<div class="g42-rules"><h5>Rules &amp; Payouts</h5><ul>'
     +'<li>The rocket climbs and the multiplier grows as <b>e^(0.115 × seconds)</b>, starting at 1.00×. Cash out before it bursts to collect bet × multiplier at the moment you bail.</li>'
-    +'<li>Crash point generation is exactly the source Crash formula: <b>3% of rounds bust instantly at 1.00×</b>; otherwise crash = min(250, max(1, 0.99 ÷ (1 − r))) for uniform r — about 97% RTP.</li>'
+    +'<li>Crash point generation is exactly the source Crash formula: <b>3% of rounds bust instantly at 1.00×</b>; otherwise crash = min(250, max(1, 0.99 ÷ (1 − r))) for uniform r — about 96% RTP.</li>'
     +'<li>If the rocket bursts before you cash out, the bet is lost. Optional auto-cashout bails automatically at your chosen multiplier.</li>'
     +'</ul></div></div>'
     +'<div class="stage cr-stage" id="crashrocketStage">'+gameHeaderHtml('crashrocket')
@@ -1736,7 +1736,7 @@ BUILDERS.megawheel=function(mount){
     +'<li>The wheel has <b>96 equal segments</b>: value <b>1 ×41, 2 ×28, 5 ×14, 10 ×7, 20 ×4, 40 ×2</b>. Bet on one value and spin — the landing segment is uniform over all 96.</li>'
     +'<li>If the landing segment matches your value, you are paid <b>value : 1 profit</b> — total payout = bet × (value + 1). Anything else loses.</li>'
     +'<li>Before every spin, <b>two random segments are BOOSTED</b> (×2, ×3 or ×5, badged on the wheel and announced). If your winning segment is boosted, your profit is multiplied by the boost: total = bet × (1 + value × boost).</li>'
-    +'<li>Base RTP by value (before boosts): 1 → 85.4%, 2 → 87.5%, 5 → 87.5%, 10 → 80.2%, 20 → 87.5%, 40 → 85.4%. Boosts raise the real return above these figures — overall ≈87% (est.).</li>'
+    +'<li>Base RTP by value (before boosts): 1 → 85.4%, 2 → 87.5%, 5 → 87.5%, 10 → 80.2%, 20 → 87.5%, 40 → 85.4%. Boosts raise the real return above these figures — overall ≈89% (est.).</li>'
     +'</ul></div></div>'
     +'<div class="stage mw-stage" id="megawheelStage">'+gameHeaderHtml('megawheel')
     +'<div class="mw-wrap"><div class="mw-ptr"></div>'

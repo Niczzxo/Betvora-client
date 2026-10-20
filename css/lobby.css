@@ -72,6 +72,14 @@
 
 .game-card .g-go svg{width:12px;height:12px}
 
+.game-card .g-heart{position:absolute;top:5px;right:5px;z-index:4;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(4,11,22,.55);color:rgba(219,231,247,.85);cursor:pointer;transition:transform .18s ease,color .18s ease,background .18s ease}
+.game-card .g-heart svg{width:17px;height:17px;display:block}
+.game-card .g-heart:hover{transform:scale(1.1);color:#fff}
+.game-card .g-heart:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.game-card .g-heart.on{color:var(--gold);background:rgba(4,11,22,.78)}
+html.no-motion .game-card .g-heart{transition:none}
+html.no-motion .game-card .g-heart:hover{transform:none}
+
 /* lobby category rows */
       .row-head{display:flex;align-items:center;gap:10px;margin:28px 0 12px}
 
@@ -254,3 +262,15 @@ html.no-motion #jackpotVal{animation:none!important}
 .vp-marquee::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,212,121,.14) 50%,transparent 60%);background-size:250% 100%;animation:vpSheen 4.5s linear infinite;pointer-events:none}
 
 html.no-motion .vp-marquee::after{animation:none!important}
+
+/* ===== Live Activity panel: honest demo labelling + status + mobile ===== */
+.demo-chip{display:inline-flex;align-items:center;flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,185,66,.5);background:rgba(245,185,66,.1);padding:5px 10px;border-radius:99px;white-space:nowrap}
+html[data-theme="light"] .demo-chip{color:#9a6a08}
+.status-pill{display:inline-flex;align-items:center;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:99px;border:1px solid;white-space:nowrap}
+.status-pill.won{color:var(--green);border-color:rgba(0,224,101,.45);background:rgba(0,224,101,.09)}
+.status-pill.lost{color:var(--faint);border-color:var(--line2);background:transparent}
+.feed-note{margin:10px 2px 0;font-size:12.5px;line-height:1.55;color:var(--faint);max-width:72ch}
+.feed-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media (max-width:920px){
+  .feed-wrap table{min-width:660px}
+}

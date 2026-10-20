@@ -250,21 +250,22 @@
           </div>
 
           <div class="sec-head">
-            <span class="live-dot"></span><h2>Live Bets</h2>
+            <span class="live-dot"></span><h2>Live Activity</h2><span class="demo-chip">Simulated demo activity</span>
             <div class="right">
               <div class="tabs" id="feedTabs">
-                <button class="on" data-feed="all">All Bets</button>
+                <button class="on" data-feed="all">All Activity</button>
                 <button data-feed="mine">My Bets</button>
-                <button data-feed="high">High Rollers</button>
+                <button data-feed="high">Big Demo Bets</button>
               </div>
             </div>
           </div>
-          <div class="table-wrap">
+          <div class="table-wrap feed-wrap">
             <table>
-              <thead><tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Bet</th><th class="col-mult">Multiplier</th><th style="text-align:right">Profit</th></tr></thead>
+              <thead><tr><th>Game</th><th>Player</th><th class="col-time">Time</th><th>Demo bet</th><th class="col-mult">Multiplier</th><th>Status</th><th style="text-align:right">Profit (demo)</th></tr></thead>
               <tbody id="feedBody"></tbody>
             </table>
           </div>
+          <p class="feed-note">Demo feed — player names and amounts in All Activity and Big Demo Bets are simulated for illustration, with play money only. The My Bets tab shows only your own demo play from this session.</p>
         </section>
 
         <!-- ========== GAME VIEW (shared shell) ========== -->
@@ -509,7 +510,7 @@
             </div>
             <div class="av-picker-wrap">
               <h3>Choose your avatar</h3>
-              <p class="av-picker-sub">Pick a look — it shows on your profile, the navbar, the leaderboard and live bets.</p>
+              <p class="av-picker-sub">Pick a look — it shows on your profile, the navbar, the leaderboard and live activity.</p>
               <div class="av-picker" id="avPicker" role="radiogroup" aria-label="Avatar choices"></div>
             </div>
           </div>

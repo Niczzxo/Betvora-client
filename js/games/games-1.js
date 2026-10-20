@@ -1172,7 +1172,8 @@ BUILDERS.flip=function(mount){
   }
   function renderPot(){
     if(!live){potEl.textContent="Call a side and flip to start climbing";return;}
-    var m=LAD[Math.min(rung,LAD.length-1)];
+    if(rung<1){potEl.innerHTML="Streak 0 &mdash; flip to start your streak";return;}
+    var m=LAD[rung-1];
     potEl.innerHTML="Streak "+rung+" &mdash; cash out <b>"+fmt$(bet*m)+"</b> ("+fmtMult(m)+")";
   }
   function endRoundUI(){

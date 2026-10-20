@@ -34,6 +34,7 @@
       if(authMode==="register" && name.length<3) return fail("Username must be at least 3 characters.");
       const uname= authMode==="register"? name : (email.split("@")[0].replace(/[._-]+/g," ").replace(/\b\w/g,c=>c.toUpperCase()));
       state.user={name:uname,email:email};
+      if(typeof restoreSaved==="function") restoreSaved();
       if(!state.joined) state.joined=new Date();
       document.body.dataset.auth="user";
       renderLobbyRows();
@@ -54,6 +55,7 @@
     });
     function doLogout(){
       state.user=null;
+      if(typeof resetSaved==="function") resetSaved();
       document.body.dataset.auth="guest";
       state.search=""; const si=$("#searchInput"); if(si) si.value=""; $("#searchBox").classList.remove("has-q");
       renderLobbyRows();
