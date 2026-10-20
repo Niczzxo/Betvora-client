@@ -81,30 +81,13 @@
     GAMES.dragontiger={name:"Dragon Tiger",sub:"Dragon vs Tiger — higher card wins, tie pays 8:1",rtp:"96.3% RTP",cat:"table",players:2146};
     GAMES.teenpatti={name:"Teen Patti",sub:"Three cards — beat the dealer, Q-high qualifies",rtp:"≈91.2% RTP",cat:"table",players:1732};
     GAMES.andarbahar={name:"Andar Bahar",sub:"Pick a side — first rank match wins",rtp:"97.0% RTP",cat:"table",players:1493};
-    GAMES.war={name:"Casino War",sub:"High card wins — go to war on a tie",rtp:"≈98% RTP",cat:"table",players:1264};
-    GAMES.reddog={name:"Red Dog",sub:"Third card between the posts pays up to 11:1",rtp:"97.2% RTP",cat:"table",players:987};
     GAMES.texasholdem={name:"Texas Hold'em",sub:"Casino Hold'em vs the dealer — call or fold after the flop",rtp:"97.8% RTP",cat:"table",players:2418};
-    GAMES.holdemtable={name:"Hold'em Table",sub:"6-seat table vs 5 AI rivals — best hand takes the pot",rtp:"97.0% RTP",cat:"table",players:1984};
-    GAMES.threecardpoker={name:"Three Card Poker",sub:"Ante + Pair Plus — dealer needs Queen-high to qualify",rtp:"96.6% RTP",cat:"table",players:2216};
-    GAMES.caribbeanstud={name:"Caribbean Stud",sub:"Raise for the jackpot paytable — dealer needs Ace-King",rtp:"94.8% RTP",cat:"table",players:1642};
-    GAMES.paigow={name:"Pai Gow Poker",sub:"Set a 5-card and 2-card hand — beat both dealer hands",rtp:"97.0% RTP",cat:"table",players:1337};
     GAMES.sicbo={name:"Sic Bo",sub:"Three dice — Small, Big, triples, doubles and totals",rtp:"97.2% RTP",cat:"table",players:2140};
-    GAMES.lucky7={name:"Lucky 7",sub:"Two dice — under 7, exactly 7 or over 7",rtp:"83.3% RTP",cat:"instant",players:1680};
     GAMES.scratchcards={name:"Scratch Cards",sub:"Buy a card, scratch the 3x3 grid — 3 matching symbols win",rtp:"96.0% RTP",cat:"instant",players:1950};
     GAMES.fruitslots={name:"Fruit Slots",sub:"Classic 3-reel fruit machine — 5 lines",rtp:"96.4% RTP",cat:"instant",players:1742};
     GAMES.mythicslots={name:"Mythic Slots",sub:"Greek gods — expanding Zeus wilds & free spins",rtp:"96.3% RTP",cat:"instant",players:2210};
-    GAMES.gemstoneslots={name:"Gemstone Slots",sub:"Cluster pays with cascading gems",rtp:"96.4% RTP",cat:"instant",players:1985};
-    GAMES.adventureslots={name:"Adventure Slots",sub:"Jungle expedition — compass bonus wheel",rtp:"96.2% RTP",cat:"instant",players:1630};
-    GAMES.baccaratspeed={name:"Baccarat Speed",sub:"Turbo punto banco — red felt, bead road, rebet & deal",rtp:"98.8% RTP",cat:"table",players:2146};
-    GAMES.blackjackclassic={name:"Blackjack Classic",sub:"Single deck, reshuffled every hand — vintage table, insurance on Ace",rtp:"99.4% RTP",cat:"table",players:1984};
     GAMES.europeanroulette={name:"European Roulette",sub:"Single zero, French table — La Partage returns half on zero",rtp:"97.3% RTP",cat:"table",players:2631};
-    GAMES.americanroulette={name:"American Roulette",sub:"Double zero wheel — plus the exclusive Basket bet",rtp:"94.7% RTP",cat:"table",players:2318};
-    GAMES.plinkoneon={name:"Plinko Neon",sub:"Neon drops on a glowing pegboard",rtp:"97.0% RTP",cat:"originals",players:2146};
-    GAMES.minesgold={name:"Mines Gold",sub:"Dig for nuggets, dodge the dynamite",rtp:"97.0% RTP",cat:"instant",players:2388};
     GAMES.crashrocket={name:"Crash Rocket",sub:"Ride the rocket — bail before it bursts",rtp:"≈96% RTP",cat:"originals",players:3124};
-    GAMES.limboturbo={name:"Limbo Turbo",sub:"Set a target — clear it in a flash",rtp:"99.0% RTP",cat:"originals",players:1873};
-    GAMES.kenodeluxe={name:"Keno Deluxe",sub:"Pick up to 10 — 20 gold balls drawn",rtp:"96.0% RTP",cat:"originals",players:1654};
-    GAMES.megawheel={name:"Mega Wheel",sub:"96-segment money wheel with boosts",rtp:"≈89% RTP (est.)",cat:"originals",players:2741};
     /* ---- game tile logo marks (pure SVG, gold line-art) ---- */
     const GAME_LOGOS={
       dice:'<svg viewBox="0 0 64 64"><rect x="13" y="13" width="38" height="38" rx="9" fill="rgba(6,12,24,.55)" stroke="#ffd479" stroke-width="3"/><circle cx="24" cy="24" r="3.4" fill="#fff"/><circle cx="40" cy="24" r="3.4" fill="#fff"/><circle cx="32" cy="32" r="3.4" fill="#fff"/><circle cx="24" cy="40" r="3.4" fill="#fff"/><circle cx="40" cy="40" r="3.4" fill="#fff"/></svg>',
@@ -300,6 +283,7 @@ TILE_ARTS.minesgold='<svg viewBox="0 0 320 200" preserveAspectRatio="xMidYMid sl
       const bal=_cleanNum(state.balance);
       tweenFromLast($("#balanceText"),bal,function(v){ return fmt$(v).slice(1); },600);
       tweenFromLast($("#walletBalance"),bal,fmt$,600);
+      const mwBalance=$("#memberWelcomeBalance"); if(mwBalance) mwBalance.textContent=fmt$(bal);
     }
     function addTx(type,label,amount){
       state.txs.unshift({type:type,label:label,amount:amount,time:nowT()});

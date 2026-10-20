@@ -46,6 +46,9 @@
       $("#userAnchor").style.display="block";
       renderAvatar();
       $("#dropUserName").textContent=uname;
+      const mwName=$("#memberWelcomeName"), mwBalance=$("#memberWelcomeBalance");
+      if(mwName) mwName.textContent=uname;
+      if(mwBalance) mwBalance.textContent=fmt$(state.balance);
       renderBalance();
       closeOverlay("authOverlay");
       sfx.coin();

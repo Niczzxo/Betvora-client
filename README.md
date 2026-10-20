@@ -80,5 +80,21 @@ Live: https://niczzxo.github.io/Betvora-client/
 - Removed the extra logo medallion overlay on cards so it no longer obscures or conflicts with the game's artwork.
 - Replaced hue-shifted duplicates in the New Games row with original SVG concept art generated for each preview title.
 - Fixed the New Games row to reference valid game concepts instead of undefined registry IDs.
-- The current source includes 32 registered playable demo games and 10 clearly marked preview concepts (42 card entries in the New Games catalogue target). The 10 previews are not yet independent playable games.
+- The current source now exposes exactly 42 registered playable demo games. The New Games, Plinko, Mines and Crash Games rows use registered game IDs rather than coming-soon preview cards. All 42 entries have corresponding game builders in the existing source.
 - This remains a play-money demonstration; there is no real-money wagering or verified real-player live activity.
+
+## 42-game playable catalogue update (October 2026)
+
+- Registered exactly 42 games in the public game catalogue.
+- Added ten game entries with existing dedicated builders: Dragon Tiger, Teen Patti, Andar Bahar, Texas Hold’em, Sic Bo, Scratch Cards, Fruit Slots, Mythic Slots, European Roulette and Crash Rocket.
+- Removed the other planned variants from the visible registry so the catalogue count remains exactly 42.
+- Replaced “coming soon” previews in the primary New Games, Plinko, Mines and Crash Games rows with actual registered game entries.
+- This is still a play-money frontend: game outcomes are local demo logic, and live activity is simulated rather than verified real-player data.
+
+## Auth-aware lobby update (October 2026)
+
+- Guest visitors can now use the search field, browse category listings, open game screens and try play-money demo rounds without registering.
+- Wallet, profile and personal account tools remain member-only; the Promotions and VIP information pages can be browsed before login, while claim/account actions still request sign-in.
+- The authenticated lobby displays a personalized welcome panel and session demo balance.
+- Homepage statistics are explicitly labelled as demo values and the live activity table remains marked as simulated.
+- Login/register is still a front-end demonstration using session state only. It is not a production authentication backend and does not process real payments or real-money wagers.

@@ -2742,6 +2742,8 @@ BUILDERS.wheel=function(mount){
 };
     function openGame(id){
       cleanupFns.splice(0).forEach(f=>{try{f();}catch(e){}});
+      /* Guests get a session-only play-money demo balance; no payment or real-money wagering. */
+      if(!state.user && state.balance<=0) state.balance=1000;
       state.view="game"; state.game=id;
       $$(".view").forEach(v=>v.classList.remove("active"));
       retriggerView($("#view-game"));

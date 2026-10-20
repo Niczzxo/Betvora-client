@@ -8,7 +8,7 @@
     /* ==================== NAVIGATION ==================== */
     const cleanupFns=[];
     function onCleanup(fn){cleanupFns.push(fn);}
-    const MEMBER_ROUTES=["promos","vip","mybets","profile"];
+    const MEMBER_ROUTES=["mybets","profile"];
     function navigate(route){
       cleanupFns.splice(0).forEach(f=>{try{f();}catch(e){}});
       $$(".drop").forEach(d=>d.classList.remove("open"));
@@ -16,7 +16,7 @@
       if(route==="game") return;
       if(route.indexOf("section:")===0){ openSection(route.slice(8)); return; }
       if(route.indexOf("game:")===0){
-        if(!state.user){ openOverlay("authOverlay"); setAuthMode("register"); toast("Members only","Log in or register to play — guests can browse the full game lobby.","gold"); return; }
+        /* Guests can open and play the clearly labelled play-money demo. Account-only tools remain gated. */
         openGame(route.slice(5)); return;
       }
       if(MEMBER_ROUTES.indexOf(route)>=0 && !state.user){

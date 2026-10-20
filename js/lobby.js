@@ -443,23 +443,23 @@
     };
     const byPlayers=Object.keys(GAMES).slice().sort((a,b)=>GAMES[b].players-GAMES[a].players);
     const ROW_CATS={
-      popular:{title:"Most Popular",tiles: byPlayers.map(id=>({game:id})).concat([{v:{n:"Crash X",h:150},parent:"crash"},{v:{n:"Plinko X",h:60},parent:"plinko"}])},
+      popular:{title:"Most Popular",tiles: byPlayers.map(id=>({game:id}))},
       originals:{title:"Betvora Originals",tiles: Object.keys(GAMES).map(id=>({game:id}))},
-      plinko:{title:"Plinko",tiles:[{game:"plinko"},{v:{n:"Plinko X",h:50},parent:"plinko"},{v:{n:"Turbo Plinko",h:130},parent:"plinko"},{v:{n:"Plinko Rush",h:210},parent:"plinko"},{v:{n:"Plinko Aztec",h:300},parent:"plinko"}]},
-      mines:{title:"Mines",tiles:[{game:"mines"},{v:{n:"Mines Gold",h:40},parent:"mines"},{v:{n:"Turbo Mines",h:160},parent:"mines"},{v:{n:"Minesweeper",h:240},parent:"mines"},{v:{n:"Mine Gems",h:320},parent:"mines"}]},
-      crash:{title:"Crash Games",tiles:[{game:"crash"},{v:{n:"Crash X",h:60},parent:"crash"},{v:{n:"Turbo Crash",h:150},parent:"crash"},{v:{n:"Jet Crash",h:230},parent:"crash"},{v:{n:"Sky Rocket",h:310},parent:"crash"}]},
+      plinko:{title:"Plinko",tiles:[{game:"plinko"}]},
+      mines:{title:"Mines",tiles:[{game:"mines"}]},
+      crash:{title:"Crash Games",tiles:[{game:"crash"},{game:"crashrocket"}]},
       more:{title:"More Games",tiles:[{game:"dice"},{game:"roulette"},{game:"slots"},{game:"keno"},{game:"hilo"},{game:"limbo"},{game:"wheel"}]},
       new42:{title:"New Games",tiles:[
-        {v:{n:"Dragon Tiger",h:31},parent:"baccarat"},
-        {v:{n:"Teen Patti",h:72},parent:"blackjack"},
-        {v:{n:"Andar Bahar",h:113},parent:"baccarat"},
-        {v:{n:"Three Card Poker",h:154},parent:"videopoker"},
-        {v:{n:"Texas Hold’em",h:195},parent:"videopoker"},
-        {v:{n:"Sic Bo",h:236},parent:"dice"},
-        {v:{n:"Scratch Cards",h:277},parent:"slots"},
-        {v:{n:"Mega Wheel",h:318},parent:"wheel"},
-        {v:{n:"Gemstone Slots",h:359},parent:"slots"},
-        {v:{n:"Adventure Slots",h:400},parent:"slots"}
+        {game:"dragontiger"},
+        {game:"teenpatti"},
+        {game:"andarbahar"},
+        {game:"texasholdem"},
+        {game:"sicbo"},
+        {game:"scratchcards"},
+        {game:"fruitslots"},
+        {game:"mythicslots"},
+        {game:"europeanroulette"},
+        {game:"crashrocket"}
       ]}
     };
     const LOBBY_ROWS=[
@@ -609,7 +609,6 @@
       if(so){ sfx.click(); toast("Coming soon",so.dataset.soon+" is in the Betvora studio pipeline — "+so.dataset.parent+" is live and playable right now.","gold"); return; }
       const va=e.target.closest("[data-viewall]");
       if(va){ sfx.click();
-        if(!state.user){ openOverlay("authOverlay"); setAuthMode("register"); toast("Members only","Log in or register to view all games and unlock the full lobby.","gold"); return; }
         state.rowCat=va.dataset.viewall; Skel.switchRender(); const t=$("#gamesTitle"); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); return; }
       if(e.target.closest("#lobbyRegBtn")){ sfx.click(); openOverlay("authOverlay"); setAuthMode("register"); return; }
       if(e.target.closest("#lobbyLoginBtn")){ sfx.click(); openOverlay("authOverlay"); setAuthMode("login"); return; }

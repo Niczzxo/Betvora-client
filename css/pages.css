@@ -574,3 +574,25 @@ td .empty-state,
   repeating-linear-gradient(45deg,rgba(0,0,0,.12) 0 3px,transparent 3px 7px),
   linear-gradient(160deg,#2e3a1e,#1a2212 60%,#12170c);
  border:1px solid rgba(150,200,110,.25);box-shadow:inset 0 0 30px rgba(0,0,0,.55)}
+
+/* ---------- Auth-aware premium lobby polish ---------- */
+.member-welcome{display:none;align-items:center;gap:18px;flex-wrap:wrap;margin:0 0 18px;padding:18px 20px;border:1px solid rgba(0,224,101,.28);border-radius:16px;background:radial-gradient(ellipse at 88% 0%,rgba(0,224,101,.11),transparent 42%),linear-gradient(115deg,#101f35,#0b1628);box-shadow:0 12px 30px rgba(0,0,0,.16)}
+body[data-auth="user"] .member-welcome{display:flex}
+.member-welcome .mw-copy{flex:1 1 240px;min-width:0}
+.member-welcome .mw-kicker{display:block;margin-bottom:5px;color:var(--green);font-size:10px;font-weight:900;letter-spacing:.16em}
+.member-welcome h2{margin:0;color:var(--text);font:800 clamp(17px,2vw,22px)/1.25 "Sora",sans-serif}
+.member-welcome h2 strong{color:var(--green)}
+.member-welcome p{margin:5px 0 0;color:var(--muted);font-size:12.5px;font-weight:600}
+.member-welcome .mw-balance{display:flex;flex-direction:column;gap:5px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(2,9,19,.35)}
+.member-welcome .mw-balance span{color:var(--faint);font-size:9px;font-weight:900;letter-spacing:.12em}
+.member-welcome .mw-balance strong{color:var(--gold);font:800 19px "IBM Plex Mono",monospace}
+.member-welcome .mw-actions{display:flex;gap:8px;flex-wrap:wrap}
+.member-welcome .mw-actions .btn{min-height:38px;padding-inline:13px}
+body[data-auth="guest"] .search{display:block}
+body[data-auth="guest"] .search input{min-width:140px}
+body[data-auth="guest"] .hero{margin-bottom:14px}
+body[data-auth="guest"] .reg-banner{box-shadow:0 14px 35px rgba(0,0,0,.16)}
+#view-game .game-top{align-items:center}
+#view-game .fair-chip{white-space:normal}
+@media(max-width:920px){.member-welcome{gap:12px;padding:15px}.member-welcome .mw-balance{flex:1}.member-welcome .mw-actions{width:100%}.member-welcome .mw-actions .btn{flex:1}}
+@media(max-width:560px){.member-welcome .mw-balance{min-width:130px}.member-welcome .mw-balance strong{font-size:16px}.member-welcome .mw-copy{flex-basis:100%}}
