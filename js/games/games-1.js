@@ -3044,7 +3044,7 @@ BUILDERS.wheel=function(mount){
       $("#gameSub").textContent="Betvora Originals · Practice mode";
       $("#gameMount").innerHTML="";
       Skel.mountSkel($("#gameMount"));
-      _bvRequestAnimationFrame(()=>{ if(state.view==="game" && state.game===id) BUILDERS[id]($("#gameMount")); });
+      window.requestAnimationFrame(()=>{ if(state.view==="game" && state.game===id) BUILDERS[id]($("#gameMount")); });
       window.scrollTo({top:0});
     }
     function betAmountHtml(id,val){
