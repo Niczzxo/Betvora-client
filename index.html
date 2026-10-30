@@ -873,6 +873,12 @@
                 <div class="addr-box"><code id="depAddress"></code><button id="copyAddrBtn">Copy</button></div>
               </div>
               <button class="action-btn" id="depSimBtn">Simulate a deposit</button>
+              <div class="dep-pending" id="depPending" style="display:none">
+                <div class="dep-pending-head"><span class="dep-spin"></span><b>Deposit confirming…</b></div>
+                <p><span class="mono" id="depPendingAmt">$0.00</span> in <span id="depPendingCur">USDT</span> — credits automatically when the countdown ends. You can close this window and keep playing; the credit still lands.</p>
+                <div class="progress gold"><i id="depPendingBar" style="width:0%"></i></div>
+                <span class="dep-pending-note"><b class="mono" id="depPendingSecs">30</b>s remaining</span>
+              </div>
               <button class="mini-btn" id="depBackBtn" style="width:100%;margin-top:9px">← Change amount</button>
               <p class="fineprint">Practice-only address generated for this session; it cannot receive real funds. “Simulate a deposit” only updates the local practice balance and history.</p>
             </div>

@@ -355,6 +355,7 @@ function drawQrToCanvas(text, canvas, target) {
     const depAddrs={};
     function depAddr(){ if(!depAddrs[depCur]) depAddrs[depCur]=DEP_CURS[depCur].gen(); return depAddrs[depCur]; }
     let pendingDep=0, depTimer=null, depClock=null, depSecsLeft=0, depExpired=false;
+    let depConfirm=null; /* {amt,cur,endsAt,timer,tick} — a deposit in its 30s confirming window */
     function showDepStep(n){
       $("#depStepCurrency").style.display= n===1? "block":"none";
       $("#depStepAmount").style.display= n===2? "block":"none";
@@ -446,6 +447,7 @@ function drawQrToCanvas(text, canvas, target) {
       toast("Practice-only address generated","A fresh "+depCur+" practice-only address and a new 30-minute window are ready.");
     });
     $("#depNextBtn").addEventListener("click",()=>{
+      if(depConfirm){ toast("Deposit confirming","Your "+fmt$(depConfirm.amt)+" deposit credits in about "+Math.max(1,Math.ceil((depConfirm.endsAt-Date.now())/1000))+"s — one deposit at a time."); return; }
       const amt=parseFloat($("#depAmount").value);
       if(!amt||isNaN(amt)||amt<=0) return depFail("Enter a deposit amount — the minimum deposit is $5.00.");
       if(amt<5) return depFail("Minimum deposit is $5.00 — you entered "+fmt$(amt)+". Please top it up to at least $5.00.");
@@ -455,43 +457,65 @@ function drawQrToCanvas(text, canvas, target) {
       sfx.click();
     });
     $("#depBackBtn").addEventListener("click",()=>{
-      if(depTimer) return;
+      if(depConfirm) return;
       stopDepClock();
       showDepStep(2);
       sfx.click();
     });
-    $("#depSimBtn").addEventListener("click",()=>{
-      if(depTimer||pendingDep<=0) return;
-      if(depExpired){ toast("Payment window expired","Generate a new address to restart the 30-minute window.","err"); return; }
+    /* ---- deposit confirming window: 30s pending, then auto-credit ---- */
+    function paintDepPending(){
+      if(!depConfirm) return;
+      const leftMs=Math.max(0,depConfirm.endsAt-Date.now());
+      $("#depPendingAmt").textContent=fmt$(depConfirm.amt);
+      $("#depPendingCur").textContent=DEP_CURS[depConfirm.cur].name;
+      $("#depPendingSecs").textContent=Math.ceil(leftMs/1000);
+      $("#depPendingBar").style.width=Math.min(100,(1-leftMs/30000)*100)+"%";
+    }
+    function startDepConfirm(amt,curKey){
+      depConfirm={amt:amt,cur:curKey,endsAt:Date.now()+30000,timer:null,tick:null};
       const btn=$("#depSimBtn");
-      btn.disabled=true;
-      btn.innerHTML='<span class="dep-spin"></span>Waiting for payment — confirming…';
-      const wait=state.anim?2600:700;
-      depTimer=setTimeout(()=>{
-        depTimer=null;
-        btn.disabled=false;
-        btn.textContent="Simulate a deposit";
-        stopDepClock();
-        const amt=pendingDep; pendingDep=0;
-        state.balance+=amt; addTx("dep","Deposit · "+DEP_CURS[depCur].tx,amt);
-        state.lastDeposit=amt; state.wageredSinceDeposit=0;
-        if(!state.firstDepositDone){
-          const bonus=Math.min(amt,1000); state.firstDepositDone=true;
-          state.rewards.push({id:"firstdep",title:"First Deposit Bonus · 100%",desc:"Your 100% match on your first "+fmt$(amt)+" deposit — redeem it into your balance.",amount:bonus});
-          renderRewards(); sfx.big();
-          $("#fdWalletTitle").textContent="Bonus unlocked — claim it in Rewards";
-          $("#fdWalletText").textContent="Your "+fmt$(bonus)+" match is waiting under Rewards in the top bar. Hit Redeem there and it lands straight in your balance.";
-          $("#fdWalletTag").textContent="CLAIM";
-          const pb=$("#firstDepBtn"); if(pb) pb.textContent="Claim in Rewards ↑";
-          toast("First deposit bonus unlocked!",fmt$(amt)+" deposited — your "+fmt$(bonus)+" match is waiting under Rewards in the navbar. Redeem it there.","gold");
-        } else {
-          sfx.coin();
-          toast("Deposit confirmed",fmt$(amt)+" of play money added via "+DEP_CURS[depCur].tx+".");
-        }
-        renderBalance(); renderTurnover();
-        showDepStep(2);
-        $("#depAmount").value="";
-      },wait);
+      btn.disabled=true; btn.style.display="none";
+      $("#depBackBtn").disabled=true;
+      $("#depPending").style.display="block";
+      paintDepPending();
+      depConfirm.tick=setInterval(paintDepPending,200);
+      depConfirm.timer=setTimeout(finishDepConfirm,30000);
+      sfx.click();
+      toast("Payment sent — confirming","Your "+fmt$(amt)+" "+DEP_CURS[curKey].name+" deposit is confirming. It credits automatically in about 30 seconds.");
+    }
+    function finishDepConfirm(){
+      if(!depConfirm) return;
+      const amt=depConfirm.amt, curKey=depConfirm.cur;
+      clearInterval(depConfirm.tick);
+      depConfirm=null;
+      const btn=$("#depSimBtn");
+      btn.disabled=false; btn.style.display=""; btn.textContent="Simulate a deposit";
+      $("#depBackBtn").disabled=false;
+      $("#depPending").style.display="none";
+      pendingDep=0;
+      state.balance+=amt; addTx("dep","Deposit · "+DEP_CURS[curKey].tx+" · Confirmed",amt);
+      state.lastDeposit=amt; state.wageredSinceDeposit=0;
+      sfx.coin();
+      if(!state.firstDepositDone){
+        const bonus=Math.min(amt,1000); state.firstDepositDone=true;
+        state.rewards.push({id:"firstdep",title:"First Deposit Bonus · 100%",desc:"Your 100% match on your first "+fmt$(amt)+" deposit — redeem it into your balance.",amount:bonus});
+        renderRewards(); sfx.big();
+        $("#fdWalletTitle").textContent="Bonus unlocked — claim it in Rewards";
+        $("#fdWalletText").textContent="Your "+fmt$(bonus)+" match is waiting under Rewards in the top bar. Hit Redeem there and it lands straight in your balance.";
+        $("#fdWalletTag").textContent="CLAIM";
+        const pb=$("#firstDepBtn"); if(pb) pb.textContent="Claim in Rewards ↑";
+        toast("First deposit bonus unlocked!",fmt$(amt)+" deposited — your "+fmt$(bonus)+" match is waiting under Rewards in the navbar. Redeem it there.","gold");
+      }
+      toast("Deposit confirmed","+"+fmt$(amt)+" of play money added via "+DEP_CURS[curKey].tx+".");
+      renderBalance(); renderTurnover();
+      showDepStep(2);
+      $("#depAmount").value="";
+    }
+    $("#depSimBtn").addEventListener("click",()=>{
+      if(depConfirm||pendingDep<=0) return;
+      if(depExpired){ toast("Payment window expired","Generate a new address to restart the 30-minute window.","err"); return; }
+      stopDepClock();
+      startDepConfirm(pendingDep,depCur);
     });
     /* ---- 2x turnover gate on withdrawals (applies to the most recent deposit) ---- */
     function turnoverReq(){ return state.lastDeposit>0? Math.round(state.lastDeposit*2*100)/100 : 0; }
