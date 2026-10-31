@@ -1,0 +1,158 @@
+/* Betvora visual finish — luxury casino styling for play-money practice. */
+:root {
+  color-scheme: dark;
+  --bg: #080d0b;
+  --bg2: #0c1410;
+  --panel: #111b16;
+  --panel2: #17251d;
+  --panel3: #203328;
+  --line: rgba(220, 184, 105, .16);
+  --line2: rgba(220, 184, 105, .3);
+  --text: #f5f1e7;
+  --muted: #a6b4a8;
+  --faint: #728477;
+  --green: #40d487;
+  --green-d: #22a965;
+  --green-ink: #04170d;
+  --gold: #e3bd70;
+  --red: #ff6d68;
+  --orange: #f49a56;
+  --chip: #0a100d;
+  --shadow: 0 22px 65px rgba(0, 0, 0, .48);
+  --r: 16px;
+}
+
+html, body { min-height: 100%; }
+
+body {
+  background:
+    radial-gradient(ellipse at 50% -25%, rgba(48, 99, 67, .2), transparent 58%),
+    var(--bg);
+}
+
+/* Richer surfaces and warm metal edging across the lobby and game shell. */
+.topbar, .sidebar, .panel, .modal, .drop-menu, .game-card,
+.promo-card, .stage, .feed-wrap, .table-wrap {
+  border-color: var(--line);
+}
+
+.topbar, .sidebar { background-color: rgba(10, 17, 13, .94); }
+
+.game-card {
+  background: linear-gradient(155deg, rgba(28, 43, 33, .96), rgba(14, 23, 18, .98));
+  box-shadow: 0 9px 28px rgba(0, 0, 0, .22);
+  transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(227, 189, 112, .48);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, .38), 0 0 24px rgba(227, 189, 112, .08);
+}
+
+.game-card .thumb { background: #101a14; }
+.game-card .thumb::after {
+  background: linear-gradient(120deg, transparent 28%, rgba(255, 236, 184, .16) 50%, transparent 72%);
+}
+
+.game-top { margin-bottom: 18px; }
+.game-top h2 { color: #fff9e9; letter-spacing: -.025em; }
+.game-top .gt-sub { color: #b2b9aa; }
+
+.back-btn, .fair-chip {
+  background: linear-gradient(145deg, rgba(29, 43, 34, .95), rgba(15, 24, 19, .95));
+  border-color: var(--line);
+}
+
+.fair-chip { color: #c5d0c4; }
+.fair-chip i { background: var(--green); box-shadow: 0 0 12px rgba(64, 212, 135, .6); }
+
+.game-layout .panel {
+  background: linear-gradient(160deg, rgba(24, 38, 29, .98), rgba(15, 24, 19, .99));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .2);
+}
+
+.stage {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(54, 103, 68, .2), transparent 55%),
+    linear-gradient(145deg, #101d15, #0c1510 72%);
+  border-color: rgba(227, 189, 112, .22);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .025), 0 18px 46px rgba(0, 0, 0, .25);
+}
+
+.stage::before {
+  background: linear-gradient(90deg, transparent, rgba(227, 189, 112, .72), transparent);
+  opacity: .72;
+}
+
+.seg, .amount-in, .field input, .field select, .field textarea {
+  background-color: #0b130e;
+  border-color: rgba(195, 183, 143, .17);
+}
+
+.seg button.on {
+  background: linear-gradient(145deg, #2c4935, #1b3022);
+  color: #fff5d9;
+  box-shadow: inset 0 0 0 1px rgba(227, 189, 112, .19), 0 4px 13px rgba(0, 0, 0, .25);
+}
+
+.action-btn {
+  color: #1b1609;
+  background: linear-gradient(135deg, #f1d58d, #d5a84c 58%, #bd8731);
+  box-shadow: 0 8px 25px rgba(203, 157, 66, .2), inset 0 1px rgba(255, 255, 255, .46);
+}
+
+.action-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffe5a4, #e4ba64 60%, #ca9540);
+  box-shadow: 0 10px 30px rgba(220, 176, 86, .3);
+}
+
+.action-btn.cashout {
+  color: #201805;
+  background: linear-gradient(135deg, #ffe7a4, #e1b452 62%, #c99235);
+}
+
+.btn-green { background: linear-gradient(135deg, #4fe09a, #22ad69); }
+.btn-green:hover { background: linear-gradient(135deg, #70edaf, #31bd78); }
+
+.mult-chip, .hist-chip {
+  border: 1px solid rgba(227, 189, 112, .13);
+}
+
+.dice-marker, .wheel-hub, .roulette-chip, .chip {
+  box-shadow: 0 5px 16px rgba(0, 0, 0, .4);
+}
+
+.win-banner.show, .dice-result .big.pop {
+  filter: drop-shadow(0 0 18px rgba(227, 189, 112, .35));
+}
+
+.coin-dot {
+  box-shadow: 0 0 0 2px rgba(227, 189, 112, .14), 0 3px 10px rgba(0, 0, 0, .28);
+}
+
+@keyframes tableGlow {
+  0%, 100% { box-shadow: inset 0 0 35px rgba(227, 189, 112, .025); }
+  50% { box-shadow: inset 0 0 55px rgba(227, 189, 112, .075); }
+}
+
+.stage { animation: tableGlow 7s ease-in-out infinite; }
+
+html.no-motion .stage { animation: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .game-top { gap: 10px; }
+  .game-top h2 { font-size: 21px; }
+  .stage { padding: 15px; border-radius: 14px; }
+  .game-card:hover { transform: none; }
+}
+
