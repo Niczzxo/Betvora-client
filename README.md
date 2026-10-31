@@ -57,3 +57,10 @@ Push the project contents to the repository's `main` branch, then enable GitHub 
 - `node --check` passed for all top-level and game JavaScript files.
 - Registry audit: all 42 game IDs have a matching builder. There are 17 extra builders not currently listed in the 42-game registry.
 - Browser visual regression could not be completed in this environment because Chromium navigation was blocked by the execution environment. Please run the project locally and check the interaction flows in the README instructions before deployment.
+
+## Luxury visual finish (2026-10-31)
+
+- Added a standalone visual layer in `css/casino-finish.css` with a dark emerald table palette, warm gold highlights, richer game stages, and refined lobby card and control states.
+- Kept the existing per-game builders and animations, applying shared finish and responsive sizing across the game screens.
+- Respects reduced-motion preferences and the app's `no-motion` setting.
+- This remains virtual-coin practice only; coins have no cash value and cannot be redeemed.
