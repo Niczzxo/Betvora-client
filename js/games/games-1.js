@@ -3036,14 +3036,9 @@ BUILDERS.wheel=function(mount){
         toast("Game unavailable","This practice game is not registered or its builder is missing.","err");
         return;
       }
-      if(window.BetvoraAPI && !window.BetvoraAPI.isGameEnabled(id)){
-        toast("Game temporarily unavailable",GAMES[id].name+" is currently in maintenance.","gold");
-        return;
-      }
       cleanupFns.splice(0).forEach(f=>{try{f();}catch(e){}});
       /* Guests use session-only practice credits; no payment or real-money wagering. */
       if(!state.user && state.balance<=0) state.balance=1000;
-      if(window.BetvoraAPI) window.BetvoraAPI.startSession(id);
       state.view="game"; state.game=id;
       $$(".view").forEach(v=>v.classList.remove("active"));
       retriggerView($("#view-game"));
@@ -3088,7 +3083,6 @@ BUILDERS.wheel=function(mount){
       }
       state.balance=Math.max(0,Math.round((state.balance-bet)*100)/100);
       renderBalance();
-      if(window.BetvoraAPI) window.BetvoraAPI.record("round_started",{gameId:state.game,stakeVC:bet});
       return true;
     }
     function settle(gameName,bet,mult){
@@ -3097,7 +3091,6 @@ BUILDERS.wheel=function(mount){
       if(!Number.isFinite(payout)) return 0;
       if(payout>0){ state.balance+=payout; renderBalance(); }
       recordBet(gameName,bet,mult,payout);
-      if(window.BetvoraAPI) window.BetvoraAPI.record("round_settled",{gameId:state.game,stakeVC:bet,payoutVC:payout,multiplier:mult});
       return payout;
     }
     function winBanner(stageEl,text){

@@ -5,7 +5,7 @@ A multi-file, casino-style frontend for exploring Betvora's 42 game interfaces. 
 ## Luxury visual finish (2026-10-31)
 
 - Added a standalone visual layer in `css/casino-finish.css` with a dark emerald table palette, warm gold highlights, richer game stages, and refined lobby card and control states.
-- Kept the existing per-game builders and animations, applying shared finish and responsive sizing across the game screens.
+- Kept the existing per-game builders and animations, and applied a consistent finish to game stages, cards, reels, wheels, paytables, controls, and responsive layouts.
 - Respects reduced-motion preferences and the app's `no-motion` setting.
 - This remains virtual-coin practice only; coins have no cash value and cannot be redeemed.
 
@@ -23,24 +23,11 @@ A multi-file, casino-style frontend for exploring Betvora's 42 game interfaces. 
 ## Run locally
 
 ```bash
-npm start
-# open http://127.0.0.1:4173/
+python3 -m http.server 8000
+# open http://localhost:8000/
 ```
 
-The Node.js server serves the frontend and the same-origin practice API. It uses only Node's built-in modules.
-
-## Practice API
-
-- `GET /api/health` — gateway health and practice mode.
-- `GET /api/games` — the 42 games currently listed in the lobby and their availability.
-- `GET /api/games/:id/config` — one game's practice configuration.
-- `POST /api/sessions` with `{ "gameId": "dice" }` — create an ephemeral practice session.
-- `GET /api/sessions/:sessionId` — read session metadata.
-- `POST /api/sessions/:sessionId/events` — record a client-reported practice round event.
-
-The browser sends game-open, stake and round-result events through the API client. Game outcomes and the play balance remain local to the browser; event reports are not independently verified and are not a financial ledger. API sessions are held in memory and expire after two hours. This API has no deposit, withdrawal, transfer, or redemption routes. Virtual coins have no cash value.
-
-The public lobby registry lives in `api/games.json`. Set a game's `status` to `maintenance` to prevent it opening when the API is available. When the API is offline, the practice frontend continues in its local-only mode.
+The app runs as a browser-only practice experience. Game state and outcomes stay in the current browser session; no API or backend is required.
 
 ## Deploy to GitHub Pages
 
