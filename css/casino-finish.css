@@ -156,3 +156,98 @@ html.no-motion .stage { animation: none !important; }
   .game-card:hover { transform: none; }
 }
 
+/* Consistent detail work across card, wheel, reel, and instant games. */
+.game-stage-head .gh-medal {
+  background: linear-gradient(145deg, #284936, #101d15);
+  border-color: rgba(227, 189, 112, .58);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .12), 0 7px 20px rgba(0, 0, 0, .28);
+}
+
+.game-layout .panel h4 {
+  color: #f3dfad;
+  letter-spacing: .025em;
+}
+
+.game-layout .field > label {
+  color: #b8c3b8;
+  font-size: 11px;
+  letter-spacing: .065em;
+  text-transform: uppercase;
+}
+
+.game-layout .stat-box {
+  background: linear-gradient(145deg, rgba(31, 48, 37, .9), rgba(15, 24, 19, .96));
+  border-color: rgba(227, 189, 112, .14);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .025);
+}
+
+.game-layout .stat-box small { color: #9eae9f; }
+
+.game-layout .mini-btn,
+.game-layout .chip-pick button,
+.game-layout .ar-chippick button,
+.game-layout .er-chippick button {
+  border-color: rgba(227, 189, 112, .2);
+  background: linear-gradient(145deg, #1c2c21, #101a14);
+  color: #e7d8b2;
+}
+
+.game-layout .mini-btn:hover,
+.game-layout .chip-pick button:hover,
+.game-layout .ar-chippick button:hover,
+.game-layout .er-chippick button:hover {
+  border-color: rgba(227, 189, 112, .55);
+  color: #fff4d9;
+}
+
+.game-layout .hist-row {
+  border-top-color: rgba(227, 189, 112, .1);
+}
+
+.game-layout .paytable,
+.game-layout .vp-paytable,
+.game-layout .adv-paytable,
+.game-layout .frt-paytable,
+.game-layout .myt-paytable,
+.game-layout .gst-paytable {
+  border-color: rgba(227, 189, 112, .18);
+  background: rgba(8, 14, 10, .55);
+}
+
+.game-layout .wheel-box,
+.game-layout .ar-wheelbox,
+.game-layout .er-wheelbox,
+.game-layout .adv-wheelbox,
+.game-layout .adv-wheelwrap {
+  filter: drop-shadow(0 14px 24px rgba(0, 0, 0, .32));
+}
+
+.game-layout .bac-card,
+.game-layout .bj-card,
+.game-layout .bjc-card,
+.game-layout .tp-card,
+.game-layout .tr-card,
+.game-layout .hl-card,
+.game-layout .vp-card,
+.game-layout .dt-card,
+.game-layout .ab-card,
+.game-layout .htb-card,
+.game-layout .rd-card,
+.game-layout .wr-card {
+  filter: drop-shadow(0 4px 7px rgba(0, 0, 0, .3));
+}
+
+.game-layout .reel-cell,
+.game-layout .slots-machine,
+.game-layout .bars-reel {
+  border-color: rgba(227, 189, 112, .3);
+}
+
+.game-layout :is(button, input, select):focus-visible {
+  outline-color: var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-card:hover { transform: none; }
+}
+

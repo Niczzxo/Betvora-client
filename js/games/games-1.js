@@ -3032,6 +3032,10 @@ BUILDERS.wheel=function(mount){
   addDust(stage,10);
 };
     function openGame(id){
+      if(!GAMES[id] || typeof BUILDERS[id]!=="function"){
+        toast("Game unavailable","This practice game is not registered or its builder is missing.","err");
+        return;
+      }
       cleanupFns.splice(0).forEach(f=>{try{f();}catch(e){}});
       /* Guests use session-only practice credits; no payment or real-money wagering. */
       if(!state.user && state.balance<=0) state.balance=1000;
@@ -3044,7 +3048,16 @@ BUILDERS.wheel=function(mount){
       $("#gameSub").textContent="Betvora Originals · Practice mode";
       $("#gameMount").innerHTML="";
       Skel.mountSkel($("#gameMount"));
-      window.requestAnimationFrame(()=>{ if(state.view==="game" && state.game===id) BUILDERS[id]($("#gameMount")); });
+      window.requestAnimationFrame(()=>{
+        if(state.view!=="game" || state.game!==id) return;
+        const mount=$("#gameMount");
+        try{ BUILDERS[id](mount); }
+        catch(error){
+          cleanupFns.splice(0).forEach(f=>{try{f();}catch(e){}});
+          console.error("Practice game failed to render:",id,error);
+          mount.innerHTML='<div class="empty-state" role="alert"><h3>Game could not load</h3><p>Please return to the lobby and try again.</p><button class="btn btn-ghost" data-nav="lobby">Back to games</button></div>';
+        }
+      });
       window.scrollTo({top:0});
     }
     function betAmountHtml(id,val){
@@ -3057,14 +3070,25 @@ BUILDERS.wheel=function(mount){
       $$("[data-double]").forEach(b=>{ if(b.dataset.double===id) b.addEventListener("click",()=>{ const i=$("#"+id); i.value=(Math.max(0,parseFloat(i.value||0)*2)).toFixed(2); }); });
     }
     function getBet(id){
-      const v=parseFloat($("#"+id).value);
-      if(isNaN(v)||v<=0){ toast("Invalid bet","Enter a bet amount above $0.","err"); return null; }
+      const input=$("#"+id);
+      const v=input?parseFloat(input.value):NaN;
+      if(!Number.isFinite(v)||v<=0){ toast("Invalid bet","Enter a practice amount above $0.","err"); return null; }
       if(v>state.balance){ toast("Insufficient balance","Your bet is bigger than your balance — top up in the Wallet.","err"); if(state.user) openWallet(); else requireAuth(openWallet); return null; }
       return Math.round(v*100)/100;
     }
-    function charge(bet){ state.balance-=bet; renderBalance(); }
+    function charge(bet){
+      if(!Number.isFinite(bet)||bet<=0||bet>state.balance){
+        toast("Invalid practice amount","Check the amount and available virtual coins.","err");
+        return false;
+      }
+      state.balance=Math.max(0,Math.round((state.balance-bet)*100)/100);
+      renderBalance();
+      return true;
+    }
     function settle(gameName,bet,mult){
+      if(!Number.isFinite(bet)||bet<=0||!Number.isFinite(mult)||mult<0) return 0;
       const payout=Math.round(bet*mult*100)/100;
+      if(!Number.isFinite(payout)) return 0;
       if(payout>0){ state.balance+=payout; renderBalance(); }
       recordBet(gameName,bet,mult,payout);
       return payout;

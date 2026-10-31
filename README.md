@@ -2,6 +2,13 @@
 
 A multi-file, casino-style frontend for exploring Betvora's 42 game interfaces. This is a play-money practice experience, not a production real-money casino. It does not process real deposits or withdrawals, and local results are not independently audited.
 
+## Luxury visual finish (2026-10-31)
+
+- Added a standalone visual layer in `css/casino-finish.css` with a dark emerald table palette, warm gold highlights, richer game stages, and refined lobby card and control states.
+- Kept the existing per-game builders and animations, and applied a consistent finish to game stages, cards, reels, wheels, paytables, controls, and responsive layouts.
+- Respects reduced-motion preferences and the app's `no-motion` setting.
+- This remains virtual-coin practice only; coins have no cash value and cannot be redeemed.
+
 ## Project structure
 
 - `index.html` — app shell, navigation, lobby sections and footer
@@ -19,6 +26,8 @@ A multi-file, casino-style frontend for exploring Betvora's 42 game interfaces. 
 python3 -m http.server 8000
 # open http://localhost:8000/
 ```
+
+The app runs as a browser-only practice experience. Game state and outcomes stay in the current browser session; no API or backend is required.
 
 ## Deploy to GitHub Pages
 
@@ -58,9 +67,3 @@ Push the project contents to the repository's `main` branch, then enable GitHub 
 - Registry audit: all 42 game IDs have a matching builder. There are 17 extra builders not currently listed in the 42-game registry.
 - Browser visual regression could not be completed in this environment because Chromium navigation was blocked by the execution environment. Please run the project locally and check the interaction flows in the README instructions before deployment.
 
-## Luxury visual finish (2026-10-31)
-
-- Added a standalone visual layer in `css/casino-finish.css` with a dark emerald table palette, warm gold highlights, richer game stages, and refined lobby card and control states.
-- Kept the existing per-game builders and animations, applying shared finish and responsive sizing across the game screens.
-- Respects reduced-motion preferences and the app's `no-motion` setting.
-- This remains virtual-coin practice only; coins have no cash value and cannot be redeemed.
